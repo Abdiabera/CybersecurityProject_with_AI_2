@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Permission Propagation Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f1ec;
+  --white: #ffffff;
+  --navy: #0f1f3d;
+  --navy2: #1a3160;
+  --teal: #0e8a7c;
+  --teal-light: #e6f5f3;
+  --amber: #d97706;
+  --amber-light: #fef3c7;
+  --rose: #be123c;
+  --rose-light: #fff1f2;
+  --slate: #475569;
+  --slate-light: #f8fafc;
+  --border: #e2ddd6;
+  --shadow: 0 4px 24px rgba(15,31,61,0.08);
+  --shadow-lg: 0 12px 48px rgba(15,31,61,0.14);
+  --win: #0078d4;
+  --linux: #e05c1a;
+  --green: #059669;
+  --green-light: #ecfdf5;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--navy);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Decorative top stripe */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--teal), var(--navy), var(--amber));
+  z-index: 100;
+}
+
+/* Institution Banner */
+.institution-banner {
+  background: var(--navy);
+  color: #fff;
+  padding: 20px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+.institution-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(14,138,124,0.15) 0%, transparent 50%, rgba(217,119,6,0.1) 100%);
+  pointer-events: none;
+}
+.inst-org {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(16px, 3vw, 22px);
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 2px;
+}
+.inst-divider {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--teal), var(--amber));
+  margin: 8px auto;
+  border-radius: 2px;
+}
+.inst-program {
+  font-size: clamp(11px, 2vw, 13px);
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 2px;
+  font-family: 'DM Sans', sans-serif;
+}
+.inst-course {
+  font-size: clamp(11px, 2vw, 13px);
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 2px;
+  font-family: 'DM Sans', sans-serif;
+}
+.inst-module {
+  font-size: clamp(12px, 2vw, 14px);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 10px;
+  font-family: 'DM Mono', monospace;
+}
+.inst-authors {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+.inst-authors strong {
+  color: rgba(255,255,255,0.7);
+  font-weight: 600;
+}
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 60px 24px 80px;
+}
+
+/* ── HEADER ─────────────────────────────────────────── */
+.header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.header-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--teal-light);
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(14,138,124,0.2);
+}
+
+.header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 6vw, 54px);
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.1;
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+
+.header h1 span {
+  color: var(--teal);
+  display: block;
+}
+
+.header p {
+  color: var(--slate);
+  font-size: 17px;
+  max-width: 520px;
+  margin: 0 auto;
+  font-weight: 300;
+}
+
+/* ── PROGRESS NAV ───────────────────────────────────── */
+.progress-nav {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 48px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 8px;
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+
+.nav-step {
+  flex: 1;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.nav-step:hover { background: var(--slate-light); color: var(--navy); }
+
+.nav-step.active {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+
+.nav-step.done {
+  background: var(--green-light);
+  color: var(--green);
+  border-color: rgba(5,150,105,0.2);
+}
+
+.nav-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.nav-step:not(.active) .nav-num { background: var(--border); color: var(--slate); }
+.nav-step.done .nav-num { background: var(--green); color: #fff; }
+
+/* ── SCENARIOS ──────────────────────────────────────── */
+.scenario { display: none; animation: reveal 0.35s ease; }
+.scenario.active { display: block; }
+
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scenario header card */
+.scene-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px 40px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.scene-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(14,138,124,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.scene-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--teal);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.scene-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.scene-desc {
+  color: var(--slate);
+  font-size: 15px;
+  line-height: 1.75;
+  max-width: 680px;
+}
+
+.analogy-strip {
+  margin-top: 20px;
+  background: linear-gradient(135deg, #fff8f0, #fff4e6);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 18px;
+  font-size: 14px;
+  color: #92400e;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.analogy-strip .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+/* OS comparison */
+.os-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media(max-width:600px) { .os-grid { grid-template-columns: 1fr; } }
+
+.os-panel {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 24px;
+  box-shadow: var(--shadow);
+}
+
+.os-panel.win { border-top: 3px solid var(--win); }
+.os-panel.lin { border-top: 3px solid var(--linux); }
+
+.os-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+.os-label.win { background: rgba(0,120,212,0.08); color: var(--win); }
+.os-label.lin { background: rgba(224,92,26,0.08); color: var(--linux); }
+
+.os-text { font-size: 14px; color: var(--slate); line-height: 1.7; }
+.os-text strong { color: var(--navy); }
+
+/* Simulator */
+.sim-box {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+
+.box-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.box-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.fs-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.folder-card {
+  flex: 1;
+  min-width: 180px;
+  background: var(--slate-light);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+}
+.folder-card.src { border-color: var(--amber); background: var(--amber-light); }
+.folder-card.dst { border-color: var(--teal); background: var(--teal-light); }
+
+.folder-tag {
+  position: absolute;
+  top: -11px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.5px;
+}
+.folder-tag.s { background: var(--amber); color: #fff; }
+.folder-tag.d { background: var(--teal); color: #fff; }
+
+.folder-icon { font-size: 30px; margin-bottom: 6px; }
+.folder-name { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+.folder-perm {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--slate);
+  background: rgba(255,255,255,0.7);
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.file-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 7px 10px;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.file-pill.moved { animation: popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards; }
+
+@keyframes popIn {
+  from { transform: scale(0.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.perm-tag {
+  margin-left: auto;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.perm-tag.orig { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+.perm-tag.keep { background: var(--green-light); color: var(--green); border: 1px solid #a7f3d0; }
+.perm-tag.umask { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+
+.arrow-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--slate);
+  flex-shrink: 0;
+}
+.arrow-mid span { font-size: 22px; animation: bounce 1.5s ease infinite; }
+@keyframes bounce { 0%,100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+.arrow-cmd { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--teal); background: var(--teal-light); padding: 2px 8px; border-radius: 4px; }
+
+.btn-run {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  padding: 11px 22px;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+.btn-run:hover { background: var(--navy2); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,31,61,0.2); }
+
+/* Sim output */
+.sim-output {
+  display: none;
+  margin-top: 16px;
+  background: #0f1f3d;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.sim-output.show { display: block; animation: reveal 0.3s ease; }
+.sim-out-bar {
+  background: #1a3160;
+  padding: 8px 16px;
+  font-size: 11px;
+  color: #7c93bd;
+  font-family: 'DM Mono', monospace;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sim-out-bar::before { content: '●'; color: #ef4444; }
+.sim-out-bar::after { content: '  ● ●'; color: #7c93bd; }
+.sim-out-body { padding: 16px 20px; font-family: 'DM Mono', monospace; font-size: 12.5px; line-height: 1.9; }
+.l-cmd { color: #60d9fa; }
+.l-cmt { color: #4a6fa5; }
+.l-out { color: #86efac; }
+.l-res { color: #fbbf24; font-weight: 500; }
+
+/* Terminal */
+.terminal-box {
+  background: #12213d;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 32px rgba(15,31,61,0.2);
+}
+.term-bar {
+  background: #1e3563;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot.r { background: #ff5f57; }
+.dot.y { background: #ffbd2e; }
+.dot.g { background: #28ca41; }
+.term-label { font-family: 'DM Mono', monospace; font-size: 12px; color: #5a7ab5; margin-left: auto; margin-right: auto; }
+.term-body { padding: 22px 24px; font-family: 'DM Mono', monospace; font-size: 13px; line-height: 2; }
+.t-prompt { color: #7c93bd; }
+.t-cmd { color: #60d9fa; }
+.t-cmt { color: #3d5a8a; }
+.t-out { color: #86efac; }
+
+/* Key insight */
+.insight-card {
+  background: linear-gradient(135deg, var(--teal-light), #f0fdf8);
+  border: 1px solid rgba(14,138,124,0.2);
+  border-left: 4px solid var(--teal);
+  border-radius: 0 12px 12px 0;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 14px;
+}
+.insight-card .ic-icon { font-size: 22px; flex-shrink: 0; }
+.insight-card .ic-text { font-size: 14px; color: #134e4a; line-height: 1.75; }
+.insight-card .ic-text strong { color: #0f3330; }
+.insight-card code { background: rgba(14,138,124,0.12); padding: 1px 5px; border-radius: 3px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--teal); }
+
+/* Quiz */
+.quiz-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+.quiz-q-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 18px;
+  line-height: 1.55;
+}
+.quiz-q-text code { background: var(--teal-light); color: var(--teal); padding: 2px 6px; border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 13px; }
+
+.q-options { display: flex; flex-direction: column; gap: 10px; }
+
+.q-opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--slate-light);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  font-weight: 400;
+}
+.q-opt:hover { border-color: var(--navy); background: #fff; transform: translateX(3px); }
+.q-opt.correct { border-color: var(--green); background: var(--green-light); color: #065f46; font-weight: 500; }
+.q-opt.wrong { border-color: var(--rose); background: var(--rose-light); color: var(--rose); }
+.q-opt.disabled { pointer-events: none; }
+
+.q-letter {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  background: var(--border);
+  color: var(--slate);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  font-family: 'DM Mono', monospace;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.q-opt:hover .q-letter { background: var(--navy); color: #fff; }
+.q-opt.correct .q-letter { background: var(--green); color: #fff; }
+.q-opt.wrong .q-letter { background: var(--rose); color: #fff; }
+
+.q-feedback {
+  display: none;
+  margin-top: 14px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.q-feedback.show { display: block; }
+.q-feedback.ok { background: var(--green-light); border: 1px solid #a7f3d0; color: #065f46; }
+.q-feedback.no { background: var(--rose-light); border: 1px solid #fecdd3; color: #9f1239; }
+
+/* Nav buttons */
+.nav-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  letter-spacing: 0.2px;
+}
+.btn-next { background: var(--navy); color: #fff; }
+.btn-next:hover { background: var(--navy2); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,31,61,0.2); }
+.btn-back { background: var(--white); color: var(--navy); border: 1.5px solid var(--border); }
+.btn-back:hover { border-color: var(--navy); background: var(--slate-light); }
+.btn-teal { background: var(--teal); color: #fff; }
+.btn-teal:hover { background: #0b7368; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(14,138,124,0.25); }
+
+/* Summary */
+.summary-table { width: 100%; border-collapse: collapse; }
+.summary-table th {
+  background: var(--navy);
+  color: rgba(255,255,255,0.7);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+}
+.summary-table th:first-child { border-radius: 10px 0 0 0; }
+.summary-table th:last-child { border-radius: 0 10px 0 0; }
+.summary-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+  color: var(--slate);
+}
+.summary-table tr:last-child td { border-bottom: none; }
+.summary-table tr:nth-child(even) td { background: var(--slate-light); }
+.summary-table tr:hover td { background: var(--teal-light); }
+.summary-table td strong { color: var(--navy); }
+.tag-k { background: var(--green-light); color: var(--green); border: 1px solid #a7f3d0; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: 'DM Mono', monospace; }
+.tag-i { background: var(--amber-light); color: var(--amber); border: 1px solid #fde68a; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: 'DM Mono', monospace; }
+.tag-u { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: 'DM Mono', monospace; }
+
+.score-panel {
+  text-align: center;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 48px 32px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-lg);
+}
+.score-big {
+  font-family: 'Playfair Display', serif;
+  font-size: 80px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.score-sub { font-size: 17px; color: var(--slate); margin-bottom: 12px; font-weight: 300; }
+.score-msg-text { font-size: 15px; color: var(--slate); max-width: 400px; margin: 0 auto; }
+
+.ref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.ref-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+}
+.ref-label { font-size: 11px; color: var(--slate); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; font-family: 'DM Mono', monospace; margin-bottom: 6px; }
+.ref-val { font-size: 19px; font-weight: 700; color: var(--navy); margin-bottom: 5px; font-family: 'Playfair Display', serif; }
+.ref-desc { font-size: 12px; color: var(--slate); line-height: 1.55; }
+.ref-val.t { color: var(--teal); }
+.ref-val.a { color: var(--amber); }
+.ref-val.w { color: var(--win); }
+</style>
+</head>
+<body>
+
+<!-- INSTITUTION BANNER -->
+<div class="institution-banner">
+  <div class="inst-org">Per Scholas Greater Boston</div>
+  <div class="inst-divider"></div>
+  <div class="inst-program">Cybersecurity Program</div>
+  <div class="inst-course">Network Defense Course</div>
+  <div class="inst-module">Module 3: Access Control</div>
+  <div class="inst-authors">Designed by: <strong>Dr. Solomon Seifu</strong> (Lead Instructor) &nbsp;|&nbsp; <strong>Naly Rosario</strong></div>
+</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-eyebrow">🔐 Linux Security Lab · Module 3</div>
+    <h1>Permission Propagation <span>Interactive Lab</span></h1>
+    <p>Discover how Linux handles file permissions when data is moved or copied — within the same volume or across different filesystems — and how it compares to Windows NTFS.</p>
+  </div>
+
+  <!-- PROGRESS NAV -->
+  <div class="progress-nav">
+    <div class="nav-step active" onclick="goTo(0)" id="ns0"><div class="nav-num">1</div>Move — Same</div>
+    <div class="nav-step" onclick="goTo(1)" id="ns1"><div class="nav-num">2</div>Copy — Same</div>
+    <div class="nav-step" onclick="goTo(2)" id="ns2"><div class="nav-num">3</div>Move — Cross</div>
+    <div class="nav-step" onclick="goTo(3)" id="ns3"><div class="nav-num">4</div>Copy — Cross</div>
+    <div class="nav-step" onclick="goTo(4)" id="ns4"><div class="nav-num">5</div>Summary</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- SCENARIO 1 -->
+  <div class="scenario active" id="sc0">
+
+    <div class="scene-card">
+      <div class="scene-tag">Scenario 01 / 04</div>
+      <div class="scene-title">Moving Data Within the Same Volume</div>
+      <div class="scene-desc">When you move a file within the same drive or partition, the file system only updates its directory pointer — the file itself is never recreated. Because nothing is rewritten, the original permission bits remain exactly unchanged, regardless of what permissions the destination folder has.</div>
+      <div class="analogy-strip">
+        <div class="icon">🏠</div>
+        <div>Think of it like moving furniture between rooms in the same house. The furniture does not change — only its location does. The rules attached to it stay exactly the same.</div>
+      </div>
+    </div>
+
+    <div class="sim-box">
+      <div class="box-label">Visual Simulation</div>
+      <div class="fs-row">
+        <div class="folder-card src">
+          <div class="folder-tag s">SOURCE</div>
+          <div class="folder-icon">📁</div>
+          <div class="folder-name">HR /</div>
+          <div class="folder-perm">drwxr-xr-x</div>
+          <div class="file-pill">📄 Report.docx <span class="perm-tag orig">rw-r--r--</span></div>
+        </div>
+        <div class="arrow-mid">
+          <span>→</span>
+          <div class="arrow-cmd">mv</div>
+        </div>
+        <div class="folder-card dst">
+          <div class="folder-tag d">DESTINATION</div>
+          <div class="folder-icon">📁</div>
+          <div class="folder-name">Finance /</div>
+          <div class="folder-perm">drwxrwxr-x</div>
+          <div class="file-pill" id="s1f" style="display:none;">📄 Report.docx <span class="perm-tag keep">rw-r--r-- ✓</span></div>
+        </div>
+      </div>
+      <button class="btn-run" onclick="sim(1)">▶ Run Simulation</button>
+      <div class="sim-output" id="s1o">
+        <div class="sim-out-bar">bash — solomon@PSBOS-SSeifu</div>
+        <div class="sim-out-body">
+          <div class="l-cmt"># Set permissions on original file</div>
+          <div class="l-cmd">$ chmod u=rw,g=r,o=r HR/Report.docx</div>
+          <div class="l-cmt"># Move within same volume</div>
+          <div class="l-cmd">$ mv HR/Report.docx Finance/</div>
+          <div class="l-cmt"># Verify permissions</div>
+          <div class="l-cmd">$ ls -l Finance/Report.docx</div>
+          <div class="l-out">-rw-r--r-- 1 solomon solomon 0 May 4 09:00 Finance/Report.docx</div>
+          <div class="l-res">✓ RESULT: Permissions preserved — rw-r--r-- unchanged</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="terminal-box">
+      <div class="term-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="term-label">Terminal — Try It Yourself</div></div>
+      <div class="term-body">
+        <div><span class="t-cmt"># Step 1: Create directories</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">mkdir -p HR Finance</span></div>
+        <div><span class="t-cmt"># Step 2: Create file and set permissions</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">touch HR/Report.docx</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">chmod u=rw,g=r,o=r HR/Report.docx</span></div>
+        <div><span class="t-cmt"># Step 3: Move within same volume</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">mv HR/Report.docx Finance/</span></div>
+        <div><span class="t-cmt"># Step 4: Verify — expect rw-r--r-- (unchanged)</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">ls -l Finance/Report.docx</span></div>
+        <div><span class="t-out">-rw-r--r-- 1 solomon solomon 0 May 4 09:00 Finance/Report.docx</span></div>
+      </div>
+    </div>
+
+    <div class="insight-card">
+      <div class="ic-icon">💡</div>
+      <div class="ic-text"><strong>Key Insight:</strong> On Linux, moving within the same volume only updates the directory entry (inode pointer). No new file object is created. Since the file itself is untouched, its permission bits remain exactly as set — the destination folder's permissions have zero influence.</div>
+    </div>
+
+    <div class="quiz-card">
+      <div class="quiz-q-text">❓ You move a file with permissions <code>rw-r--r--</code> from <code>/HR/</code> (drwxrwxrwx) to <code>/Finance/</code> (drwx------) on the same Linux partition. What permissions does the file have in Finance?</div>
+      <div class="q-options">
+        <div class="q-opt" onclick="ans(this,false,0)"><div class="q-letter">A</div> drwx------ (inherits Finance folder permissions)</div>
+        <div class="q-opt" onclick="ans(this,true,0)"><div class="q-letter">B</div> rw-r--r-- (original permissions preserved)</div>
+        <div class="q-opt" onclick="ans(this,false,0)"><div class="q-letter">C</div> drwxrwxrwx (inherits HR folder permissions)</div>
+        <div class="q-opt" onclick="ans(this,false,0)"><div class="q-letter">D</div> rwxrwxrwx (full permissions granted)</div>
+      </div>
+      <div class="q-feedback" id="qf0"></div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-nav btn-next" onclick="goTo(1)">Next Scenario →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- SCENARIO 2 -->
+  <div class="scenario" id="sc1">
+
+    <div class="scene-card">
+      <div class="scene-tag">Scenario 02 / 04</div>
+      <div class="scene-title">Copying Data Within the Same Volume</div>
+      <div class="scene-desc">Copying creates a brand-new file object. On Linux, that new file's permissions are derived from the original file's permissions filtered through the system's <strong>umask</strong> (commonly 022) — not from the destination folder. On Windows, the copy inherits the destination folder's permissions.</div>
+      <div class="analogy-strip">
+        <div class="icon">📋</div>
+        <div>Copying is like photocopying a document. The photocopy is a brand new sheet of paper. On Linux it starts with your original rulebook filtered through a policy filter (umask). On Windows it starts fresh with the destination building's rules.</div>
+      </div>
+    </div>
+
+    <div class="os-grid">
+      <div class="os-panel win">
+        <div class="os-label win">⊞ Windows NTFS</div>
+        <div class="os-text">Copying within the same volume creates a <strong>new file</strong> that <strong>inherits permissions from the destination folder</strong>. The copy gets Finance folder's ACL rules applied automatically.</div>
+      </div>
+      <div class="os-panel lin">
+        <div class="os-label lin">🐧 Linux</div>
+        <div class="os-text">Copying creates a new file whose permissions are derived from the <strong>original file's permissions filtered by the system umask</strong>. The destination folder permissions have no direct effect.</div>
+      </div>
+    </div>
+
+    <div class="sim-box">
+      <div class="box-label">Visual Simulation</div>
+      <div class="fs-row">
+        <div class="folder-card src">
+          <div class="folder-tag s">SOURCE</div>
+          <div class="folder-icon">📁</div>
+          <div class="folder-name">HR /</div>
+          <div class="folder-perm">drwxr-xr-x</div>
+          <div class="file-pill">📄 Report_copy.docx <span class="perm-tag orig">rw-rw-r--</span></div>
+        </div>
+        <div class="arrow-mid"><span>→</span><div class="arrow-cmd">cp</div></div>
+        <div class="folder-card dst">
+          <div class="folder-tag d">DESTINATION</div>
+          <div class="folder-icon">📁</div>
+          <div class="folder-name">Finance /</div>
+          <div class="folder-perm">drwxrwxr-x</div>
+          <div class="file-pill" id="s2f" style="display:none;">📄 Report_copy.docx <span class="perm-tag umask">rw-r--r-- (umask)</span></div>
+        </div>
+      </div>
+      <button class="btn-run" onclick="sim(2)">▶ Run Simulation</button>
+      <div class="sim-output" id="s2o">
+        <div class="sim-out-bar">bash — solomon@PSBOS-SSeifu</div>
+        <div class="sim-out-body">
+          <div class="l-cmd">$ touch HR/Report_copy.docx</div>
+          <div class="l-cmd">$ cp HR/Report_copy.docx Finance/</div>
+          <div class="l-cmd">$ ls -l Finance/Report_copy.docx</div>
+          <div class="l-out">-rw-r--r-- 1 solomon solomon 0 May 4 09:00 Finance/Report_copy.docx</div>
+          <div class="l-res">⚠ RESULT: New file — permissions from umask, NOT Finance folder</div>
+          <br>
+          <div class="l-cmt"># To preserve original permissions exactly:</div>
+          <div class="l-cmd">$ cp -p HR/Report_copy.docx Finance/</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="terminal-box">
+      <div class="term-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="term-label">Terminal — Try It Yourself</div></div>
+      <div class="term-body">
+        <div><span class="t-cmt"># Create file in HR</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">touch HR/Report_copy.docx</span></div>
+        <div><span class="t-cmt"># Copy to Finance (same volume)</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">cp HR/Report_copy.docx Finance/</span></div>
+        <div><span class="t-cmt"># Verify — umask applied, not Finance folder permissions</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">ls -l Finance/Report_copy.docx</span></div>
+        <div><span class="t-out">-rw-r--r-- 1 solomon solomon 0 May 4 09:00 Finance/Report_copy.docx</span></div>
+        <div><span class="t-cmt"># Preserve original permissions exactly:</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">cp -p HR/Report_copy.docx Finance/</span></div>
+      </div>
+    </div>
+
+    <div class="insight-card">
+      <div class="ic-icon">💡</div>
+      <div class="ic-text"><strong>Key Insight:</strong> <code>cp</code> without flags creates a new file using the source's permissions filtered by the system umask (typically 022, which removes group-write and other-write bits). Use <code>cp -p</code> to fully preserve original permissions. This is different from Windows where the copy inherits the destination folder's ACL.</div>
+    </div>
+
+    <div class="quiz-card">
+      <div class="quiz-q-text">❓ On Linux, you copy a file from <code>/HR/</code> to <code>/Finance/</code> using <code>cp</code> (no flags). What determines the copied file's permissions?</div>
+      <div class="q-options">
+        <div class="q-opt" onclick="ans(this,false,1)"><div class="q-letter">A</div> The Finance folder's permissions are applied to the new copy</div>
+        <div class="q-opt" onclick="ans(this,false,1)"><div class="q-letter">B</div> The file gets full rwxrwxrwx permissions by default</div>
+        <div class="q-opt" onclick="ans(this,true,1)"><div class="q-letter">C</div> The original file's permissions filtered through the system umask</div>
+        <div class="q-opt" onclick="ans(this,false,1)"><div class="q-letter">D</div> Root always owns the copied file</div>
+      </div>
+      <div class="q-feedback" id="qf1"></div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-nav btn-back" onclick="goTo(0)">← Previous</button>
+      <button class="btn-nav btn-next" onclick="goTo(2)">Next Scenario →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- SCENARIO 3 -->
+  <div class="scenario" id="sc2">
+
+    <div class="scene-card">
+      <div class="scene-tag">Scenario 03 / 04</div>
+      <div class="scene-title">Moving Data to a Different Volume</div>
+      <div class="scene-desc">Moving across volumes behaves very differently between Windows and Linux. On Windows, cross-volume move = copy + delete, so the file inherits destination permissions. On Linux, <strong>mv always preserves the original permissions</strong> even across filesystems. To force inheritance on Linux you must do it manually.</div>
+      <div class="analogy-strip">
+        <div class="icon">🏢</div>
+        <div>On Windows — moving to a different building means following that building's rules. On Linux — your personal rulebook travels with you regardless of which building you move into.</div>
+      </div>
+    </div>
+
+    <div class="os-grid">
+      <div class="os-panel win">
+        <div class="os-label win">⊞ Windows NTFS</div>
+        <div class="os-text">Cross-volume move = <strong>copy + delete</strong>. A brand-new file is created at the destination. It <strong>inherits the destination folder's ACL permissions</strong>. The original is then deleted.</div>
+      </div>
+      <div class="os-panel lin">
+        <div class="os-label lin">🐧 Linux</div>
+        <div class="os-text"><code style="font-family:'DM Mono',monospace;color:var(--linux);">mv</code> <strong>always preserves original permissions</strong> regardless of which filesystem the destination is on. To force inheritance, use <code style="font-family:'DM Mono',monospace;color:var(--linux);">chmod --reference</code> manually.</div>
+      </div>
+    </div>
+
+    <div class="sim-box">
+      <div class="box-label">Visual Simulation</div>
+      <div class="fs-row">
+        <div class="folder-card src">
+          <div class="folder-tag s">VOLUME 1</div>
+          <div class="folder-icon">💿</div>
+          <div class="folder-name">HR /</div>
+          <div class="folder-perm">drwxr-xr-x</div>
+          <div class="file-pill">📄 Report.docx <span class="perm-tag orig">rw-r--r--</span></div>
+        </div>
+        <div class="arrow-mid"><span>→</span><div class="arrow-cmd">mv (cross)</div></div>
+        <div class="folder-card dst">
+          <div class="folder-tag d">VOLUME 2</div>
+          <div class="folder-icon">💾</div>
+          <div class="folder-name">/tmp/Different_Volume/</div>
+          <div class="folder-perm">drwxrwxrwx</div>
+          <div class="file-pill" id="s3f" style="display:none;">📄 Report.docx <span class="perm-tag keep">rw-r--r-- ✓ Linux</span></div>
+        </div>
+      </div>
+      <button class="btn-run" onclick="sim(3)">▶ Run Simulation</button>
+      <div class="sim-output" id="s3o">
+        <div class="sim-out-bar">bash — solomon@PSBOS-SSeifu</div>
+        <div class="sim-out-body">
+          <div class="l-cmd">$ mkdir /tmp/Different_Volume && chmod 777 /tmp/Different_Volume</div>
+          <div class="l-cmd">$ mv HR/Report.docx /tmp/Different_Volume/</div>
+          <div class="l-cmd">$ ls -l /tmp/Different_Volume/Report.docx</div>
+          <div class="l-out">-rw-r--r-- 1 solomon solomon 0 May 4 09:00 Report.docx</div>
+          <div class="l-res">✓ LINUX: Permissions preserved despite cross-volume move</div>
+          <br>
+          <div class="l-cmt"># To manually force destination permissions:</div>
+          <div class="l-cmd">$ chmod --reference=/tmp/Different_Volume /tmp/Different_Volume/Report.docx</div>
+          <div class="l-out">-rwxrwxrwx 1 solomon solomon 0 May 4 09:00 Report.docx</div>
+          <div class="l-res">→ NOW matches folder — but only because we forced it manually</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="terminal-box">
+      <div class="term-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="term-label">Terminal — Try It Yourself</div></div>
+      <div class="term-body">
+        <div><span class="t-cmt"># Create different volume simulation</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">mkdir /tmp/Different_Volume</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">chmod 777 /tmp/Different_Volume</span></div>
+        <div><span class="t-cmt"># Move across volumes</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">mv HR/Report.docx /tmp/Different_Volume/</span></div>
+        <div><span class="t-cmt"># Verify — Linux preserves original permissions</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">ls -l /tmp/Different_Volume/Report.docx</span></div>
+        <div><span class="t-out">-rw-r--r-- 1 solomon solomon 0 May 4 09:00 Report.docx</span></div>
+        <div><span class="t-cmt"># Force destination folder permissions manually:</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">chmod --reference=/tmp/Different_Volume /tmp/Different_Volume/Report.docx</span></div>
+      </div>
+    </div>
+
+    <div class="insight-card">
+      <div class="ic-icon">💡</div>
+      <div class="ic-text"><strong>Key Insight:</strong> <code>chmod --reference=source target</code> reads the permission bits from <em>source</em> and applies them to <em>target</em>. This is the Linux way to manually simulate Windows NTFS inheritance behavior. Without it, permissions always travel unchanged with the file.</div>
+    </div>
+
+    <div class="quiz-card">
+      <div class="quiz-q-text">❓ On Linux, you move a file with permissions <code>rw-r--r--</code> to a folder with permissions <code>rwxrwxrwx</code> on a different filesystem. What happens?</div>
+      <div class="q-options">
+        <div class="q-opt" onclick="ans(this,false,2)"><div class="q-letter">A</div> They change to rwxrwxrwx — inheriting the destination folder</div>
+        <div class="q-opt" onclick="ans(this,true,2)"><div class="q-letter">B</div> They remain rw-r--r-- — Linux always preserves permissions on mv</div>
+        <div class="q-opt" onclick="ans(this,false,2)"><div class="q-letter">C</div> They change to the root user's default permissions</div>
+        <div class="q-opt" onclick="ans(this,false,2)"><div class="q-letter">D</div> The move fails — cross-volume moves are not allowed on Linux</div>
+      </div>
+      <div class="q-feedback" id="qf2"></div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-nav btn-back" onclick="goTo(1)">← Previous</button>
+      <button class="btn-nav btn-next" onclick="goTo(3)">Next Scenario →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- SCENARIO 4 -->
+  <div class="scenario" id="sc3">
+
+    <div class="scene-card">
+      <div class="scene-tag">Scenario 04 / 04</div>
+      <div class="scene-title">Copying Data to a Different Volume</div>
+      <div class="scene-desc">Copying to a different volume always creates a brand-new file. On Windows the copy inherits the destination folder's permissions. On Linux, the original permissions are preserved (filtered by umask) — exactly the same behavior as copying within the same volume. The destination folder has no automatic effect.</div>
+      <div class="analogy-strip">
+        <div class="icon">🗂️</div>
+        <div>Whether you copy to the same building or a different building — on Linux the copy always carries the original rulebook (filtered through umask). On Windows the copy always follows the destination building's rules, no matter where it comes from.</div>
+      </div>
+    </div>
+
+    <div class="os-grid">
+      <div class="os-panel win">
+        <div class="os-label win">⊞ Windows NTFS</div>
+        <div class="os-text">A brand-new file is created on the other drive. It <strong>inherits the destination folder's permissions</strong> — same behavior as copying within the same volume. Source permissions are not carried over.</div>
+      </div>
+      <div class="os-panel lin">
+        <div class="os-label lin">🐧 Linux</div>
+        <div class="os-text"><code style="font-family:'DM Mono',monospace;color:var(--linux);">cp</code> to a different volume <strong>preserves original permissions (filtered by umask)</strong>. Destination folder has no effect. Use <code style="font-family:'DM Mono',monospace;color:var(--linux);">chmod --reference</code> to force it.</div>
+      </div>
+    </div>
+
+    <div class="sim-box">
+      <div class="box-label">Visual Simulation</div>
+      <div class="fs-row">
+        <div class="folder-card src">
+          <div class="folder-tag s">SOURCE VOLUME</div>
+          <div class="folder-icon">💿</div>
+          <div class="folder-name">HR /</div>
+          <div class="folder-perm">drwxr-xr-x</div>
+          <div class="file-pill">📄 Report_copy2.docx <span class="perm-tag orig">rw-r--r--</span></div>
+        </div>
+        <div class="arrow-mid"><span>→</span><div class="arrow-cmd">cp (cross)</div></div>
+        <div class="folder-card dst">
+          <div class="folder-tag d">DIFFERENT VOLUME</div>
+          <div class="folder-icon">💾</div>
+          <div class="folder-name">/tmp/Different_Volume/</div>
+          <div class="folder-perm">drwxrwxrwx</div>
+          <div class="file-pill" id="s4f" style="display:none;">📄 Report_copy2.docx <span class="perm-tag keep">rw-r--r-- ✓ Linux</span></div>
+        </div>
+      </div>
+      <button class="btn-run" onclick="sim(4)">▶ Run Simulation</button>
+      <div class="sim-output" id="s4o">
+        <div class="sim-out-bar">bash — solomon@PSBOS-SSeifu</div>
+        <div class="sim-out-body">
+          <div class="l-cmd">$ touch HR/Report_copy2.docx</div>
+          <div class="l-cmd">$ chmod u=rw,g=r,o=r HR/Report_copy2.docx</div>
+          <div class="l-cmd">$ cp HR/Report_copy2.docx /tmp/Different_Volume/</div>
+          <div class="l-cmd">$ ls -l /tmp/Different_Volume/Report_copy2.docx</div>
+          <div class="l-out">-rw-r--r-- 1 solomon solomon 0 May 4 09:00 Report_copy2.docx</div>
+          <div class="l-res">✓ LINUX: Permissions preserved — destination folder had no effect</div>
+          <br>
+          <div class="l-cmt"># Force destination folder permissions:</div>
+          <div class="l-cmd">$ chmod --reference=/tmp/Different_Volume /tmp/Different_Volume/Report_copy2.docx</div>
+          <div class="l-out">-rwxrwxrwx 1 solomon solomon 0 May 4 09:00 Report_copy2.docx</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="terminal-box">
+      <div class="term-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="term-label">Terminal — Try It Yourself</div></div>
+      <div class="term-body">
+        <div><span class="t-cmt"># Create and set permissions on test file</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">touch HR/Report_copy2.docx</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">chmod u=rw,g=r,o=r HR/Report_copy2.docx</span></div>
+        <div><span class="t-cmt"># Copy to different volume</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">cp HR/Report_copy2.docx /tmp/Different_Volume/</span></div>
+        <div><span class="t-cmt"># Verify — permissions preserved on Linux</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">ls -l /tmp/Different_Volume/Report_copy2.docx</span></div>
+        <div><span class="t-out">-rw-r--r-- 1 solomon solomon 0 May 4 09:00 Report_copy2.docx</span></div>
+        <div><span class="t-cmt"># Force inheritance from destination folder:</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">chmod --reference=/tmp/Different_Volume /tmp/Different_Volume/Report_copy2.docx</span></div>
+      </div>
+    </div>
+
+    <div class="insight-card">
+      <div class="ic-icon">💡</div>
+      <div class="ic-text"><strong>Bottom Line:</strong> On Linux it does not matter whether you use <code>mv</code> or <code>cp</code>, and it does not matter whether the destination is the same volume or a different one — <strong>permissions always travel with the file</strong>. Destination folder permission inheritance is a Windows NTFS concept. On Linux you must apply it manually using <code>chmod --reference</code>.</div>
+    </div>
+
+    <div class="quiz-card">
+      <div class="quiz-q-text">❓ On Linux, which command makes a copied file adopt the exact permissions of its destination folder?</div>
+      <div class="q-options">
+        <div class="q-opt" onclick="ans(this,false,3)"><div class="q-letter">A</div> cp --inherit /source /destination</div>
+        <div class="q-opt" onclick="ans(this,false,3)"><div class="q-letter">B</div> mv --permissions /destination/file</div>
+        <div class="q-opt" onclick="ans(this,true,3)"><div class="q-letter">C</div> chmod --reference=/destination/folder /destination/file</div>
+        <div class="q-opt" onclick="ans(this,false,3)"><div class="q-letter">D</div> chown --inherit /destination/file</div>
+      </div>
+      <div class="q-feedback" id="qf3"></div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-nav btn-back" onclick="goTo(2)">← Previous</button>
+      <button class="btn-nav btn-teal" onclick="goTo(4)">View Summary →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- SUMMARY -->
+  <div class="scenario" id="sc4">
+
+    <div class="scene-card">
+      <div class="scene-tag">Summary</div>
+      <div class="scene-title">Permission Propagation — Complete Reference</div>
+      <div class="scene-desc">Review the complete picture of how file permissions behave across all four scenarios on both Windows and Linux, then check your final quiz score.</div>
+    </div>
+
+    <div class="sim-box">
+      <div class="box-label">Complete Reference Table</div>
+      <table class="summary-table">
+        <thead>
+          <tr><th>Scenario</th><th>Operation</th><th>Windows NTFS</th><th>Linux</th><th>Linux Override</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Same Volume</strong></td><td>Move (mv)</td><td><span class="tag-k">Keeps original</span></td><td><span class="tag-k">Keeps original</span></td><td>N/A</td></tr>
+          <tr><td><strong>Same Volume</strong></td><td>Copy (cp)</td><td><span class="tag-i">Inherits destination</span></td><td><span class="tag-u">umask applied</span></td><td><code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--teal);">cp -p</code> to preserve</td></tr>
+          <tr><td><strong>Different Volume</strong></td><td>Move (mv)</td><td><span class="tag-i">Inherits destination</span></td><td><span class="tag-k">Keeps original</span></td><td><code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--teal);">chmod --reference</code></td></tr>
+          <tr><td><strong>Different Volume</strong></td><td>Copy (cp)</td><td><span class="tag-i">Inherits destination</span></td><td><span class="tag-k">Keeps original</span></td><td><code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--teal);">chmod --reference</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="score-panel" id="scorepanel">
+      <div class="score-big" id="scorebig">—</div>
+      <div class="score-sub">Quiz Score</div>
+      <div class="score-msg-text" id="scoremsg">Complete the quiz in each scenario first, then click below to calculate your score.</div>
+    </div>
+
+    <div class="ref-grid">
+      <div class="ref-card">
+        <div class="ref-label">Linux mv rule</div>
+        <div class="ref-val t">Always Preserves</div>
+        <div class="ref-desc">Permissions travel with the file regardless of volume or filesystem</div>
+      </div>
+      <div class="ref-card">
+        <div class="ref-label">Linux cp rule</div>
+        <div class="ref-val t">umask Applied</div>
+        <div class="ref-desc">New file gets original permissions filtered through the system umask</div>
+      </div>
+      <div class="ref-card">
+        <div class="ref-label">Windows NTFS rule</div>
+        <div class="ref-val w">Inherits Destination</div>
+        <div class="ref-desc">Any copy or cross-volume move creates a file that inherits destination ACL</div>
+      </div>
+      <div class="ref-card">
+        <div class="ref-label">Linux override command</div>
+        <div class="ref-val a" style="font-size:15px;font-family:'DM Mono',monospace;">chmod --reference</div>
+        <div class="ref-desc">The only way to manually force destination folder permissions on Linux</div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-nav btn-back" onclick="goTo(0)">← Start Over</button>
+      <button class="btn-nav btn-teal" onclick="calcScore()">📊 Calculate Score</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let current = 0;
+const answers = [null, null, null, null];
+
+const FB = [
+  { y: "✅ Correct! On Linux, moving within the same volume only updates the directory pointer — no new file is created, so the original permissions are completely preserved. The destination folder permissions have zero effect.", n: "❌ Not quite. On Linux, mv within the same volume only updates a pointer — the file is not recreated. Its permissions remain exactly as set, regardless of the destination folder's permissions." },
+  { y: "✅ Correct! On Linux, cp creates a new file using the original's permissions filtered through the system umask (typically 022). The destination folder's permissions play no role — this differs from Windows NTFS.", n: "❌ Not quite. On Linux, cp does not apply the destination folder's permissions. It creates a new file based on source permissions filtered by the system umask. Use cp -p to preserve exact permissions." },
+  { y: "✅ Correct! On Linux, mv always preserves the original file permissions regardless of whether the move is cross-volume. You must use chmod --reference to force inheritance — it never happens automatically.", n: "❌ Not quite. Unlike Windows, Linux mv does not apply destination folder permissions even when moving across volumes. Permissions are always preserved. Use chmod --reference to manually force inheritance." },
+  { y: "✅ Correct! chmod --reference=/destination/folder /destination/file copies the permission bits from the folder and applies them to the file. This is the only way to simulate Windows-style inheritance on Linux.", n: "❌ Not quite. The correct command is chmod --reference=/destination/folder /destination/file. There is no --inherit flag for cp or mv. chown changes ownership, not permissions." }
+];
+
+function goTo(n) {
+  document.querySelectorAll('.scenario').forEach(s => s.classList.remove('active'));
+  document.getElementById('sc' + n).classList.add('active');
+  document.querySelectorAll('.nav-step').forEach((s, i) => {
+    s.classList.remove('active');
+    if (answers[i] !== null && i < 4) s.classList.add('done');
+    else if (i < 4) s.classList.remove('done');
+  });
+  document.getElementById('ns' + n).classList.add('active');
+  current = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (n === 4) calcScore();
+}
+
+function ans(el, correct, q) {
+  const opts = el.parentElement.querySelectorAll('.q-opt');
+  opts.forEach(o => o.classList.add('disabled'));
+  const fb = document.getElementById('qf' + q);
+  el.classList.add(correct ? 'correct' : 'wrong');
+  fb.className = 'q-feedback show ' + (correct ? 'ok' : 'no');
+  fb.textContent = correct ? FB[q].y : FB[q].n;
+  answers[q] = correct;
+  if (!correct) {
+    opts.forEach(o => { if (o.getAttribute('onclick').includes('true')) o.classList.add('correct'); });
+  }
+  document.getElementById('ns' + q).classList.add('done');
+}
+
+function sim(n) {
+  const ids = { 1: ['s1f','s1o'], 2: ['s2f','s2o'], 3: ['s3f','s3o'], 4: ['s4f','s4o'] };
+  const [fid, oid] = ids[n];
+  const f = document.getElementById(fid);
+  const o = document.getElementById(oid);
+  f.style.display = 'flex';
+  f.classList.add('moved');
+  o.classList.add('show');
+  setTimeout(() => f.classList.remove('moved'), 600);
+}
+
+function calcScore() {
+  const score = answers.filter(a => a === true).length;
+  const el = document.getElementById('scorebig');
+  el.textContent = score + ' / 4';
+  const colors = ['#be123c','#d97706','#d97706','#0e8a7c','#059669'];
+  el.style.color = colors[score];
+  const msgs = [
+    "Keep going — review each scenario carefully and try again. You will get there!",
+    "Good effort! Go back and re-read the scenarios where you got stuck.",
+    "Solid progress! Two more correct and you will have it fully locked in.",
+    "Almost perfect! Review the one you missed and it will click.",
+    "Perfect score! You have fully mastered permission propagation on Linux and Windows. 🎉"
+  ];
+  document.getElementById('scoremsg').textContent = msgs[score];
+}
+</script>
+</body>
+</html>

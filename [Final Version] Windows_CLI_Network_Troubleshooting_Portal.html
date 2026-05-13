@@ -1,0 +1,431 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#0B2545;
+  --navy-dark:#071A35;
+  --navy-mid:#163870;
+  --navy-light:#D6E4F7;
+  --navy-xlight:#EEF3FB;
+  --navy-text:#0B1F3A;
+  --navy-border:#A8BFDF;
+  --gold-accent:#E8A020;
+  --green-accent:#2A9D5C;
+  --red-accent:#C0392B;
+}
+body{font-family:'Georgia',serif;font-size:16px;background:var(--navy-xlight);color:var(--navy-text);}
+.wrap{padding:1.5rem 0;}
+
+.hero{background:var(--navy-dark);border-radius:12px;padding:1.8rem 2rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
+.hero::before{content:"";position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;background:rgba(232,160,32,0.07);pointer-events:none;}
+.hero-eyebrow{font-size:13px;color:#A8BFDF;font-weight:500;letter-spacing:.06em;margin-bottom:10px;font-family:'Georgia',serif;text-transform:uppercase;}
+.hero-title{font-size:28px;font-weight:700;color:#fff;margin-bottom:10px;line-height:1.3;font-family:'Georgia',serif;}
+.hero-title span{color:var(--gold-accent);}
+.hero-sub{font-size:15px;color:#A8BFDF;line-height:1.7;margin-bottom:14px;}
+.hero-credit{font-size:14px;color:#7A9CC0;border-top:0.5px solid #1A3A6B;padding-top:12px;}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:1.5rem;}
+.stat{background:var(--navy-mid);border-radius:10px;padding:1rem 1.1rem;}
+.stat-n{font-size:28px;font-weight:700;color:#fff;font-family:'Georgia',serif;}
+.stat-l{font-size:13px;color:#A8BFDF;margin-top:4px;}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:10px 18px;border-radius:8px;border:1.5px solid var(--navy-border);background:#fff;font-size:14px;font-weight:600;color:var(--navy-mid);cursor:pointer;transition:all .15s;font-family:'Georgia',serif;letter-spacing:.02em;}
+.tab.on{background:var(--navy-dark);color:#fff;border-color:var(--navy-dark);}
+.tab:hover:not(.on){background:var(--navy-light);}
+
+.panel{display:none;}
+.panel.on{display:block;}
+
+.sec-label{font-size:12px;font-weight:700;color:var(--navy-mid);letter-spacing:.1em;text-transform:uppercase;margin:1.4rem 0 10px;padding-bottom:6px;border-bottom:2px solid var(--navy-border);}
+.sec-label:first-child{margin-top:0;}
+
+.card{background:#fff;border:1.5px solid var(--navy-border);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:14px;}
+.card-body{font-size:15px;color:var(--navy-text);line-height:1.8;}
+
+.goal-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px;}
+.goal-card{background:#fff;border-radius:10px;padding:1rem 1.2rem;border-left:4px solid var(--navy-mid);}
+.goal-card.amber{border-left-color:#B87A0A;}
+.goal-card.green{border-left-color:#2A9D5C;}
+.goal-title{font-size:15px;font-weight:700;color:var(--navy-text);margin-bottom:6px;}
+.goal-body{font-size:14px;color:#3A5070;line-height:1.65;}
+
+.item{display:flex;gap:14px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--navy-light);}
+.item:last-child{border-bottom:none;}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--navy-mid);flex-shrink:0;margin-top:7px;}
+.dot.amber{background:#B87A0A;}
+.dot.green{background:#2A9D5C;}
+.item-text{font-size:15px;color:var(--navy-text);line-height:1.7;}
+
+.lesson-item{display:flex;gap:14px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--navy-light);}
+.lesson-item:last-child{border-bottom:none;}
+.lnum{min-width:56px;height:28px;background:var(--navy-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--navy-mid);flex-shrink:0;margin-top:2px;letter-spacing:.02em;}
+.lnum.lab{background:#D4E8D8;color:#1A5E30;}
+.lnum.final{background:#FEF0D0;color:#7A4800;}
+.ltext{font-size:15px;color:var(--navy-text);line-height:1.65;flex:1;}
+.lsub{font-size:13px;color:#5A7090;margin-top:3px;}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:13px;color:#3A5070;}
+.leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+
+.standup-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:1.2rem;}
+.sq{background:#fff;border:1.5px solid var(--navy-border);border-radius:10px;padding:1rem 1.1rem;}
+.sq-num{font-size:13px;font-weight:700;color:var(--navy-mid);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
+.sq-text{font-size:15px;color:var(--navy-text);line-height:1.6;}
+
+.tip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;}
+.tip{background:#fff;border:1.5px solid var(--navy-border);border-radius:10px;padding:1rem 1.2rem;}
+.tip-text{font-size:15px;color:var(--navy-text);line-height:1.7;}
+
+/* GROUPS */
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;}
+.group-card{background:#fff;border:1.5px solid var(--navy-border);border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(11,37,69,0.07);}
+
+.group-header-firewall{background:linear-gradient(135deg,#0B2545,#1A4A8A);}
+.group-header-cipher{background:linear-gradient(135deg,#1A3A1A,#2E6B2E);}
+.group-header-nexus{background:linear-gradient(135deg,#3A1A00,#8A4A00);}
+.group-header-bastion{background:linear-gradient(135deg,#2A0B2A,#6B206B);}
+.group-header-vector{background:linear-gradient(135deg,#0B2A35,#166B7A);}
+
+.group-hdr{padding:.9rem 1.2rem;}
+.group-codename{font-size:11px;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px;}
+.group-name{font-size:19px;font-weight:700;color:#fff;margin-bottom:2px;font-family:'Georgia',serif;}
+.group-count{font-size:13px;color:rgba(255,255,255,0.6);}
+.group-body{padding:1rem 1.2rem;}
+.leader-row{display:flex;align-items:center;gap:10px;background:var(--navy-light);border-radius:8px;padding:.7rem .9rem;margin-bottom:10px;}
+.leader-badge{font-size:11px;font-weight:700;background:var(--navy-dark);color:var(--gold-accent);padding:3px 10px;border-radius:20px;white-space:nowrap;letter-spacing:.05em;text-transform:uppercase;}
+.leader-name{font-size:15px;font-weight:700;color:var(--navy-text);}
+.member-list{list-style:none;}
+.member-list li{font-size:14px;color:#3A5070;padding:5px 0;border-bottom:1px solid var(--navy-light);display:flex;align-items:center;gap:8px;}
+.member-list li:last-child{border-bottom:none;}
+.member-list li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--navy-border);flex-shrink:0;}
+
+.rotation-box{background:var(--navy-dark);border-radius:10px;padding:1.1rem 1.4rem;margin-bottom:1.4rem;}
+.rotation-text{font-size:15px;color:#A8BFDF;line-height:1.7;}
+.rotation-text strong{color:var(--gold-accent);}
+
+.leader-resp{background:#fff;border:1.5px solid var(--navy-border);border-radius:12px;padding:1.2rem 1.4rem;}
+
+.lesson-section-header{background:var(--navy-light);border-radius:8px;padding:.6rem 1rem;margin:14px 0 4px;font-size:13px;font-weight:700;color:var(--navy-mid);letter-spacing:.04em;}
+</style>
+
+<div class="wrap">
+
+<div class="hero">
+  <div class="hero-eyebrow">Cisco NetAcad &nbsp;|&nbsp; Per Scholas Greater Boston &nbsp;|&nbsp; Cohort 2026-BOS-02</div>
+  <div class="hero-title">Module 125, <span>Cisco Network Defense</span></div>
+  <div class="hero-sub">Team project kickoff &nbsp;·&nbsp; 27.5 hours &nbsp;·&nbsp; 5 instructional days &nbsp;·&nbsp; Packet Tracer and NetAcad platform</div>
+  <div class="hero-credit">Prepared by Instructors: Dr. Solomon Seifu (Lead) and Naly Rosario</div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-n">11</div><div class="stat-l">lessons to complete</div></div>
+  <div class="stat"><div class="stat-n">20</div><div class="stat-l">GLABs and labs</div></div>
+  <div class="stat"><div class="stat-n">27.5</div><div class="stat-l">total hours</div></div>
+  <div class="stat"><div class="stat-n">5</div><div class="stat-l">instructional days</div></div>
+  <div class="stat"><div class="stat-n">22</div><div class="stat-l">learners enrolled</div></div>
+  <div class="stat"><div class="stat-n">5</div><div class="stat-l">working groups</div></div>
+</div>
+
+<div class="tabs">
+  <div class="tab on" onclick="go('overview',this)">Overview</div>
+  <div class="tab" onclick="go('groups',this)">Working Groups</div>
+  <div class="tab" onclick="go('kpis',this)">All KPIs</div>
+  <div class="tab" onclick="go('team',this)">Responsibilities</div>
+  <div class="tab" onclick="go('standup',this)">Daily Standup</div>
+  <div class="tab" onclick="go('tips',this)">Tips for Success</div>
+</div>
+
+<!-- OVERVIEW -->
+<div id="p-overview" class="panel on">
+  <div class="sec-label">Why this module matters</div>
+  <div class="goal-row">
+    <div class="goal-card">
+      <div class="goal-title">Ultimate goal</div>
+      <div class="goal-body">Secure employment in the cybersecurity field</div>
+    </div>
+    <div class="goal-card amber">
+      <div class="goal-title">High-level goal</div>
+      <div class="goal-body">Pass the CompTIA Security+ certification exam</div>
+    </div>
+    <div class="goal-card green">
+      <div class="goal-title">Current focus</div>
+      <div class="goal-body">Complete all assignments, labs, and quizzes for Module 125 on NetAcad and Packet Tracer</div>
+    </div>
+  </div>
+
+  <div class="sec-label">What you will be able to do by the end</div>
+  <div class="card">
+    <div class="item"><div class="dot"></div><div class="item-text">Explain approaches to network security defense and implement system and network defenses</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Configure local and server-based access control, including TACACS+ and RADIUS</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Implement Access Control Lists (ACLs) to filter traffic and mitigate network attacks</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Understand and implement firewall technologies, including Zone-Based Policy Firewalls via CLI</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Recommend cloud security requirements based on real-world scenarios</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Apply cryptographic techniques to ensure confidentiality, integrity, and authenticity</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Use logs, NetFlow, and records to monitor host and network activity</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Evaluate security alerts and respond effectively to incidents</div></div>
+  </div>
+</div>
+
+<!-- GROUPS -->
+<div id="p-groups" class="panel">
+  <div class="rotation-box">
+    <div class="rotation-text"><strong>Leadership rotates daily.</strong> The assigned leader kicks off the module as group facilitator. From Day 2 onward, a different group member leads the standup each day — so that every learner builds facilitation and leadership experience before the module ends. This is intentional: leadership is a skill you practice, not a title you hold.</div>
+  </div>
+
+  <div class="sec-label">Working Group Leader responsibilities</div>
+  <div class="leader-resp" style="margin-bottom:1.4rem;">
+    <div class="item"><div class="dot green"></div><div class="item-text">Initiate the daily morning standup for the group and keep it within 15 minutes</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Maintain the shared Standup Notes Document provided by the instructor</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Monitor that every group member is making progress on quizzes, labs, and reflections</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Flag blockers or concerns to Dr. Seifu or Naly Rosario as soon as they surface</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Attend Working Group leader check-in meetings with the instructor</div></div>
+  </div>
+
+  <div class="sec-label">Your assigned groups for Module 125</div>
+  <div class="groups-grid">
+
+    <div class="group-card">
+      <div class="group-hdr group-header-firewall">
+        <div class="group-codename">Working Group</div>
+        <div class="group-name">Firewall</div>
+        <div class="group-count">5 members</div>
+      </div>
+      <div class="group-body">
+        <div class="leader-row">
+          <span class="leader-badge">&#9733; Leader</span>
+          <span class="leader-name">Abdellah Jrari</span>
+        </div>
+        <ul class="member-list">
+          <li>Tatiana Stridh</li>
+          <li>Calvin Depina</li>
+          <li>Ivaldo Gomes</li>
+          <li>Shirley Inocente</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="group-card">
+      <div class="group-hdr group-header-cipher">
+        <div class="group-codename">Working Group</div>
+        <div class="group-name">Cipher</div>
+        <div class="group-count">4 members</div>
+      </div>
+      <div class="group-body">
+        <div class="leader-row">
+          <span class="leader-badge">&#9733; Leader</span>
+          <span class="leader-name">Devlin McDonough</span>
+        </div>
+        <ul class="member-list">
+          <li>Fikirte Tefera</li>
+          <li>Alvin Der</li>
+          <li>Natas Mann</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="group-card">
+      <div class="group-hdr group-header-nexus">
+        <div class="group-codename">Working Group</div>
+        <div class="group-name">Nexus</div>
+        <div class="group-count">5 members</div>
+      </div>
+      <div class="group-body">
+        <div class="leader-row">
+          <span class="leader-badge">&#9733; Leader</span>
+          <span class="leader-name">Ciara ONeil</span>
+        </div>
+        <ul class="member-list">
+          <li>Henry Capita</li>
+          <li>Cedric Sanchez</li>
+          <li>Dylan Crovo</li>
+          <li>Abdi Abera</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="group-card">
+      <div class="group-hdr group-header-bastion">
+        <div class="group-codename">Working Group</div>
+        <div class="group-name">Bastion</div>
+        <div class="group-count">4 members</div>
+      </div>
+      <div class="group-body">
+        <div class="leader-row">
+          <span class="leader-badge">&#9733; Leader</span>
+          <span class="leader-name">Vanessa Difranco</span>
+        </div>
+        <ul class="member-list">
+          <li>Kevin Fernandez</li>
+          <li>Yuxuan Liu</li>
+          <li>Ali Ali</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="group-card">
+      <div class="group-hdr group-header-vector">
+        <div class="group-codename">Working Group</div>
+        <div class="group-name">Vector</div>
+        <div class="group-count">4 members</div>
+      </div>
+      <div class="group-body">
+        <div class="leader-row">
+          <span class="leader-badge">&#9733; Leader</span>
+          <span class="leader-name">Michael Francois</span>
+        </div>
+        <ul class="member-list">
+          <li>Sir Porte</li>
+          <li>Magdala Richards</li>
+          <li>Leipawan Wongwajarachote</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- KPIs -->
+<div id="p-kpis" class="panel">
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:#A8BFDF;"></div>NetAcad lesson</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#A8D8B8;"></div>GLAB / Packet Tracer lab</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#FAD090;"></div>Final assessment / POC</div>
+  </div>
+  <div class="card">
+    <div class="lesson-section-header">125.1 – Understanding Defense</div>
+    <div class="lesson-item"><div class="lnum">125.1</div><div class="ltext">Understanding Defense (Netacad)<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.1.1 – Document Enterprise Cybersecurity Issues<div class="lsub">Complete and submit</div></div></div>
+
+    <div class="lesson-section-header">125.2 – System and Network Defense</div>
+    <div class="lesson-item"><div class="lnum">125.2</div><div class="ltext">System and Network Defense (Netacad)<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.2.1 – Investigating OWASP<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.2.2 – Packet Tracer: Configure Wireless Router Hardening and Security<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.2.3 – Packet Tracer: Implement Physical Security with IoT Devices<div class="lsub">Complete and submit</div></div></div>
+
+    <div class="lesson-section-header">125.3 – Access Control</div>
+    <div class="lesson-item"><div class="lnum">125.3</div><div class="ltext">Access Control (Netacad)<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.3.1 – Packet Tracer: Configure Access Control<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.3.2 – Configure Authentication and Authorization in Linux<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.3.3 – Packet Tracer: Configure Server-Based Authentication with TACACS+ and RADIUS<div class="lsub">Complete and submit</div></div></div>
+
+    <div class="lesson-section-header">125.4 – Access Control Lists</div>
+    <div class="lesson-item"><div class="lnum">125.4</div><div class="ltext">Access Control Lists (Netacad)<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.4.1 – Packet Tracer: Configure Named Standard IPv4 ACLs<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.4.2 – Packet Tracer: Configure Numbered Standard IPv4 ACLs<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.4.3 – Packet Tracer: Configure Extended ACLs Scenario 1<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.4.4 – Packet Tracer: Configure Extended ACLs Scenario 2<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.4.5 – Packet Tracer: Configure IPv6 ACLs<div class="lsub">Complete and submit</div></div></div>
+
+    <div class="lesson-section-header">125.5 – Firewall Technologies</div>
+    <div class="lesson-item"><div class="lnum">125.5</div><div class="ltext">Firewall Technologies (Netacad)<div class="lsub">Complete all course activities and requirements</div></div></div>
+
+    <div class="lesson-section-header">125.6 – Zone-Based Policy Firewalls</div>
+    <div class="lesson-item"><div class="lnum">125.6</div><div class="ltext">Zone-Based Policy Firewalls (Netacad)<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.6.1 – Packet Tracer: Configure a ZPF<div class="lsub">Complete and submit</div></div></div>
+
+    <div class="lesson-section-header">125.7 – Cloud Security</div>
+    <div class="lesson-item"><div class="lnum">125.7</div><div class="ltext">Cloud Security (Netacad)<div class="lsub">Complete all course activities and requirements</div></div></div>
+
+    <div class="lesson-section-header">125.8 – Cryptography</div>
+    <div class="lesson-item"><div class="lnum">125.8</div><div class="ltext">Cryptography (Netacad)<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.8.1 – Use Classic and Modern Encryption Algorithms<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.8.2 – Encrypting and Decrypting Data Using OpenSSL<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.8.3 – Encrypting and Decrypting Data Using a Hacker Tool<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.8.4 – Examining Telnet and SSH in Wireshark<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.8.5 – Determine the Encryption Algorithm to Use<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.8.6 – Use Steganography to Hide Data<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.8.7 – Hashing Things Out<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.8.8 – Generate and Use a Digital Signature<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.8.9 – Certificate Authority Stores<div class="lsub">Complete and submit</div></div></div>
+
+    <div class="lesson-section-header">125.9 – Technologies and Protocols</div>
+    <div class="lesson-item"><div class="lnum">125.9</div><div class="ltext">Technologies and Protocols (Netacad)<div class="lsub">Complete all course activities and requirements</div></div></div>
+
+    <div class="lesson-section-header">125.10 – Network Security Data</div>
+    <div class="lesson-item"><div class="lnum">125.10</div><div class="ltext">Network Security Data (Netacad)<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.10.1 – Packet Tracer: Explore a NetFlow Implementation<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">125.10.2 – Packet Tracer: Logging from Multiple Sources<div class="lsub">Complete and submit</div></div></div>
+
+    <div class="lesson-section-header">125.11 – Evaluating Alerts</div>
+    <div class="lesson-item"><div class="lnum">125.11</div><div class="ltext">Evaluating Alerts (Netacad)<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum final">POC</div><div class="ltext">POC 125 – Network Defense Badge<div class="lsub">Earn the badge on NetAcad — final proof of completion</div></div></div>
+  </div>
+</div>
+
+<!-- RESPONSIBILITIES -->
+<div id="p-team" class="panel">
+  <div class="sec-label">What every learner must do individually</div>
+  <div class="card">
+    <div class="item"><div class="dot"></div><div class="item-text">Submit and pass all required assignments, including labs, quizzes, reflections, and GLABs</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Participate in daily Working Group standups and contribute to team collaboration</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Ask for help when stuck and offer help when you can</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Track your own progress and share updates with your Working Group</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Submit your own Proof of Completion (POC) — collaborating on challenges is encouraged, but each person must submit their own work</div></div>
+  </div>
+
+  <div class="sec-label">What the Working Group does together</div>
+  <div class="card">
+    <div class="item"><div class="dot amber"></div><div class="item-text">Treat Module 125 as a real-world project with clear deliverables and deadlines</div></div>
+    <div class="item"><div class="dot amber"></div><div class="item-text">Help each other troubleshoot Packet Tracer, NetAcad access, and lab completion issues</div></div>
+    <div class="item"><div class="dot amber"></div><div class="item-text">Bring up blockers during standups so the group can help resolve them quickly</div></div>
+    <div class="item"><div class="dot amber"></div><div class="item-text">Log progress in a shared team document throughout the module</div></div>
+    <div class="item"><div class="dot amber"></div><div class="item-text">Share troubleshooting insights — if you solved it, document it for your team</div></div>
+  </div>
+
+  <div class="sec-label">Working Group Leader responsibilities</div>
+  <div class="card">
+    <div class="item"><div class="dot green"></div><div class="item-text">Initiate the daily morning standup and keep it within 15 minutes</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Maintain the shared Standup Notes Document provided by the instructor</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Monitor that every group member is completing quizzes, labs, and reflections</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Flag any issues or blockers to the instructor as soon as they surface</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Attend Working Group leader check-in meetings with Dr. Seifu or Naly Rosario</div></div>
+  </div>
+</div>
+
+<!-- STANDUP -->
+<div id="p-standup" class="panel">
+  <div class="sec-label">When and how</div>
+  <div class="card" style="margin-bottom:1.2rem;">
+    <div class="card-body">The standup happens at the <strong>start of every class</strong> and lasts <strong>15 minutes</strong>. A different Working Group member leads it each day, which means every learner gets to practice facilitating before this module ends. The leader that day logs the notes in the shared document.</div>
+  </div>
+
+  <div class="sec-label">Three questions every member answers</div>
+  <div class="standup-row">
+    <div class="sq"><div class="sq-num">Question 1</div><div class="sq-text">What did you complete yesterday?</div></div>
+    <div class="sq"><div class="sq-num">Question 2</div><div class="sq-text">What will you focus on today?</div></div>
+    <div class="sq"><div class="sq-num">Question 3</div><div class="sq-text">Are there any blockers stopping your progress?</div></div>
+  </div>
+
+  <div class="sec-label">Why this matters</div>
+  <div class="card">
+    <div class="card-body">This is the exact standup format used in real cybersecurity and tech teams every single day. Practicing it now means you walk into your first job already knowing how to communicate your progress clearly and professionally. It is not a performance — it is a habit you are building starting today.</div>
+  </div>
+</div>
+
+<!-- TIPS -->
+<div id="p-tips" class="panel">
+  <div class="sec-label">How to succeed in this module</div>
+  <div class="tip-grid">
+    <div class="tip"><div class="tip-text">Communicate often and openly with your Working Group — do not wait until you are completely stuck</div></div>
+    <div class="tip"><div class="tip-text">Take notes during walkthroughs and demos, because you will need them when doing the labs independently</div></div>
+    <div class="tip"><div class="tip-text">Ask for help early and offer support to teammates who are behind</div></div>
+    <div class="tip"><div class="tip-text">Plan your day at the start of each session and know exactly which lesson or lab you are targeting</div></div>
+    <div class="tip"><div class="tip-text">Use Packet Tracer to verify your configurations and test assumptions before submitting</div></div>
+    <div class="tip"><div class="tip-text">Use the shared documentation and checklists to track what is done and what still needs attention</div></div>
+    <div class="tip"><div class="tip-text">Hold each other accountable — a strong team does not leave anyone behind</div></div>
+    <div class="tip"><div class="tip-text">Collaborate on challenges but always submit your own Proof of Completion (POC)</div></div>
+    <div class="tip"><div class="tip-text">Think of each task as a real-world ticket, not just an assignment — it changes how seriously you approach it</div></div>
+  </div>
+</div>
+
+</div>
+<script>
+function go(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  el.classList.add('on');
+}
+</script>

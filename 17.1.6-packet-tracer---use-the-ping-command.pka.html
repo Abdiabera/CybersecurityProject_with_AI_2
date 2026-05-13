@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 15 — Transport Layer | Per Scholas Greater Boston</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Source+Sans+3:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0B1F3A;--navy-mid:#163357;--blue:#1B5EA6;--blue-light:#2E7DD1;--blue-pale:#E8F2FB;
+  --gold:#C9932A;--gold-light:#F5EDD8;--green:#1A7A4A;--green-light:#E4F4EC;
+  --red:#B53030;--red-light:#FBEAEA;--orange:#C25A0A;--orange-light:#FDF0E6;
+  --purple:#5B21B6;--purple-light:#EDE9FE;--cyan:#0E7490;--cyan-light:#E0F7FA;
+  --gray-100:#F7F8FA;--gray-200:#EDEEF2;--gray-300:#D4D7DF;--gray-500:#7A8090;
+  --gray-700:#454B5A;--gray-900:#1E2330;--white:#FFFFFF;
+  --font-head:'Merriweather',Georgia,serif;--font-body:'Source Sans 3',sans-serif;--font-mono:'Source Code Pro',monospace;
+  --radius:10px;--radius-lg:16px;--shadow:0 2px 12px rgba(11,31,58,0.08);--shadow-md:0 4px 24px rgba(11,31,58,0.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);font-size:17px;line-height:1.75;color:var(--gray-900);background:var(--gray-100)}
+
+.site-header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,0,0,0.25)}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:66px}
+.header-brand{display:flex;flex-direction:column;gap:2px}
+.header-brand .school{font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);line-height:1.2}
+.header-brand .course{font-family:var(--font-head);font-size:14px;font-weight:700;color:#fff;line-height:1.2}
+.header-instructors{font-size:13px;color:rgba(255,255,255,0.65);text-align:right;line-height:1.6}
+.header-instructors strong{color:rgba(255,255,255,0.9);font-weight:600}
+
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 60%,#1B4A8A 100%);color:#fff;padding:4rem 2rem 3rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;border:1px solid rgba(255,255,255,0.06);pointer-events:none}
+.hero-badge{display:inline-block;background:rgba(201,147,42,0.2);border:1px solid rgba(201,147,42,0.4);color:var(--gold);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:6px 18px;border-radius:30px;margin-bottom:1.25rem}
+.hero h1{font-family:var(--font-head);font-size:clamp(1.8rem,4vw,2.75rem);font-weight:900;line-height:1.25;margin-bottom:0.75rem}
+.hero p{font-size:17px;color:rgba(255,255,255,0.75);max-width:580px;margin:0 auto;line-height:1.65}
+
+.main{max-width:1200px;margin:0 auto;padding:3rem 2rem 6rem}
+
+.mod-header{border-radius:var(--radius-lg);padding:2.25rem 2.5rem;margin-bottom:2.5rem;color:#fff;position:relative;overflow:hidden;background:linear-gradient(135deg,#064E3B,#1A7A4A)}
+.mod-header::after{content:'';position:absolute;bottom:-40px;right:-40px;width:200px;height:200px;border-radius:50%;border:1px solid rgba(255,255,255,0.08)}
+.mod-header .tag{font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:0.4rem}
+.mod-header h2{font-family:var(--font-head);font-size:1.9rem;font-weight:900;margin-bottom:0.6rem}
+.mod-header p{font-size:16px;color:rgba(255,255,255,0.75);max-width:720px;line-height:1.65}
+
+.sec-title{font-family:var(--font-head);font-size:1.2rem;font-weight:700;color:var(--navy);margin:2.5rem 0 1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--gray-200);display:flex;align-items:center;gap:8px}
+.sec-title .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.5rem}
+
+.card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:1.75rem;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.card.accent-cyan::before{background:var(--cyan)}
+.card.accent-green::before{background:var(--green)}
+.card.accent-blue::before{background:var(--blue)}
+.card.accent-gold::before{background:var(--gold)}
+.card.accent-red::before{background:var(--red)}
+.card.accent-orange::before{background:var(--orange)}
+.card.accent-purple::before{background:var(--purple)}
+.card-title{font-family:var(--font-head);font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:0.75rem}
+.card p{font-size:15px;color:var(--gray-700);margin-bottom:0.6rem;line-height:1.7}
+.card p:last-child{margin-bottom:0}
+.card ul{margin:0.5rem 0 0 1.25rem;color:var(--gray-700);font-size:15px}
+.card li{margin-bottom:0.35rem;line-height:1.65}
+.card strong{color:var(--gray-900);font-weight:600}
+code{font-family:var(--font-mono);font-size:14px;background:var(--gray-100);border:1px solid var(--gray-300);padding:2px 7px;border-radius:4px;color:var(--navy)}
+
+.callout{border-radius:var(--radius);padding:1.1rem 1.4rem;margin:1.25rem 0;font-size:15px;line-height:1.65;border-left:4px solid}
+.callout.info{background:var(--blue-pale);border-color:var(--blue);color:var(--navy)}
+.callout.warning{background:var(--gold-light);border-color:var(--gold);color:#5A3D00}
+.callout.success{background:var(--green-light);border-color:var(--green);color:#0D3D22}
+.callout.danger{background:var(--red-light);border-color:var(--red);color:#5A1010}
+.callout strong{font-weight:700}
+
+.tbl{width:100%;border-collapse:collapse;font-size:15px;margin:1.25rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.tbl thead tr{background:var(--navy)}
+.tbl th{padding:12px 16px;text-align:left;font-size:12px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:rgba(255,255,255,0.85)}
+.tbl td{padding:12px 16px;border-bottom:1px solid var(--gray-200);font-size:14px;color:var(--gray-700)}
+.tbl td:first-child{color:var(--gray-900);font-weight:600}
+.tbl tbody tr:nth-child(even) td{background:var(--gray-100)}
+.tbl tbody tr:hover td{background:var(--blue-pale)}
+.tbl tbody tr:last-child td{border-bottom:none}
+
+.steps{display:flex;flex-direction:column;gap:10px;margin:1.25rem 0}
+.step{display:flex;gap:1.25rem;align-items:flex-start;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:1.1rem 1.25rem;box-shadow:var(--shadow)}
+.step-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:15px;font-weight:700;flex-shrink:0;color:#fff}
+.step-body h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.step-body p{font-size:14px;color:var(--gray-700);margin:0;line-height:1.65}
+
+.analogy{background:linear-gradient(135deg,var(--blue-pale),rgba(232,242,251,0.4));border:1px solid var(--gray-300);border-radius:var(--radius);padding:1.25rem 1.5rem;margin:1.5rem 0}
+.analogy-lbl{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue);margin-bottom:6px}
+.analogy-txt{font-size:16px;color:var(--gray-900);font-style:italic;line-height:1.7}
+
+.formula{background:var(--navy);color:#fff;border-radius:var(--radius);padding:1.5rem 2rem;text-align:center;margin:1.25rem 0}
+.formula .f-main{font-family:var(--font-mono);font-size:18px;font-weight:600;color:#7EC8E3;margin-bottom:6px}
+.formula .f-note{font-size:14px;color:rgba(255,255,255,0.6)}
+
+.port-table{width:100%;border-collapse:collapse;font-size:14px;margin:1.25rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.port-table thead tr{background:var(--navy)}
+.port-table th{padding:12px 16px;text-align:left;font-size:12px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:rgba(255,255,255,0.85)}
+.port-table td{padding:11px 16px;border-bottom:1px solid var(--gray-200);font-size:14px}
+.port-table td:first-child{font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--navy);background:var(--gray-100);width:80px}
+.port-table td:nth-child(2){color:var(--blue);font-weight:600;width:80px}
+.port-table td:nth-child(3){color:var(--gray-900);font-weight:600;width:160px}
+.port-table td:nth-child(4){color:var(--gray-700)}
+.port-table tbody tr:hover td{background:var(--blue-pale)}
+.port-table tbody tr:last-child td{border-bottom:none}
+
+.quiz-section{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:2.25rem;margin-top:3rem;box-shadow:var(--shadow-md)}
+.quiz-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.quiz-head h3{font-family:var(--font-head);font-size:1.4rem;font-weight:700;color:var(--navy)}
+.score-badge{background:var(--gray-100);border:1.5px solid var(--gray-300);border-radius:20px;padding:6px 18px;font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--navy)}
+.q-card{background:var(--gray-100);border:1px solid var(--gray-200);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.25rem}
+.q-num{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-500);margin-bottom:0.5rem}
+.q-text{font-size:16px;font-weight:600;color:var(--navy);margin-bottom:1.1rem;line-height:1.5}
+.q-opts{display:grid;gap:8px}
+.q-opt{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:9px;border:1.5px solid var(--gray-300);background:var(--white);cursor:pointer;transition:all 0.15s;font-size:15px;color:var(--gray-700);font-family:var(--font-body);text-align:left;width:100%}
+.q-opt:hover:not(:disabled){border-color:var(--blue);background:var(--blue-pale);color:var(--navy)}
+.q-opt .ltr{width:26px;height:26px;border-radius:50%;background:var(--gray-100);border:1.5px solid var(--gray-300);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;font-family:var(--font-head);color:var(--gray-700)}
+.q-opt.selected{border-color:var(--blue);background:var(--blue-pale)}
+.q-opt.correct{border-color:var(--green);background:var(--green-light);color:#0D3D22}
+.q-opt.correct .ltr{background:var(--green);border-color:var(--green);color:#fff}
+.q-opt.wrong{border-color:var(--red);background:var(--red-light);color:#5A1010}
+.q-opt.wrong .ltr{background:var(--red);border-color:var(--red);color:#fff}
+.q-fb{margin-top:0.75rem;padding:0.75rem 1rem;border-radius:8px;font-size:14px;display:none;line-height:1.65}
+.q-fb.show{display:block}
+.q-fb.ok{background:var(--green-light);border-left:4px solid var(--green);color:#0D3D22}
+.q-fb.bad{background:var(--red-light);border-left:4px solid var(--red);color:#5A1010}
+.btn-row{display:flex;gap:0.75rem;margin-top:1.75rem;flex-wrap:wrap}
+.btn{padding:12px 26px;border-radius:var(--radius);font-family:var(--font-head);font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all 0.2s}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--navy)}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-gold:hover{background:#A57820}
+.btn-ghost{background:var(--white);color:var(--gray-700);border:1.5px solid var(--gray-300)}
+.btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
+.final-score{background:linear-gradient(135deg,var(--gold-light),var(--blue-pale));border:1px solid var(--gray-300);border-radius:var(--radius-lg);padding:2rem;text-align:center;margin-top:1.5rem;display:none}
+.final-score.show{display:block}
+.fs-num{font-family:var(--font-head);font-size:3.5rem;font-weight:900;color:var(--gold);line-height:1}
+.fs-label{font-size:14px;color:var(--gray-500);margin-top:4px}
+.fs-msg{font-size:17px;color:var(--navy);margin-top:0.75rem;font-weight:600}
+
+.site-footer{background:var(--navy);color:rgba(255,255,255,0.55);text-align:center;padding:2.5rem 2rem;font-size:14px;line-height:1.9}
+.site-footer strong{color:rgba(255,255,255,0.85)}
+
+@media(max-width:700px){
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .header-inner{height:60px}
+  .main{padding:2rem 1rem 4rem}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <span class="school">Per Scholas Greater Boston — Cybersecurity Program</span>
+      <span class="course">Module 15 — Transport Layer Cheat Sheet</span>
+    </div>
+    <div class="header-instructors">
+      <strong>Dr. Solomon Seifu</strong> (Lead Instructor) &amp; <strong>Naly Rosario</strong><br>
+      Cohort 2026-BOS-02
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">Learner Reference Portal</div>
+  <h1>Module 15 — Transport Layer</h1>
+  <p>TCP, UDP, Port Numbers, Sockets, and the netstat Command — simplified and built for learners starting from zero.</p>
+</div>
+
+<main class="main">
+
+  <div class="mod-header">
+    <div class="tag">Module 15 of 15</div>
+    <h2>Transport Layer — TCP, UDP &amp; Port Numbers</h2>
+    <p>The Transport Layer is Layer 4 of the OSI model. It acts as the traffic manager for data — ensuring the right data gets to the right application on the right device, efficiently and reliably.</p>
+  </div>
+
+  <!-- ══ WHAT IS THE TRANSPORT LAYER ══ -->
+  <div class="sec-title"><span class="dot" style="background:var(--green)"></span>What the Transport Layer Does</div>
+  <div class="grid-3">
+    <div class="card accent-green">
+      <div class="card-title">Right Data, Right Application</div>
+      <p>An IP address gets the packet to the correct <strong>device</strong>. The Transport Layer ensures it reaches the correct <strong>application</strong> on that device — browser, email client, FTP, VoIP.</p>
+    </div>
+    <div class="card accent-green">
+      <div class="card-title">Reliable or Fast Delivery</div>
+      <p>The Transport Layer decides <strong>how</strong> data is sent. With guaranteed delivery when accuracy matters (TCP), or with speed when timing matters more (UDP).</p>
+    </div>
+    <div class="card accent-green">
+      <div class="card-title">Manages Data Flow</div>
+      <p>It ensures the receiver is not overwhelmed and the sender is not bottlenecked. Data flows <strong>smoothly between sender and receiver</strong>, even across different networks.</p>
+    </div>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-lbl">Simple Analogy</div>
+    <div class="analogy-txt">Think of it like sending multiple packages through a delivery service. Each package needs a destination address (IP address) AND a specific department to reach (port number). The Transport Layer ensures every package reaches the correct department without getting lost or mixed up.</div>
+  </div>
+
+  <!-- ══ TCP vs UDP ══ -->
+  <div class="sec-title"><span class="dot" style="background:var(--blue)"></span>TCP vs. UDP — The Core Comparison</div>
+  <div class="grid-2">
+    <div class="card accent-blue">
+      <div class="card-title">TCP — Transmission Control Protocol</div>
+      <p><strong>Reliable, ordered delivery.</strong> TCP ensures data arrives correctly, in order, and without errors.</p>
+      <ul>
+        <li>Breaks data into segments and assigns each a <strong>sequence number</strong></li>
+        <li>Receiver sends an <strong>acknowledgement</strong> for every segment received</li>
+        <li>If no acknowledgement arrives within the time limit, TCP <strong>retransmits only the missing segment</strong> — not the entire message</li>
+        <li>Reassembles segments in the correct order at the destination</li>
+        <li>Slower than UDP — reliability has a cost</li>
+      </ul>
+      <div class="callout info" style="margin-top:0.75rem"><strong>Use TCP for:</strong> Web browsing (HTTP/HTTPS), email (SMTP, IMAP, POP3), file transfers (FTP) — any application where accuracy is critical.</div>
+    </div>
+    <div class="card accent-orange">
+      <div class="card-title">UDP — User Datagram Protocol</div>
+      <p><strong>Best effort delivery — fast but no guarantees.</strong> UDP sends data without ensuring delivery, ordering, or error checking.</p>
+      <ul>
+        <li><strong>No acknowledgements</strong> — sender does not wait for confirmation</li>
+        <li><strong>No retransmission</strong> — if a packet is lost, it is gone</li>
+        <li><strong>No ordering</strong> — packets may arrive out of sequence</li>
+        <li>Significantly <strong>faster</strong> than TCP — no overhead</li>
+        <li>Packet loss is usually <strong>unnoticeable</strong> in real-time applications</li>
+      </ul>
+      <div class="callout warning" style="margin-top:0.75rem"><strong>Use UDP for:</strong> Live streaming, VoIP calls, online gaming, DNS lookups — any application where speed matters more than perfection.</div>
+    </div>
+  </div>
+
+  <table class="tbl">
+    <thead><tr><th>Feature</th><th>TCP</th><th>UDP</th></tr></thead>
+    <tbody>
+      <tr><td>Delivery guarantee</td><td>Yes — acknowledgements required</td><td>No — best effort only</td></tr>
+      <tr><td>Order of delivery</td><td>Guaranteed — sequence numbers used</td><td>Not guaranteed</td></tr>
+      <tr><td>Retransmission</td><td>Yes — missing segments are resent</td><td>No</td></tr>
+      <tr><td>Speed</td><td>Slower — overhead from reliability</td><td>Faster — no overhead</td></tr>
+      <tr><td>Use case</td><td>Web, email, file transfer</td><td>Streaming, VoIP, gaming, DNS</td></tr>
+      <tr><td>Connection type</td><td>Connection-oriented</td><td>Connectionless</td></tr>
+    </tbody>
+  </table>
+
+  <div class="analogy">
+    <div class="analogy-lbl">Simple Analogy</div>
+    <div class="analogy-txt">TCP is like certified mail — you get a receipt, the recipient signs for it, and if it gets lost the postal service sends another one. UDP is like dropping a postcard in the mailbox — fast, no confirmation, and if it gets lost nobody sends another one.</div>
+  </div>
+
+  <!-- ══ PORT NUMBERS ══ -->
+  <div class="sec-title"><span class="dot" style="background:var(--gold)"></span>Port Numbers — What They Are and Why They Matter</div>
+  <div class="grid-2">
+    <div class="card accent-gold">
+      <div class="card-title">What is a Port Number?</div>
+      <p>A port number is a <strong>numeric identifier</strong> in every TCP and UDP segment. It directs incoming data to the correct application or service on a device.</p>
+      <p>Every packet carries two port values:</p>
+      <ul>
+        <li><strong>Source port</strong> — assigned by the client OS (dynamic/ephemeral) — acts as the return address</li>
+        <li><strong>Destination port</strong> — the well-known port of the requested service on the server</li>
+      </ul>
+    </div>
+    <div class="card accent-gold">
+      <div class="card-title">The Apartment Building Analogy</div>
+      <p><strong>IP address = Building address</strong> — identifies which device (computer, phone, server) on the network.</p>
+      <p><strong>Port number = Apartment number</strong> — identifies which specific application or service on that device should receive the data.</p>
+      <div class="callout warning" style="margin-top:0.75rem">Without the port number, data arrives at the right building but nobody knows which door to deliver it to.</div>
+    </div>
+  </div>
+
+  <!-- ══ THREE PORT CATEGORIES ══ -->
+  <div class="sec-title"><span class="dot" style="background:var(--gold)"></span>Three Port Number Categories — Managed by ICANN</div>
+  <div class="grid-3">
+    <div class="card accent-blue">
+      <div class="card-title">Well-Known Ports — 1 to 1023</div>
+      <p>Used for <strong>standard common services</strong> — HTTP, HTTPS, DNS, FTP, SSH, SMTP. Strictly controlled by ICANN.</p>
+      <p>These are the port numbers every cybersecurity professional must memorize. They appear directly on the Security+ exam.</p>
+    </div>
+    <div class="card accent-purple">
+      <div class="card-title">Registered Ports — 1024 to 49151</div>
+      <p>Used for <strong>specific applications registered by organizations</strong>. Instant messaging applications and many third-party software products use ports in this range.</p>
+      <p>Officially assigned by ICANN to avoid conflicts between different software applications.</p>
+    </div>
+    <div class="card accent-green">
+      <div class="card-title">Private/Dynamic Ports — 49152 to 65535</div>
+      <p>Also called <strong>ephemeral ports</strong>. Automatically assigned by the OS as source ports for outgoing connections. Exist only for the duration of one conversation.</p>
+      <p>Released back to the pool when the connection closes.</p>
+    </div>
+  </div>
+
+  <!-- ══ WELL-KNOWN PORTS TABLE ══ -->
+  <div class="sec-title"><span class="dot" style="background:var(--red)"></span>Well-Known Port Numbers — Must Memorize for Security+</div>
+  <table class="port-table">
+    <thead><tr><th>Port</th><th>Protocol</th><th>Service</th><th>Description &amp; Key Notes</th></tr></thead>
+    <tbody>
+      <tr><td>20</td><td>TCP</td><td>FTP — Data</td><td>File Transfer Protocol — carries the actual file content being transferred</td></tr>
+      <tr><td>21</td><td>TCP</td><td>FTP — Control</td><td>File Transfer Protocol — carries commands (login, directory, file selection). FTP uses two ports — unusual design</td></tr>
+      <tr><td>22</td><td>TCP</td><td>SSH</td><td>Secure Shell — encrypted remote device access. Replaced Telnet. Unexpected outbound SSH is a security red flag</td></tr>
+      <tr><td>23</td><td>TCP</td><td>Telnet</td><td>Remote access — sends everything in PLAIN TEXT including passwords. Considered insecure. Never use on modern networks</td></tr>
+      <tr><td>25</td><td>TCP</td><td>SMTP</td><td>Simple Mail Transfer Protocol — sends email between mail servers. ISPs often block port 25 to prevent spam</td></tr>
+      <tr><td>53</td><td>UDP / TCP</td><td>DNS</td><td>Domain Name System — UDP for standard queries (fast), TCP for large responses like zone transfers</td></tr>
+      <tr><td>67</td><td>UDP</td><td>DHCP Server</td><td>DHCP server listens on this port for client Discover messages</td></tr>
+      <tr><td>68</td><td>UDP</td><td>DHCP Client</td><td>DHCP client sends requests from this port — used in the DORA process</td></tr>
+      <tr><td>69</td><td>UDP</td><td>TFTP</td><td>Trivial FTP — no authentication, no encryption. Used in closed networks for router firmware transfers</td></tr>
+      <tr><td>80</td><td>TCP</td><td>HTTP</td><td>Hypertext Transfer Protocol — unencrypted web traffic. Data travels in plain text — visible to anyone who intercepts it</td></tr>
+      <tr><td>110</td><td>TCP</td><td>POP3</td><td>Post Office Protocol v3 — downloads email from server and deletes it. Email exists only on local device after download</td></tr>
+      <tr><td>143</td><td>TCP</td><td>IMAP</td><td>Internet Message Access Protocol — keeps email on server and syncs across devices. Reading on phone shows as read on laptop</td></tr>
+      <tr><td>161</td><td>UDP</td><td>SNMP</td><td>Simple Network Management Protocol — monitors and manages routers, switches, servers remotely</td></tr>
+      <tr><td>443</td><td>TCP</td><td>HTTPS</td><td>HTTP Secure — encrypted web traffic using TLS. The padlock in your browser. Standard for all modern web communication</td></tr>
+    </tbody>
+  </table>
+  <div class="callout danger"><strong>Exam tip:</strong> Know the port number, protocol name, whether it uses TCP or UDP, and one key fact about each service. Given a port number — name the service. Given a service name — state the port and transport protocol.</div>
+
+  <!-- ══ SOCKETS ══ -->
+  <div class="sec-title"><span class="dot" style="background:var(--cyan)"></span>Sockets and Socket Pairs</div>
+  <div class="grid-2">
+    <div class="card accent-cyan">
+      <div class="card-title">What is a Socket?</div>
+      <p>A socket is the unique combination of an <strong>IP address and a port number</strong>.</p>
+      <p>Example: <code>192.168.1.5:52847</code></p>
+      <ul>
+        <li>IP address: 192.168.1.5</li>
+        <li>Port number: 52847</li>
+      </ul>
+      <p style="margin-top:0.6rem">A socket uniquely identifies <strong>one endpoint</strong> of a network connection.</p>
+    </div>
+    <div class="card accent-cyan">
+      <div class="card-title">What is a Socket Pair?</div>
+      <p>A socket pair is the combination of the <strong>client socket and the server socket</strong> — four values together that uniquely identify one complete network conversation.</p>
+      <ul>
+        <li><strong>Client socket:</strong> <code>192.168.1.5:52847</code></li>
+        <li><strong>Server socket:</strong> <code>192.168.1.7:80</code></li>
+      </ul>
+      <p style="margin-top:0.6rem">No two simultaneous connections on the internet can have the same socket pair.</p>
+    </div>
+  </div>
+
+  <div class="card accent-gold" style="margin-bottom:1.5rem">
+    <div class="card-title">Why Socket Pairs Keep Conversations Separate</div>
+    <p>A PC with one IP address can maintain dozens of simultaneous connections to the same server — each conversation gets a different dynamic source port, creating a unique socket pair for each one.</p>
+    <ul>
+      <li>FTP connection: <code>192.168.1.5:1305</code> → <code>192.168.1.7:21</code></li>
+      <li>Web connection: <code>192.168.1.5:1099</code> → <code>192.168.1.7:80</code></li>
+      <li>Second web tab: <code>192.168.1.5:2203</code> → <code>192.168.1.7:80</code></li>
+    </ul>
+    <p style="margin-top:0.6rem">Same IP address — different source ports — completely separate conversations. The OS uses the socket pair to match every incoming response to the correct application.</p>
+  </div>
+
+  <div class="formula">
+    <div class="f-main">IP Address + Port Number = Socket</div>
+    <div class="f-note" style="margin-top:8px">Client Socket + Server Socket = Socket Pair → uniquely identifies one complete network connection</div>
+  </div>
+
+  <!-- ══ NETSTAT ══ -->
+  <div class="sec-title"><span class="dot" style="background:var(--red)"></span>The netstat Command</div>
+  <div class="grid-2">
+    <div class="card accent-red">
+      <div class="card-title">What netstat Does</div>
+      <p>netstat stands for <strong>Network Statistics</strong>. It is a command-line tool that displays all active TCP connections and their status on a device.</p>
+      <p>It shows:</p>
+      <ul>
+        <li><strong>Proto</strong> — TCP or UDP</li>
+        <li><strong>Local Address</strong> — device IP and source port</li>
+        <li><strong>Foreign Address</strong> — remote IP and destination port</li>
+        <li><strong>State</strong> — ESTABLISHED, LISTENING, TIME_WAIT</li>
+      </ul>
+    </div>
+    <div class="card accent-red">
+      <div class="card-title">netstat -n — The Security Professional's Version</div>
+      <p>By default, netstat resolves IP addresses to domain names and port numbers to service names — which takes time and can be misleading if DNS is compromised.</p>
+      <p>The <code>-n</code> flag skips DNS resolution:</p>
+      <ul>
+        <li>Shows <strong>raw IP addresses</strong> instead of domain names</li>
+        <li>Shows <strong>numeric port numbers</strong> instead of service names</li>
+        <li><strong>Faster output</strong> — no DNS lookup delay</li>
+        <li><strong>Tamper-resistant</strong> — bypasses poisoned DNS records</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card accent-red" style="margin-bottom:1.5rem">
+    <div class="card-title">Why netstat Matters for Cybersecurity</div>
+    <p>Unexplained TCP connections indicate a potential security threat. Unauthorized access may occur if unknown entities establish connections to the local host.</p>
+    <ul>
+      <li>Every connection on a device should have a <strong>known and expected reason</strong> for existing</li>
+      <li>Malware almost always establishes a network connection — either to receive commands or send stolen data</li>
+      <li>An unexpected connection to an unfamiliar IP on an unusual port is a <strong>strong indicator of compromise</strong></li>
+      <li>Common malware port: <strong>4444</strong> — a device with an active connection on port 4444 to an unknown IP needs immediate investigation</li>
+      <li>In incident response, <code>netstat -n</code> is one of the <strong>first commands</strong> a security analyst runs on a suspected compromised device</li>
+    </ul>
+  </div>
+
+  <div class="callout info"><strong>Connection States:</strong> ESTABLISHED = data actively flowing. LISTENING = service waiting for incoming connections. TIME_WAIT = connection in the process of closing cleanly.</div>
+
+  <!-- ══ HOW IT ALL CONNECTS ══ -->
+  <div class="sec-title"><span class="dot" style="background:var(--navy)"></span>How Everything Works Together — One Complete Picture</div>
+  <div class="steps">
+    <div class="step"><div class="step-num" style="background:var(--gold)">1</div><div class="step-body"><h4>Application Layer — Request Generated</h4><p>You type https://example.com. The browser generates an HTTP request and the Application Layer assigns destination port 443 (HTTPS).</p></div></div>
+    <div class="step"><div class="step-num" style="background:var(--green)">2</div><div class="step-body"><h4>Transport Layer — TCP or UDP Selected</h4><p>Transport Layer selects TCP (reliable delivery for web traffic). A dynamic source port (e.g. 52,847) is assigned. The segment now has source port 52,847 and destination port 443.</p></div></div>
+    <div class="step"><div class="step-num" style="background:var(--blue)">3</div><div class="step-body"><h4>Internet Layer — IP Addresses Added</h4><p>Source IP (your device) and destination IP (the web server) are added. The packet is ready to be routed across the internet.</p></div></div>
+    <div class="step"><div class="step-num" style="background:var(--cyan)">4</div><div class="step-body"><h4>Network Access Layer — Frame Built and Sent</h4><p>MAC addresses are added for local delivery. The frame travels through switches and routers hop by hop — MAC addresses rebuild at each hop, IP and port stay the same throughout.</p></div></div>
+    <div class="step"><div class="step-num" style="background:var(--purple)">5</div><div class="step-body"><h4>Server Receives — Port Directs to Correct Service</h4><p>Server receives the packet, checks destination port 443, hands it to the HTTPS web server application. Response comes back to your source port 52,847 — your browser receives it, not your email client.</p></div></div>
+  </div>
+
+  <!-- ══ QUIZ ══ -->
+  <div class="quiz-section">
+    <div class="quiz-head"><h3>Module 15 — Practice Quiz</h3><span class="score-badge" id="score15">0 / 8</span></div>
+    <div id="quiz15"></div>
+    <div class="btn-row">
+      <button class="btn btn-gold" onclick="checkQuiz()">Check Answers</button>
+      <button class="btn btn-ghost" onclick="resetQuiz()">Reset</button>
+    </div>
+    <div class="final-score" id="fs15"></div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div><strong>Dr. Solomon Seifu</strong> (Lead Instructor) &amp; <strong>Naly Rosario</strong> &nbsp;|&nbsp; Per Scholas Greater Boston — Cybersecurity Program &nbsp;|&nbsp; Cohort 2026-BOS-02</div>
+  <div style="margin-top:4px">Module 15 — Transport Layer Cheat Sheet Portal</div>
+  <div style="margin-top:4px;font-size:13px;opacity:0.6">CompTIA Security+ &nbsp;|&nbsp; Cisco Networking Basics Curriculum</div>
+</footer>
+
+<script>
+function shuffle(arr){return [...arr].sort(()=>Math.random()-0.5)}
+
+const questions = [
+  {q:"Which protocol provides reliable, ordered delivery with acknowledgements and retransmission?", opts:["UDP — User Datagram Protocol","TCP — Transmission Control Protocol","ICMP — Internet Control Message Protocol","ARP — Address Resolution Protocol"], ans:1, exp:"TCP provides reliable ordered delivery. It acknowledges every segment, retransmits missing segments, and reassembles data in the correct order. UDP provides best-effort delivery with no guarantees."},
+  {q:"Which protocol is best suited for live video streaming and VoIP calls?", opts:["TCP — because it guarantees delivery","UDP — because speed matters more than perfect accuracy","HTTPS — because it is encrypted","FTP — because it transfers data efficiently"], ans:1, exp:"UDP is preferred for real-time applications like streaming and VoIP. A slightly degraded frame is acceptable, but freezing while TCP retransmits a lost packet would make the experience unusable."},
+  {q:"What port number does HTTPS use?", opts:["Port 80","Port 22","Port 443","Port 25"], ans:2, exp:"HTTPS uses port 443. It is HTTP wrapped in TLS encryption. Port 80 is unencrypted HTTP. The padlock in your browser means an active connection on port 443."},
+  {q:"What is a socket in networking?", opts:["A physical network connector","The combination of an IP address and a port number","A type of firewall rule","The MAC address of a network device"], ans:1, exp:"A socket is the unique combination of an IP address and a port number — for example 192.168.1.5:52847. A socket uniquely identifies one endpoint of a network connection."},
+  {q:"Which port does DNS use and which transport protocol does it primarily use for standard queries?", opts:["Port 53, TCP","Port 53, UDP","Port 67, UDP","Port 25, TCP"], ans:1, exp:"DNS uses port 53. It primarily uses UDP for standard queries because they are small and speed matters. TCP is used when responses are too large for a single UDP packet, such as zone transfers."},
+  {q:"What is the purpose of the netstat -n command?", opts:["It shows only UDP connections","It displays raw IP addresses and numeric port numbers, skipping DNS resolution for faster and more reliable output","It blocks suspicious connections automatically","It restarts the network adapter"], ans:1, exp:"netstat -n displays IP addresses in numerical format and port numbers as numbers — skipping DNS lookups. This makes output faster and bypasses potentially misleading or poisoned DNS records."},
+  {q:"What is the dynamic/private port range used by operating systems for source ports?", opts:["1 to 1023","1024 to 49151","49152 to 65535","80 to 443"], ans:2, exp:"The dynamic (private/ephemeral) port range is 49152 to 65535. The OS automatically assigns ports from this range as source ports for outgoing connections. They are released when the connection closes."},
+  {q:"SSH uses port 22. What is its main advantage over Telnet on port 23?", opts:["SSH is faster than Telnet","SSH encrypts all traffic including usernames and passwords — Telnet sends everything in plain text","SSH supports more file types than Telnet","SSH works without an IP address"], ans:1, exp:"SSH provides encrypted remote access — all data including credentials is protected. Telnet sends everything in plain text, making it completely insecure on modern networks. SSH replaced Telnet entirely for secure remote administration."}
+];
+
+const sel = {};
+
+function buildQuiz() {
+  const c = document.getElementById('quiz15');
+  if (!c || c.dataset.built) return;
+  let html = '';
+  questions.forEach((q, i) => {
+    const sh = shuffle(q.opts.map((o, j) => ({text: o, orig: j})));
+    const na = sh.findIndex(o => o.orig === q.ans);
+    q._s = sh; q._na = na;
+    html += `<div class="q-card" id="qi${i}">
+      <div class="q-num">Question ${i+1} of ${questions.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-opts">
+        ${sh.map((o,j) => `<button class="q-opt" id="qo${i}_${j}" onclick="pick(${i},${j})"><span class="ltr">${String.fromCharCode(65+j)}</span>${o.text}</button>`).join('')}
+      </div>
+      <div class="q-fb" id="qfb${i}"></div>
+    </div>`;
+  });
+  c.innerHTML = html;
+  c.dataset.built = '1';
+}
+
+function pick(qi, oi) {
+  sel[qi] = oi;
+  for (let j = 0; j < questions[qi].opts.length; j++) {
+    document.getElementById(`qo${qi}_${j}`).classList.toggle('selected', j === oi);
+  }
+}
+
+function checkQuiz() {
+  let score = 0;
+  questions.forEach((q, i) => {
+    const fb = document.getElementById(`qfb${i}`);
+    const s = sel[i];
+    if (s === undefined) { fb.textContent = 'Please select an answer.'; fb.className = 'q-fb show bad'; return; }
+    const ok = s === q._na;
+    if (ok) score++;
+    for (let j = 0; j < q.opts.length; j++) {
+      const btn = document.getElementById(`qo${i}_${j}`);
+      btn.classList.remove('selected','correct','wrong');
+      btn.disabled = true;
+      if (j === q._na) btn.classList.add('correct');
+      else if (j === s && !ok) btn.classList.add('wrong');
+    }
+    fb.textContent = (ok ? '✓ Correct! ' : '✗ Incorrect. ') + q.exp;
+    fb.className = 'q-fb show ' + (ok ? 'ok' : 'bad');
+  });
+  document.getElementById('score15').textContent = score + ' / ' + questions.length;
+  const fs = document.getElementById('fs15');
+  const pct = Math.round(score / questions.length * 100);
+  const msgs = ['Keep reviewing — revisit the content above.','Keep reviewing — focus on questions you missed.','Good effort — review the incorrect answers.','Good work — almost there!','Excellent performance!','Perfect score — outstanding!','Perfect score — outstanding!','Perfect score — outstanding!','Perfect score — outstanding!'];
+  fs.innerHTML = `<div class="fs-num">${score}/${questions.length}</div><div class="fs-label">Score — ${pct}%</div><div class="fs-msg">${msgs[score]}</div>`;
+  fs.classList.add('show');
+}
+
+function resetQuiz() {
+  const c = document.getElementById('quiz15');
+  c.dataset.built = '';
+  c.innerHTML = '';
+  Object.keys(sel).forEach(k => delete sel[k]);
+  document.getElementById('score15').textContent = '0 / 8';
+  document.getElementById('fs15').classList.remove('show');
+  buildQuiz();
+}
+
+window.addEventListener('load', buildQuiz);
+</script>
+</body>
+</html>

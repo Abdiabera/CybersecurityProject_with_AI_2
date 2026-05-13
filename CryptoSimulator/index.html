@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CryptoLab — Cryptography Simulator | Per Scholas</title>
+  <meta name="description" content="Interactive cryptography simulator for CompTIA Security+ learners — Per Scholas cohort 2026-BOS-02. Works offline — no installation required." />
+
+  <!--
+    ════════════════════════════════════════════════════════
+    CryptoLab — Standalone HTML Portal
+    ────────────────────────────────────────────────────────
+    HOW TO USE:
+      1. Download this folder (cryptolab/)
+      2. Double-click index.html
+      3. Works immediately — no Node.js, no npm, no server!
+
+    OFFLINE NOTE:
+      Fonts (Outfit, DM Sans, Fira Code) load from Google Fonts
+      on first use and are then cached by the browser.
+      The portal is fully functional offline with system font fallbacks.
+    ════════════════════════════════════════════════════════
+  -->
+
+  <!-- Google Fonts (cached after first load; system fonts used offline) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ══ TOP ANNOUNCEMENT BANNER ══════════════════════════ -->
+  <div class="top-banner" role="banner">
+    🔐&nbsp; CRYPTOGRAPHY SIMULATOR &nbsp;·&nbsp; NETWORK DEFENSE MOD 125 &nbsp;·&nbsp;
+    COHORT 2026-BOS-02 &nbsp;·&nbsp; PER SCHOLAS GREATER BOSTON &nbsp;🔐
+  </div>
+
+  <!-- ══ APPLICATION HEADER ════════════════════════════════ -->
+  <header class="app-header" role="navigation">
+    <div class="header-inner">
+
+      <!-- Logo -->
+      <div class="logo" id="logoBtn" role="button" tabindex="0" aria-label="Go to home">
+        Crypto<span class="logo-accent">Lab</span>
+      </div>
+
+      <!-- Module navigation tabs (populated by JS) -->
+      <nav class="nav-tabs" id="navTabs" aria-label="Learning modules"></nav>
+
+      <!-- XP and Level display -->
+      <div class="header-stats" aria-label="Your progress">
+        <div class="stat-block">
+          <div class="stat-val" id="headerXP">0</div>
+          <div class="stat-lbl">XP</div>
+        </div>
+        <div class="level-pill" id="headerLevel">Lv. 1</div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ══ MAIN CONTENT AREA ══════════════════════════════════ -->
+  <main class="main-content" id="mainContent">
+    <div id="moduleContainer" class="module-container" role="main"></div>
+  </main>
+
+  <!-- ══ TOAST NOTIFICATION ════════════════════════════════ -->
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ══ APPLICATION SCRIPT ════════════════════════════════ -->
+  <script src="script.js"></script>
+
+</body>
+</html>

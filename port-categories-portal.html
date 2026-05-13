@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Port Number Categories — Per Scholas Cybersecurity</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-mid: #112240;
+    --navy-light: #1a3057;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --gold-pale: #f5e6b8;
+    --white: #f8f9fa;
+    --gray: #8899aa;
+    --success: #2ecc71;
+    --danger: #e74c3c;
+    --text: #dce8f5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background-color: var(--navy);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-light) 100%);
+    border-bottom: 3px solid var(--gold);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header-left .label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .header-left h1 {
+    font-family: 'Merriweather', serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--white);
+  }
+  .header-left h1 span { color: var(--gold); }
+  .badge {
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 40px;
+    background: var(--navy-mid);
+    border-bottom: 2px solid var(--navy-light);
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--gray);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 16px 28px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .tab-btn:hover { color: var(--gold-light); }
+  .tab-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* MAIN CONTENT */
+  .content { padding: 40px; max-width: 1100px; margin: 0 auto; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ─── CHEAT SHEET ─── */
+  .section-intro {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .section-intro h2 {
+    font-family: 'Merriweather', serif;
+    font-size: 22px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .section-intro p {
+    color: var(--gray);
+    font-size: 15px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .range-banner {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .range-card {
+    border-radius: 10px;
+    padding: 24px 20px;
+    text-align: center;
+    border: 2px solid;
+    position: relative;
+    overflow: hidden;
+  }
+  .range-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .range-card.well-known { border-color: #c9a84c; background: rgba(201,168,76,0.07); }
+  .range-card.well-known::before { background: var(--gold); }
+  .range-card.registered { border-color: #4a90d9; background: rgba(74,144,217,0.07); }
+  .range-card.registered::before { background: #4a90d9; }
+  .range-card.dynamic { border-color: #2ecc71; background: rgba(46,204,113,0.07); }
+  .range-card.dynamic::before { background: var(--success); }
+
+  .range-icon { font-size: 32px; margin-bottom: 10px; }
+  .range-name {
+    font-family: 'Merriweather', serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .range-card.well-known .range-name { color: var(--gold); }
+  .range-card.registered .range-name { color: #4a90d9; }
+  .range-card.dynamic .range-name { color: var(--success); }
+  .range-number {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    font-family: 'Merriweather', serif;
+    margin-bottom: 8px;
+  }
+  .range-tagline {
+    font-size: 12px;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+  .range-analogy {
+    margin-top: 12px;
+    font-size: 12px;
+    font-style: italic;
+    color: var(--gray);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 10px;
+  }
+
+  /* PORT TABLE */
+  .port-section { margin-bottom: 36px; }
+  .port-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .port-section-header .dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .well-known-dot { background: var(--gold); }
+  .registered-dot { background: #4a90d9; }
+  .dynamic-dot { background: var(--success); }
+  .port-section-header h3 {
+    font-family: 'Merriweather', serif;
+    font-size: 16px;
+    color: var(--white);
+  }
+  .port-section-header .range-tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .well-known-tag { background: rgba(201,168,76,0.2); color: var(--gold); }
+  .registered-tag { background: rgba(74,144,217,0.2); color: #4a90d9; }
+  .dynamic-tag { background: rgba(46,204,113,0.2); color: var(--success); }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--navy-light); }
+  thead th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 700;
+  }
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: rgba(255,255,255,0.04); }
+  tbody td { padding: 11px 16px; font-size: 14px; color: var(--text); }
+  .port-num {
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .well-known-num { color: var(--gold); }
+  .registered-num { color: #4a90d9; }
+  .dynamic-num { color: var(--success); }
+  .proto-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .tcp-badge { background: rgba(74,144,217,0.2); color: #4a90d9; }
+  .udp-badge { background: rgba(46,204,113,0.15); color: #2ecc71; }
+  .both-badge { background: rgba(201,168,76,0.15); color: var(--gold); }
+
+  /* KEY FACTS */
+  .key-facts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 36px;
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-light);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .key-fact { text-align: center; }
+  .key-fact .kf-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 6px;
+  }
+  .key-fact .kf-value {
+    font-family: 'Merriweather', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .key-fact .kf-sub {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+
+  /* ─── QUIZ ─── */
+  .quiz-header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .quiz-header h2 {
+    font-family: 'Merriweather', serif;
+    font-size: 22px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .quiz-header p { color: var(--gray); font-size: 15px; }
+
+  .quiz-progress-bar-wrap {
+    background: var(--navy-light);
+    border-radius: 8px;
+    height: 6px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+  .quiz-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 8px;
+    transition: width 0.4s ease;
+  }
+
+  .question-card {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-light);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 20px;
+  }
+  .q-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .q-counter {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .q-category {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(201,168,76,0.15);
+    color: var(--gold);
+    letter-spacing: 0.5px;
+  }
+  .question-text {
+    font-family: 'Merriweather', serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--white);
+    margin-bottom: 24px;
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn {
+    background: var(--navy-light);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 14px 18px;
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.1);
+    color: var(--white);
+  }
+  .option-btn.correct {
+    border-color: var(--success);
+    background: rgba(46,204,113,0.12);
+    color: #2ecc71;
+  }
+  .option-btn.wrong {
+    border-color: var(--danger);
+    background: rgba(231,76,60,0.12);
+    color: #e74c3c;
+  }
+  .option-letter {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    color: var(--gold);
+  }
+  .option-btn.correct .option-letter { background: rgba(46,204,113,0.3); color: #2ecc71; }
+  .option-btn.wrong .option-letter { background: rgba(231,76,60,0.3); color: #e74c3c; }
+
+  .feedback {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: rgba(46,204,113,0.1); border-left: 4px solid var(--success); color: #7defa8; }
+  .feedback.wrong-fb { background: rgba(231,76,60,0.1); border-left: 4px solid var(--danger); color: #f5a5a0; }
+
+  .quiz-nav {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  .nav-btn {
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: background 0.2s;
+    display: none;
+  }
+  .nav-btn:hover { background: var(--gold-light); }
+  .nav-btn.show { display: block; }
+
+  /* RESULTS */
+  .results-card {
+    background: var(--navy-mid);
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 48px 40px;
+    text-align: center;
+    display: none;
+  }
+  .results-card.show { display: block; }
+  .results-icon { font-size: 60px; margin-bottom: 16px; }
+  .results-title {
+    font-family: 'Merriweather', serif;
+    font-size: 26px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .results-score {
+    font-size: 56px;
+    font-family: 'Merriweather', serif;
+    font-weight: 900;
+    color: var(--white);
+    margin: 16px 0;
+  }
+  .results-score span { color: var(--gold); font-size: 32px; }
+  .results-msg { color: var(--gray); font-size: 16px; margin-bottom: 32px; }
+  .results-breakdown {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .rb-card {
+    background: var(--navy-light);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .rb-card .rb-num {
+    font-family: 'Merriweather', serif;
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .rb-card .rb-label { font-size: 12px; color: var(--gray); margin-top: 4px; }
+  .correct-color { color: var(--success); }
+  .wrong-color { color: var(--danger); }
+  .skip-color { color: var(--gray); }
+  .restart-btn {
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    border-radius: 8px;
+    padding: 14px 36px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  .restart-btn:hover { background: var(--gold-light); }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--gray);
+    font-size: 12px;
+    border-top: 1px solid var(--navy-light);
+    margin-top: 40px;
+  }
+  footer span { color: var(--gold); }
+
+  @media (max-width: 700px) {
+    .range-banner { grid-template-columns: 1fr; }
+    .key-facts { grid-template-columns: 1fr; }
+    .results-breakdown { grid-template-columns: 1fr; }
+    .content { padding: 20px; }
+    .tabs { padding: 0 20px; overflow-x: auto; }
+    header { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="label">Per Scholas · Cybersecurity 2026-BOS-02</div>
+    <h1>Port Number <span>Categories</span></h1>
+  </div>
+  <div class="badge">CompTIA SY0-701</div>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" onclick="switchTab('cheatsheet', this)">📋 Cheat Sheet</button>
+  <button class="tab-btn" onclick="switchTab('quiz', this)">🧠 Quiz</button>
+</nav>
+
+<div class="content">
+
+  <!-- ══════════ CHEAT SHEET ══════════ -->
+  <div id="cheatsheet" class="tab-panel active">
+
+    <div class="section-intro">
+      <h2>The Three Port Categories</h2>
+      <p>Port numbers are divided into three official ranges by IANA — the Internet Assigned Numbers Authority.</p>
+    </div>
+
+    <!-- Range Cards -->
+    <div class="range-banner">
+      <div class="range-card well-known">
+        <div class="range-icon">🔒</div>
+        <div class="range-name">Well-Known Ports</div>
+        <div class="range-number">0 – 1,023</div>
+        <div class="range-tagline">Reserved for major, globally recognized protocols. Standardized worldwide.</div>
+        <div class="range-analogy">Like emergency numbers — 911, 311. Everyone knows them. They never change.</div>
+      </div>
+      <div class="range-card registered">
+        <div class="range-icon">📋</div>
+        <div class="range-name">Registered Ports</div>
+        <div class="range-number">1,024 – 49,151</div>
+        <div class="range-tagline">Assigned to specific applications and companies by IANA on request.</div>
+        <div class="range-analogy">Like business phone extensions — officially documented so no two companies share the same one.</div>
+      </div>
+      <div class="range-card dynamic">
+        <div class="range-icon">🔓</div>
+        <div class="range-name">Dynamic / Ephemeral</div>
+        <div class="range-number">49,152 – 65,535</div>
+        <div class="range-tagline">Temporary ports assigned automatically by the OS for client-side sessions.</div>
+        <div class="range-analogy">Like visitor badges — assigned when you arrive, returned when the session ends.</div>
+      </div>
+    </div>
+
+    <!-- Well-Known Ports Table -->
+    <div class="port-section">
+      <div class="port-section-header">
+        <div class="dot well-known-dot"></div>
+        <h3>Well-Known Ports</h3>
+        <span class="range-tag well-known-tag">0 – 1023</span>
+      </div>
+      <table>
+        <thead><tr><th>Port</th><th>Protocol</th><th>Service</th><th>Used For</th></tr></thead>
+        <tbody>
+          <tr><td class="port-num well-known-num">20, 21</td><td><span class="proto-badge tcp-badge">TCP</span></td><td>FTP</td><td>File Transfer Protocol — moving files between systems</td></tr>
+          <tr><td class="port-num well-known-num">22</td><td><span class="proto-badge tcp-badge">TCP</span></td><td>SSH</td><td>Secure Shell — encrypted remote access</td></tr>
+          <tr><td class="port-num well-known-num">23</td><td><span class="proto-badge tcp-badge">TCP</span></td><td>Telnet</td><td>Unencrypted remote access (legacy/insecure)</td></tr>
+          <tr><td class="port-num well-known-num">25</td><td><span class="proto-badge tcp-badge">TCP</span></td><td>SMTP</td><td>Sending emails between mail servers</td></tr>
+          <tr><td class="port-num well-known-num">53</td><td><span class="proto-badge both-badge">TCP/UDP</span></td><td>DNS</td><td>Domain Name System — resolves names to IPs</td></tr>
+          <tr><td class="port-num well-known-num">67, 68</td><td><span class="proto-badge udp-badge">UDP</span></td><td>DHCP</td><td>Dynamic Host Configuration — assigns IP addresses</td></tr>
+          <tr><td class="port-num well-known-num">80</td><td><span class="proto-badge tcp-badge">TCP</span></td><td>HTTP</td><td>Unencrypted web browsing</td></tr>
+          <tr><td class="port-num well-known-num">110</td><td><span class="proto-badge tcp-badge">TCP</span></td><td>POP3</td><td>Receiving and downloading emails</td></tr>
+          <tr><td class="port-num well-known-num">143</td><td><span class="proto-badge tcp-badge">TCP</span></td><td>IMAP</td><td>Managing emails on the server</td></tr>
+          <tr><td class="port-num well-known-num">443</td><td><span class="proto-badge tcp-badge">TCP</span></td><td>HTTPS</td><td>Encrypted secure web browsing</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Registered Ports Table -->
+    <div class="port-section">
+      <div class="port-section-header">
+        <div class="dot registered-dot"></div>
+        <h3>Registered Ports</h3>
+        <span class="range-tag registered-tag">1,024 – 49,151</span>
+      </div>
+      <table>
+        <thead><tr><th>Port</th><th>Protocol</th><th>Service</th><th>Used For</th></tr></thead>
+        <tbody>
+          <tr><td class="port-num registered-num">1433</td><td><span class="proto-badge tcp-badge">TCP</span></td><td>MS SQL Server</td><td>Microsoft SQL database communication</td></tr>
+          <tr><td class="port-num registered-num">3306</td><td><span class="proto-badge tcp-badge">TCP</span></td><td>MySQL</td><td>MySQL database communication</td></tr>
+          <tr><td class="port-num registered-num">3389</td><td><span class="proto-badge tcp-badge">TCP</span></td><td>RDP</td><td>Windows Remote Desktop Protocol</td></tr>
+          <tr><td class="port-num registered-num">5060</td><td><span class="proto-badge both-badge">TCP/UDP</span></td><td>SIP</td><td>Voice over IP (VoIP) signaling</td></tr>
+          <tr><td class="port-num registered-num">8080</td><td><span class="proto-badge tcp-badge">TCP</span></td><td>HTTP Alt</td><td>Alternate HTTP — web servers and proxies</td></tr>
+          <tr><td class="port-num registered-num">8443</td><td><span class="proto-badge tcp-badge">TCP</span></td><td>HTTPS Alt</td><td>Alternate HTTPS — secure alternate web traffic</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Dynamic Ports -->
+    <div class="port-section">
+      <div class="port-section-header">
+        <div class="dot dynamic-dot"></div>
+        <h3>Dynamic / Ephemeral Ports</h3>
+        <span class="range-tag dynamic-tag">49,152 – 65,535</span>
+      </div>
+      <table>
+        <thead><tr><th>Characteristic</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Assigned by</td><td>Operating system — automatically, at the start of each session</td></tr>
+          <tr><td>Duration</td><td>Temporary — only for the life of that connection</td></tr>
+          <tr><td>Who uses them</td><td>Client-side applications initiating outbound connections</td></tr>
+          <tr><td>Also called</td><td>Ephemeral ports (ephemeral = short-lived)</td></tr>
+          <tr><td>Example</td><td>You open Chrome → OS assigns port 52,814 → Google responds to that port → session ends → port is released</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Key Facts -->
+    <div class="key-facts">
+      <div class="key-fact">
+        <div class="kf-label">Total Port Range</div>
+        <div class="kf-value">0 – 65,535</div>
+        <div class="kf-sub">65,536 possible ports total</div>
+      </div>
+      <div class="key-fact">
+        <div class="kf-label">Managed By</div>
+        <div class="kf-value">IANA</div>
+        <div class="kf-sub">Internet Assigned Numbers Authority</div>
+      </div>
+      <div class="key-fact">
+        <div class="kf-label">Socket = </div>
+        <div class="kf-value">IP + Port + Proto</div>
+        <div class="kf-sub">All three identify a unique channel</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════ QUIZ ══════════ -->
+  <div id="quiz" class="tab-panel">
+
+    <div class="quiz-header">
+      <h2>Port Categories Quiz</h2>
+      <p>Test your understanding of port number ranges and common port assignments.</p>
+    </div>
+
+    <div class="quiz-progress-bar-wrap">
+      <div class="quiz-progress-bar" id="progressBar" style="width: 0%"></div>
+    </div>
+
+    <div id="quizArea">
+      <div class="question-card" id="questionCard">
+        <div class="q-meta">
+          <div class="q-counter" id="qCounter">Question 1 of 12</div>
+          <div class="q-category" id="qCategory">Category</div>
+        </div>
+        <div class="question-text" id="questionText"></div>
+        <div class="options" id="optionsArea"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+      <div class="quiz-nav">
+        <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next →</button>
+      </div>
+    </div>
+
+    <div class="results-card" id="resultsCard">
+      <div class="results-icon" id="resultsIcon">🎉</div>
+      <div class="results-title" id="resultsTitle">Quiz Complete!</div>
+      <div class="results-score" id="resultsScore">0 <span>/ 12</span></div>
+      <div class="results-msg" id="resultsMsg"></div>
+      <div class="results-breakdown">
+        <div class="rb-card"><div class="rb-num correct-color" id="rbCorrect">0</div><div class="rb-label">Correct</div></div>
+        <div class="rb-card"><div class="rb-num wrong-color" id="rbWrong">0</div><div class="rb-label">Incorrect</div></div>
+        <div class="rb-card"><div class="rb-num skip-color" id="rbPct">0%</div><div class="rb-label">Score</div></div>
+      </div>
+      <button class="restart-btn" onclick="restartQuiz()">🔄 Retake Quiz</button>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  Per Scholas Greater Boston · Cohort <span>2026-BOS-02</span> · CompTIA Security+ <span>SY0-701</span> · Instructor: <span>Dr. Solomon Seifu</span>
+</footer>
+
+<script>
+  // ── Tab switching
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ── Quiz Data
+  const questions = [
+    { q: "Which port category covers the range 0 to 1,023?", options: ["Registered Ports", "Dynamic Ports", "Well-Known Ports", "Ephemeral Ports"], answer: 2, category: "Ranges", feedback: "Well-Known Ports (0–1,023) are reserved for globally recognized services like HTTP (80), HTTPS (443), and SSH (22)." },
+    { q: "Port 443 is used for HTTPS. Which category does it belong to?", options: ["Registered Ports", "Well-Known Ports", "Dynamic Ports", "Private Ports"], answer: 1, category: "Well-Known", feedback: "Port 443 falls in the 0–1,023 range, making it a Well-Known Port. It is the standard port for HTTPS — encrypted web browsing." },
+    { q: "Your OS picks port 52,814 when you open a browser tab. What category is this?", options: ["Well-Known Port", "Registered Port", "Dynamic / Ephemeral Port", "Reserved Port"], answer: 2, category: "Dynamic", feedback: "Ports 49,152–65,535 are Dynamic (Ephemeral) ports. The OS assigns them temporarily for each outbound client session, then releases them when the session ends." },
+    { q: "Which organization officially manages and assigns port number categories?", options: ["IEEE", "IANA", "IETF", "ISO"], answer: 1, category: "Concepts", feedback: "IANA — the Internet Assigned Numbers Authority — is responsible for global IP address allocation, DNS root zone management, and port number assignments." },
+    { q: "Port 3389 is used for Windows Remote Desktop (RDP). What category is it in?", options: ["Well-Known Ports (0–1023)", "Registered Ports (1024–49151)", "Dynamic Ports (49152–65535)", "Reserved Ports"], answer: 1, category: "Registered", feedback: "Port 3389 falls in the 1,024–49,151 range — making it a Registered Port. It was registered with IANA by Microsoft for RDP." },
+    { q: "What is another name for Dynamic Ports?", options: ["Reserved Ports", "Privileged Ports", "Ephemeral Ports", "Assigned Ports"], answer: 2, category: "Concepts", feedback: "Dynamic ports are also called Ephemeral ports — from the Greek word 'ephemeros' meaning short-lived. They exist only for the duration of a session." },
+    { q: "Which port is used by SSH for secure remote access?", options: ["21", "22", "23", "25"], answer: 1, category: "Well-Known", feedback: "Port 22 is the Well-Known port for SSH (Secure Shell). It provides encrypted terminal access to remote systems — unlike Telnet on port 23 which is unencrypted." },
+    { q: "What range do Registered Ports cover?", options: ["0 – 1,023", "1,024 – 49,151", "49,152 – 65,535", "1,024 – 65,535"], answer: 1, category: "Ranges", feedback: "Registered Ports span 1,024 to 49,151. They are assigned by IANA to specific companies and applications upon request — like MySQL (3306) and RDP (3389)." },
+    { q: "Which port does DNS use, and what makes it unique?", options: ["Port 80 — it uses only TCP", "Port 53 — it uses both TCP and UDP", "Port 22 — it uses only UDP", "Port 53 — it uses only TCP"], answer: 1, category: "Well-Known", feedback: "DNS uses port 53 on both TCP and UDP. UDP is used for standard fast queries; TCP is used for larger responses like zone transfers." },
+    { q: "Port 8080 is best described as:", options: ["A Well-Known port for HTTPS", "An alternate HTTP port in the Registered range", "A dynamic port assigned by the OS", "A reserved IANA port for FTP"], answer: 1, category: "Registered", feedback: "Port 8080 is a Registered Port (1024–49151) used as an alternate to port 80 for HTTP traffic — common on development servers and web proxies." },
+    { q: "Which statement best describes Well-Known Ports?", options: ["They are randomly assigned by the OS for each session", "They are registered by companies with IANA on request", "They are universally standardized for major global protocols", "They are only used by UDP, never TCP"], answer: 2, category: "Concepts", feedback: "Well-Known Ports are universally agreed upon, pre-assigned by IANA for major protocols. Every device worldwide recognizes them — similar to how everyone knows 911 is for emergencies." },
+    { q: "A socket is made up of which three components?", options: ["IP Address + MAC Address + Port", "IP Address + Port Number + Protocol", "Port Number + Protocol + DNS Name", "MAC Address + Port + Sequence Number"], answer: 1, category: "Concepts", feedback: "A socket = IP Address + Port Number + Protocol (TCP or UDP). All three together identify a unique communication channel. That is why Port 80/TCP and Port 80/UDP are different sockets — the protocol is different." }
+  ];
+
+  let current = 0;
+  let score = 0;
+  let wrong = 0;
+  let answered = false;
+
+  function loadQuestion() {
+    const q = questions[current];
+    answered = false;
+    document.getElementById('qCounter').textContent = `Question ${current + 1} of ${questions.length}`;
+    document.getElementById('qCategory').textContent = q.category;
+    document.getElementById('questionText').textContent = q.q;
+    document.getElementById('progressBar').style.width = `${(current / questions.length) * 100}%`;
+
+    const fb = document.getElementById('feedback');
+    fb.className = 'feedback';
+    fb.textContent = '';
+
+    document.getElementById('nextBtn').classList.remove('show');
+
+    const opts = document.getElementById('optionsArea');
+    opts.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerHTML = `<span class="option-letter">${letters[i]}</span>${opt}`;
+      btn.onclick = () => selectAnswer(i, btn);
+      opts.appendChild(btn);
+    });
+  }
+
+  function selectAnswer(index, btn) {
+    if (answered) return;
+    answered = true;
+    const q = questions[current];
+    const allBtns = document.querySelectorAll('.option-btn');
+    allBtns.forEach(b => b.disabled = true);
+
+    const fb = document.getElementById('feedback');
+    if (index === q.answer) {
+      btn.classList.add('correct');
+      score++;
+      fb.textContent = '✅ Correct! ' + q.feedback;
+      fb.className = 'feedback correct-fb show';
+    } else {
+      btn.classList.add('wrong');
+      allBtns[q.answer].classList.add('correct');
+      wrong++;
+      fb.textContent = '❌ Not quite. ' + q.feedback;
+      fb.className = 'feedback wrong-fb show';
+    }
+
+    document.getElementById('nextBtn').classList.add('show');
+  }
+
+  function nextQuestion() {
+    current++;
+    if (current < questions.length) {
+      loadQuestion();
+    } else {
+      showResults();
+    }
+  }
+
+  function showResults() {
+    document.getElementById('quizArea').style.display = 'none';
+    const pct = Math.round((score / questions.length) * 100);
+    const rc = document.getElementById('resultsCard');
+    rc.classList.add('show');
+    document.getElementById('resultsScore').innerHTML = `${score} <span>/ ${questions.length}</span>`;
+    document.getElementById('rbCorrect').textContent = score;
+    document.getElementById('rbWrong').textContent = wrong;
+    document.getElementById('rbPct').textContent = pct + '%';
+    document.getElementById('progressBar').style.width = '100%';
+
+    let icon, title, msg;
+    if (pct === 100) { icon = '🏆'; title = 'Perfect Score!'; msg = 'Outstanding work. You have mastered port number categories.'; }
+    else if (pct >= 80) { icon = '🎯'; title = 'Great Job!'; msg = 'Strong performance. Review any missed questions and you\'ll have this locked in.'; }
+    else if (pct >= 60) { icon = '📚'; title = 'Good Effort!'; msg = 'You\'re getting there. Review the cheat sheet and try again to sharpen your recall.'; }
+    else { icon = '💪'; title = 'Keep Studying!'; msg = 'Head back to the cheat sheet, review the ranges and port numbers, then retake the quiz.'; }
+
+    document.getElementById('resultsIcon').textContent = icon;
+    document.getElementById('resultsTitle').textContent = title;
+    document.getElementById('resultsMsg').textContent = msg;
+  }
+
+  function restartQuiz() {
+    current = 0; score = 0; wrong = 0;
+    document.getElementById('resultsCard').classList.remove('show');
+    document.getElementById('quizArea').style.display = 'block';
+    loadQuestion();
+  }
+
+  // Init
+  loadQuestion();
+</script>
+</body>
+</html>

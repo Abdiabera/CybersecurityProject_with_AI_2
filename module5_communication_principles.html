@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 5: Communication Principles | Per Scholas Greater Boston</title>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:        #1c1f2e;
+  --ink-mid:    #252a3d;
+  --ink-soft:   #2e3450;
+  --violet:     #6c5ce7;
+  --violet-lt:  #a29bfe;
+  --violet-pale:#f0eeff;
+  --coral:      #e17055;
+  --coral-pale: #fdf0ec;
+  --mint:       #00b894;
+  --mint-pale:  #e0f7f3;
+  --gold:       #fdcb6e;
+  --gold-pale:  #fffbef;
+  --text:       #1c1f2e;
+  --text-sec:   #4a5080;
+  --border:     #dde1f0;
+  --white:      #ffffff;
+  --bg:         #f5f6fb;
+  --success-bg: #e0f7f3;
+  --success-tx: #006d55;
+  --danger-bg:  #fde8e2;
+  --danger-tx:  #7f1d1d;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+
+/* HEADER */
+.site-header{background:var(--ink);color:#fff;padding:30px 40px 26px;position:relative;overflow:hidden}
+.site-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 85% 30%,rgba(108,92,231,.18) 0%,transparent 55%),radial-gradient(ellipse at 10% 80%,rgba(0,184,148,.1) 0%,transparent 50%)}
+.site-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--mint) 60%,transparent)}
+.header-eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:12px;position:relative}
+.header-eyebrow span{color:var(--violet-lt);font-weight:600}
+.site-header h1{font-family:'Bitter',serif;font-size:clamp(20px,4vw,34px);font-weight:700;color:#fff;line-height:1.2;margin-bottom:8px;position:relative}
+.site-header h1 em{color:var(--violet-lt);font-style:normal}
+.header-meta{font-size:13px;color:rgba(255,255,255,.5);position:relative;display:flex;flex-wrap:wrap;gap:6px 20px;margin-bottom:16px}
+.header-meta span::before{content:'·';margin-right:20px;opacity:.35}
+.header-meta span:first-child::before{display:none}
+.instructor-note{position:relative;background:rgba(108,92,231,.12);border:1px solid rgba(108,92,231,.25);border-radius:8px;padding:11px 16px;font-size:13px;color:rgba(255,255,255,.7);line-height:1.6}
+.instructor-note strong{color:var(--violet-lt)}
+.header-authors{font-size:12px;color:rgba(255,255,255,.35);border-top:1px solid rgba(255,255,255,.08);padding-top:14px;margin-top:16px;position:relative}
+
+/* STATS */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));background:var(--ink-mid)}
+.stat{padding:16px 20px;border-right:1px solid rgba(255,255,255,.07);color:#fff}
+.stat:last-child{border-right:none}
+.stat-num{font-size:24px;font-weight:700;color:var(--violet-lt);line-height:1;margin-bottom:4px}
+.stat-label{font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.09em}
+
+/* TABS */
+.tabs-wrap{background:var(--white);border-bottom:1px solid var(--border);padding:0 40px;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.tabs{display:flex;gap:0;overflow-x:auto}
+.tab-btn{padding:13px 17px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;background:none;border:none;border-bottom:2px solid transparent;color:var(--text-sec);cursor:pointer;white-space:nowrap;transition:all .15s}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.active{color:var(--violet);border-bottom-color:var(--violet)}
+
+/* CONTENT */
+.content{max-width:960px;margin:0 auto;padding:32px 24px 60px}
+.panel{display:none}
+.panel.active{display:block}
+
+.section-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--violet);font-weight:700;margin-bottom:6px}
+.section-title{font-family:'Bitter',serif;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+
+/* Concept cards */
+.concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.concept-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.concept-head{padding:12px 16px;display:flex;align-items:center;gap:10px}
+.concept-head.v{background:var(--violet)}
+.concept-head.m{background:var(--mint)}
+.concept-head.c{background:var(--coral)}
+.concept-head.g{background:#f39c12}
+.concept-icon{font-size:18px;flex-shrink:0}
+.concept-head-title{font-size:13px;font-weight:600;color:#fff}
+.concept-head-sub{font-size:10px;color:rgba(255,255,255,.65)}
+.concept-body{padding:13px 16px;font-size:13px;color:var(--text-sec);line-height:1.7}
+.concept-body strong{color:var(--ink)}
+
+/* Key points list */
+.key-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.key-item{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;font-size:13px;line-height:1.65}
+.key-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.key-dot.v{background:var(--violet)}
+.key-dot.m{background:var(--mint)}
+.key-dot.c{background:var(--coral)}
+.key-dot.g{background:#f39c12}
+
+/* Layer table */
+.layer-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px}
+.layer-table th{background:var(--ink);color:#fff;padding:10px 14px;text-align:left;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+.layer-table th:first-child{border-radius:8px 0 0 0}
+.layer-table th:last-child{border-radius:0 8px 0 0}
+.layer-table td{padding:10px 14px;border-bottom:1px solid var(--border);background:var(--white);vertical-align:top}
+.layer-table tr:last-child td{border-bottom:none}
+.layer-table tr:last-child td:first-child{border-radius:0 0 0 8px}
+.layer-table tr:last-child td:last-child{border-radius:0 0 8px 0}
+.layer-table td:first-child{font-weight:700;color:var(--violet);white-space:nowrap}
+.layer-num{display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--violet);color:#fff;font-size:11px;font-weight:700;text-align:center;line-height:22px;margin-right:6px}
+.layer-num.mint{background:var(--mint)}
+
+/* Comparison */
+.compare-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.compare-col{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.compare-head{padding:12px 16px;font-size:13px;font-weight:600;color:#fff}
+.compare-head.osi{background:var(--violet)}
+.compare-head.tcp{background:var(--mint)}
+.compare-body{padding:0}
+.compare-row{padding:9px 16px;border-bottom:1px solid var(--border);font-size:12px;display:flex;align-items:center;gap:8px}
+.compare-row:last-child{border-bottom:none}
+.layer-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0}
+.lb-v{background:var(--violet-pale);color:var(--violet)}
+.lb-m{background:var(--mint-pale);color:#006d55}
+.lb-c{background:var(--coral-pale);color:#9b4226}
+.lb-g{background:var(--gold-pale);color:#7d5a00}
+
+/* Orgs table */
+.org-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px}
+.org-table th{background:var(--ink);color:#fff;padding:10px 14px;text-align:left;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em}
+.org-table th:first-child{border-radius:8px 0 0 0}
+.org-table th:last-child{border-radius:0 8px 0 0}
+.org-table td{padding:9px 14px;border-bottom:1px solid var(--border);background:var(--white);font-size:13px}
+.org-table tr:last-child td{border-bottom:none}
+.org-table tr:last-child td:first-child{border-radius:0 0 0 8px}
+.org-table tr:last-child td:last-child{border-radius:0 0 8px 0}
+.org-table td:first-child{font-weight:700;color:var(--violet)}
+
+/* Tip/note boxes */
+.tip-box{font-size:12px;background:var(--violet-pale);border-left:3px solid var(--violet);padding:9px 13px;border-radius:0 6px 6px 0;margin-top:10px;color:var(--ink-soft);line-height:1.6}
+.note-box{font-size:12px;background:var(--gold-pale);border-left:3px solid var(--gold);padding:9px 13px;border-radius:0 6px 6px 0;margin-top:10px;color:#5a4010;line-height:1.6}
+
+/* QUIZ */
+.quiz-score-bar{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;gap:16px}
+.score-num{font-size:30px;font-weight:700;color:var(--violet)}
+.score-label{font-size:13px;color:var(--text-sec)}
+.progress-bar{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:var(--violet);border-radius:4px;transition:width .4s}
+.quiz-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--violet);background:var(--violet-pale);padding:6px 14px;border-radius:6px;display:inline-block;margin-bottom:12px}
+.quiz-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:12px}
+.quiz-q{font-size:14px;font-weight:500;margin-bottom:12px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:7px}
+.quiz-opt{padding:9px 14px;border:1px solid var(--border);border-radius:6px;font-size:13px;cursor:pointer;transition:all .15s;background:var(--bg)}
+.quiz-opt:hover{background:var(--violet-pale);border-color:var(--violet)}
+.quiz-opt.correct{background:var(--success-bg);border-color:#16a34a;color:var(--success-tx);font-weight:500}
+.quiz-opt.wrong{background:var(--danger-bg);border-color:#dc2626;color:var(--danger-tx)}
+.quiz-fb{font-size:12px;margin-top:8px;padding:8px 12px;border-radius:6px;display:none;line-height:1.5}
+.quiz-fb.show{display:block}
+.quiz-fb.ok{background:var(--success-bg);color:var(--success-tx)}
+.quiz-fb.fail{background:var(--danger-bg);color:var(--danger-tx)}
+
+.footer{background:var(--ink);color:rgba(255,255,255,.38);font-size:12px;text-align:center;padding:18px 24px}
+.footer strong{color:rgba(255,255,255,.7)}
+
+@media(max-width:640px){
+  .concept-grid,.compare-wrap{grid-template-columns:1fr}
+  .site-header{padding:20px}
+  .tabs-wrap{padding:0 12px}
+  .content{padding:20px 14px 40px}
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-eyebrow"><span>Per Scholas Greater Boston</span> &nbsp;|&nbsp; Cybersecurity Program &nbsp;|&nbsp; Cohort 2026-BOS-02</div>
+  <h1>Module 5 — <em>Communication Principles</em></h1>
+  <div class="header-meta">
+    <span>Cisco Networking Basics</span>
+    <span>Session Summary & Review</span>
+    <span>End-of-Session Assessment</span>
+  </div>
+  <div class="instructor-note">
+    <strong>From Dr. Solomon Seifu —</strong> This portal summarizes everything we covered today. Review each section carefully, connect the concepts back to what we discussed in class, and complete the quiz at the end honestly — it is your checkpoint before we move into Module 6.
+  </div>
+  <div class="header-authors">Prepared by: <strong style="color:rgba(255,255,255,.75)">Dr. Solomon Seifu</strong> (Lead Instructor) &nbsp;&amp;&nbsp; <strong style="color:rgba(255,255,255,.75)">Naly Rosario</strong></div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">5</div><div class="stat-label">Topics covered</div></div>
+  <div class="stat"><div class="stat-num">7</div><div class="stat-label">OSI layers</div></div>
+  <div class="stat"><div class="stat-num">4</div><div class="stat-label">TCP/IP layers</div></div>
+  <div class="stat"><div class="stat-num">6</div><div class="stat-label">Standards orgs</div></div>
+  <div class="stat"><div class="stat-num">20</div><div class="stat-label">Quiz questions</div></div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('overview',this)">Overview</button>
+    <button class="tab-btn" onclick="showTab('protocols',this)">Protocols</button>
+    <button class="tab-btn" onclick="showTab('models',this)">OSI & TCP/IP</button>
+    <button class="tab-btn" onclick="showTab('standards',this)">Standards</button>
+    <button class="tab-btn" onclick="showTab('quiz',this)">Quiz</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div id="overview" class="panel active">
+  <div class="section-label">Module 5 at a glance</div>
+  <div class="section-title">What we covered today</div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-head v"><div class="concept-icon">📡</div><div><div class="concept-head-title">Network Communication Models</div><div class="concept-head-sub">The framework for data exchange</div></div></div>
+      <div class="concept-body">Models define how data is <strong>structured, transmitted, and received</strong>. They ensure devices from any manufacturer can communicate using the same rules.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-head m"><div class="concept-icon">🔗</div><div><div class="concept-head-title">Communication Protocols</div><div class="concept-head-sub">Rules for every conversation</div></div></div>
+      <div class="concept-body">Protocols define <strong>method, language, timing, encoding, encapsulation, and confirmation</strong> — the six characteristics every protocol must address.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-head c"><div class="concept-icon">🧱</div><div><div class="concept-head-title">The OSI Model</div><div class="concept-head-sub">7-layer reference framework</div></div></div>
+      <div class="concept-body">A conceptual model that breaks communication into <strong>seven precise layers</strong>. Used for understanding, designing, and troubleshooting networks worldwide.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-head g"><div class="concept-icon">🌐</div><div><div class="concept-head-title">The TCP/IP Model</div><div class="concept-head-sub">4-layer practical model</div></div></div>
+      <div class="concept-body">The model that <strong>actually runs the internet</strong>. Four layers — Application, Transport, Internet, Network Access — each handling a specific function.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Key takeaways</div>
+  <div class="key-list">
+    <div class="key-item"><div class="key-dot v">1</div><div><strong>OSI = theory. TCP/IP = practice.</strong> OSI gives you the language to troubleshoot. TCP/IP is what your data actually uses on the internet.</div></div>
+    <div class="key-item"><div class="key-dot m">2</div><div><strong>Protocols are strict rules — not suggestions.</strong> A device that does not follow the protocol does not get to communicate.</div></div>
+    <div class="key-item"><div class="key-dot c">3</div><div><strong>Every cyberattack targets a specific layer.</strong> Knowing the layers tells you exactly where the vulnerability is and how to defend it.</div></div>
+    <div class="key-item"><div class="key-dot g">4</div><div><strong>Standards make the internet universal.</strong> Without organizations like IETF and IEEE, every manufacturer would do things differently and devices could not communicate.</div></div>
+    <div class="key-item"><div class="key-dot v">5</div><div><strong>OSI mnemonic — All People Seem To Need Data Processing.</strong> Application · Presentation · Session · Transport · Network · Data Link · Physical.</div></div>
+  </div>
+</div>
+
+<!-- PROTOCOLS -->
+<div id="protocols" class="panel">
+  <div class="section-label">Communication protocols</div>
+  <div class="section-title">The rules that govern all network communication</div>
+
+  <div class="concept-grid" style="margin-bottom:16px">
+    <div class="concept-card">
+      <div class="concept-head v"><div class="concept-icon">📨</div><div><div class="concept-head-title">Message Format</div><div class="concept-head-sub">How data is structured</div></div></div>
+      <div class="concept-body">Every message must follow a <strong>specific, predictable structure</strong>. Example: an email always has a subject, sender, recipient, and body. Wrong format = unreadable message.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-head m"><div class="concept-icon">📦</div><div><div class="concept-head-title">Message Size</div><div class="concept-head-sub">Control data transmission</div></div></div>
+      <div class="concept-body">Protocols limit how large each data piece can be. Large data is <strong>broken into smaller packets</strong> — called segmentation. Only failed packets need resending — not everything.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-head c"><div class="concept-icon">⏱️</div><div><div class="concept-head-title">Timing</div><div class="concept-head-sub">Speed and flow control</div></div></div>
+      <div class="concept-body">Controls <strong>when and how much</strong> data is sent. A packet arriving too late gets discarded. QoS prioritizes time-sensitive traffic like video calls over less urgent data.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-head g"><div class="concept-icon">📶</div><div><div class="concept-head-title">Encoding</div><div class="concept-head-sub">Converting data for transmission</div></div></div>
+      <div class="concept-body">Data is converted into <strong>signals — electrical, light, or radio waves</strong> — for transmission. The receiver decodes the signals back into readable data. Wi-Fi uses radio waves.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-head v"><div class="concept-icon">✉️</div><div><div class="concept-head-title">Encapsulation</div><div class="concept-head-sub">Adding addressing info</div></div></div>
+      <div class="concept-body">Every packet gets a <strong>header with source and destination addresses</strong>. Like a letter in an envelope — without the address, no one knows where to deliver it.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-head m"><div class="concept-icon">✅</div><div><div class="concept-head-title">Message Pattern & ACK</div><div class="concept-head-sub">Confirmation requirements</div></div></div>
+      <div class="concept-body"><strong>TCP</strong> — sends and waits for an ACK before continuing. Reliable but slower. <strong>UDP</strong> — sends continuously without waiting. Fast but no delivery guarantee.</div>
+    </div>
+  </div>
+
+  <div class="tip-box"><strong>Why protocols matter for cybersecurity:</strong> Every attack exploits a protocol weakness — man-in-the-middle attacks exploit authentication protocols, DDoS attacks exploit connection protocols, packet injection attacks exploit data formatting. Understanding protocols means understanding where networks are vulnerable.</div>
+</div>
+
+<!-- MODELS -->
+<div id="models" class="panel">
+  <div class="section-label">Network models</div>
+  <div class="section-title">OSI Model — 7 Layers</div>
+
+  <table class="layer-table">
+    <thead><tr><th>Layer</th><th>Name</th><th>Job</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><span class="layer-num">7</span></td><td><strong>Application</strong></td><td>User-facing protocols — what you interact with</td><td>HTTP, HTTPS, SMTP, FTP, DNS</td></tr>
+      <tr><td><span class="layer-num">6</span></td><td><strong>Presentation</strong></td><td>Formatting, encryption, compression</td><td>SSL/TLS encryption, JPEG, MP4</td></tr>
+      <tr><td><span class="layer-num">5</span></td><td><strong>Session</strong></td><td>Sets up, manages, and ends sessions</td><td>Keeping a Zoom call alive</td></tr>
+      <tr><td><span class="layer-num">4</span></td><td><strong>Transport</strong></td><td>Segmentation, end-to-end delivery — TCP or UDP</td><td>TCP for web pages, UDP for video</td></tr>
+      <tr><td><span class="layer-num">3</span></td><td><strong>Network</strong></td><td>IP addressing and routing between networks</td><td>Routers using IP addresses</td></tr>
+      <tr><td><span class="layer-num">2</span></td><td><strong>Data Link</strong></td><td>MAC addressing, frame delivery on local network</td><td>Switches forwarding frames</td></tr>
+      <tr><td><span class="layer-num">1</span></td><td><strong>Physical</strong></td><td>Raw bits — cables, signals, radio waves</td><td>Ethernet cable, Wi-Fi signal</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note-box"><strong>Mnemonic — top to bottom:</strong> All People Seem To Need Data Processing &nbsp;|&nbsp; <strong>Bottom to top:</strong> Please Do Not Throw Sausage Pizza Away</div>
+
+  <div class="section-title" style="margin-top:24px">OSI vs TCP/IP — Layer Mapping</div>
+
+  <div class="compare-wrap">
+    <div class="compare-col">
+      <div class="compare-head osi">OSI Model — 7 Layers (Theory)</div>
+      <div class="compare-body">
+        <div class="compare-row"><span class="layer-badge lb-v">Layer 7</span> Application</div>
+        <div class="compare-row"><span class="layer-badge lb-v">Layer 6</span> Presentation</div>
+        <div class="compare-row"><span class="layer-badge lb-v">Layer 5</span> Session</div>
+        <div class="compare-row"><span class="layer-badge lb-m">Layer 4</span> Transport</div>
+        <div class="compare-row"><span class="layer-badge lb-c">Layer 3</span> Network</div>
+        <div class="compare-row"><span class="layer-badge lb-g">Layer 2</span> Data Link</div>
+        <div class="compare-row"><span class="layer-badge lb-g">Layer 1</span> Physical</div>
+      </div>
+    </div>
+    <div class="compare-col">
+      <div class="compare-head tcp">TCP/IP Model — 4 Layers (Practice)</div>
+      <div class="compare-body">
+        <div class="compare-row" style="height:90px;align-items:center"><span class="layer-badge lb-v">Application</span> Combines OSI Layers 5, 6, 7</div>
+        <div class="compare-row" style="height:44px;align-items:center"><span class="layer-badge lb-m">Transport</span> Same as OSI Layer 4</div>
+        <div class="compare-row" style="height:44px;align-items:center"><span class="layer-badge lb-c">Internet</span> Same as OSI Layer 3</div>
+        <div class="compare-row" style="height:90px;align-items:center"><span class="layer-badge lb-g">Network Access</span> Combines OSI Layers 1 & 2</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box"><strong>Key distinction:</strong> OSI = use it to think and troubleshoot (7 precise layers). TCP/IP = use it to work and configure (4 practical layers). Both live in your head simultaneously as a network professional.</div>
+</div>
+
+<!-- STANDARDS -->
+<div id="standards" class="panel">
+  <div class="section-label">Internet standards</div>
+  <div class="section-title">Standards Organizations — Know These for Security+</div>
+
+  <table class="org-table">
+    <thead><tr><th>Organization</th><th>Full Name</th><th>What they control</th></tr></thead>
+    <tbody>
+      <tr><td>IETF</td><td>Internet Engineering Task Force</td><td>Core internet protocols — TCP/IP, HTTP, DNS</td></tr>
+      <tr><td>IEEE</td><td>Institute of Electrical and Electronics Engineers</td><td>Hardware standards — Wi-Fi (802.11), Ethernet (802.3)</td></tr>
+      <tr><td>ICANN</td><td>Internet Corporation for Assigned Names and Numbers</td><td>Domain names and IP address allocation</td></tr>
+      <tr><td>IANA</td><td>Internet Assigned Numbers Authority</td><td>IP address assignment and port numbers</td></tr>
+      <tr><td>ITU</td><td>International Telecommunication Union</td><td>Global telecom — phone, satellite, international networks</td></tr>
+      <tr><td>TIA</td><td>Telecommunications Industry Association</td><td>Physical infrastructure — cabling, fiber, 5G, cellular</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">RFCs — Request for Comments</div>
+  <div class="key-list">
+    <div class="key-item"><div class="key-dot v">📄</div><div>RFCs are the <strong>official technical documents</strong> of the internet — published and managed by the IETF</div></div>
+    <div class="key-item"><div class="key-dot m">791</div><div><strong>RFC 791</strong> — defined IPv4 — the addressing system the internet ran on for decades</div></div>
+    <div class="key-item"><div class="key-dot c">793</div><div><strong>RFC 793</strong> — defined TCP — written in 1981, still governs TCP today</div></div>
+    <div class="key-item"><div class="key-dot g">DNS</div><div><strong>RFC 1034 &amp; 1035</strong> — defined DNS — how domain names resolve to IP addresses</div></div>
+  </div>
+
+  <div class="tip-box"><strong>Security+ exam tip:</strong> Know which organization owns which domain. IETF = protocols. IEEE = hardware. ICANN = domain names. IANA = port numbers. ITU = global telecom. TIA = physical infrastructure.</div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="panel">
+  <div class="section-label">End-of-session assessment</div>
+  <div class="section-title">Check Your Understanding — Module 5</div>
+  <div class="quiz-score-bar">
+    <div><div class="score-num" id="scoreNum">0 / 20</div><div class="score-label">questions correct</div></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <button onclick="resetQuiz()" style="font-size:12px;padding:6px 14px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:var(--white)">Reset</button>
+  </div>
+  <div id="quizContainer"></div>
+</div>
+
+</div>
+
+<footer class="footer">
+  <strong>Per Scholas Greater Boston</strong> &nbsp;·&nbsp; Cybersecurity Program &nbsp;·&nbsp; Cohort 2026-BOS-02 &nbsp;·&nbsp; Module 5: Communication Principles<br>
+  Prepared by Dr. Solomon Seifu (Lead Instructor) &amp; Naly Rosario
+</footer>
+
+<script>
+function showTab(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+const questions=[
+  // Network Communication Models
+  {s:"Network Communication Models",q:"What is the primary purpose of a network communication model?",opts:["To speed up internet connections","To provide a framework for how data is structured, transmitted, and received","To assign IP addresses to devices","To encrypt all network traffic"],correct:1,fb:"Correct! A network communication model provides a framework that defines how data is structured, transmitted, and received — ensuring all devices can communicate regardless of manufacturer or OS."},
+  {s:"Network Communication Models",q:"Which analogy best describes how a network communication model works?",opts:["A telephone directory listing all devices","The postal system — sorting, routing, and delivering letters through a defined process","A GPS system calculating the fastest route","A firewall blocking unauthorized traffic"],correct:1,fb:"Correct! The postal system analogy — sorting, routing, and delivering — mirrors exactly how network models define the structured process for data communication."},
+  // Protocols
+  {s:"Communication Protocols",q:"Which protocol characteristic is responsible for breaking large data into smaller pieces for reliable delivery?",opts:["Encoding","Encapsulation","Message size — segmentation","Message pattern"],correct:2,fb:"Correct! Message size control — segmentation — breaks large data into smaller packets. Only failed packets need to be resent, not the entire data set."},
+  {s:"Communication Protocols",q:"What does encapsulation add to a data packet?",opts:["Encryption keys only","A header with source and destination addressing information","The actual user data content","A confirmation that the data was received"],correct:1,fb:"Correct! Encapsulation wraps data with a header containing source and destination addresses — like putting a letter in an envelope with addresses on it."},
+  {s:"Communication Protocols",q:"Which protocol sends data without waiting for an acknowledgment — prioritizing speed over reliability?",opts:["TCP","HTTP","SMTP","UDP"],correct:3,fb:"Correct! UDP (User Datagram Protocol) sends data continuously without waiting for confirmation. It is used for live video, VoIP, and gaming where speed matters more than guaranteed delivery."},
+  {s:"Communication Protocols",q:"What does ACK stand for in networking?",opts:["Automatic Connection Key","Acknowledgment Packet","Access Control Key","Active Communication Kernel"],correct:1,fb:"Correct! ACK stands for Acknowledgment Packet. When TCP receives data successfully, it sends back an ACK to confirm delivery. No ACK = data is resent."},
+  // OSI Model
+  {s:"OSI Model",q:"How many layers does the OSI model have?",opts:["4","5","6","7"],correct:3,fb:"Correct! The OSI model has 7 layers — Application, Presentation, Session, Transport, Network, Data Link, and Physical."},
+  {s:"OSI Model",q:"At which OSI layer do routers operate — handling IP addressing and routing between networks?",opts:["Layer 1 — Physical","Layer 2 — Data Link","Layer 3 — Network","Layer 4 — Transport"],correct:2,fb:"Correct! Routers operate at Layer 3 — the Network layer. They read IP addresses and forward packets toward their destination across different networks."},
+  {s:"OSI Model",q:"Which OSI layer is responsible for encryption, formatting, and compression of data?",opts:["Layer 5 — Session","Layer 6 — Presentation","Layer 7 — Application","Layer 4 — Transport"],correct:1,fb:"Correct! Layer 6 — the Presentation layer — handles encryption (SSL/TLS), data formatting, and compression. HTTPS encryption happens at this layer."},
+  {s:"OSI Model",q:"A network cable is unplugged and connection is lost. Which OSI layer has failed?",opts:["Layer 2 — Data Link","Layer 3 — Network","Layer 4 — Transport","Layer 1 — Physical"],correct:3,fb:"Correct! A physical cable failure is a Layer 1 — Physical layer — problem. Layer 1 deals with the actual physical signals and hardware connections."},
+  {s:"OSI Model",q:"Which OSI layer manages MAC addresses and delivers frames within the same local network?",opts:["Layer 1 — Physical","Layer 3 — Network","Layer 2 — Data Link","Layer 4 — Transport"],correct:2,fb:"Correct! Layer 2 — the Data Link layer — uses MAC addresses to deliver frames within a local network. Switches operate at this layer."},
+  {s:"OSI Model",q:"What is the correct OSI mnemonic from top (Layer 7) to bottom (Layer 1)?",opts:["Please Do Not Throw Sausage Pizza Away","All People Seem To Need Data Processing","Every Protocol Needs Standardized Testing Always","Applications Provide Services Through Networks Daily Physically"],correct:1,fb:"Correct! All People Seem To Need Data Processing — Application, Presentation, Session, Transport, Network, Data Link, Physical — top to bottom."},
+  // TCP/IP Model
+  {s:"TCP/IP Model",q:"How many layers does the TCP/IP model have?",opts:["3","4","5","7"],correct:1,fb:"Correct! The TCP/IP model has 4 layers — Application, Transport, Internet, and Network Access."},
+  {s:"TCP/IP Model",q:"Which TCP/IP layer combines OSI's Application, Presentation, and Session layers?",opts:["Transport layer","Internet layer","Network Access layer","Application layer"],correct:3,fb:"Correct! The TCP/IP Application layer combines OSI's top three layers — Application (7), Presentation (6), and Session (5) — because in practice these functions happen together."},
+  {s:"TCP/IP Model",q:"The TCP/IP Internet layer maps directly to which OSI layer?",opts:["Layer 2 — Data Link","Layer 4 — Transport","Layer 3 — Network","Layer 1 — Physical"],correct:2,fb:"Correct! The TCP/IP Internet layer maps to OSI Layer 3 — the Network layer. Both handle IP addressing and routing. Same function, different name."},
+  {s:"TCP/IP Model",q:"Which two OSI layers are combined into the TCP/IP Network Access layer?",opts:["Session and Transport","Application and Presentation","Network and Transport","Data Link and Physical"],correct:3,fb:"Correct! The TCP/IP Network Access layer combines OSI Layer 2 (Data Link) and Layer 1 (Physical) — everything related to local delivery and physical transmission."},
+  // Standards
+  {s:"Standards & Organizations",q:"Which organization develops and maintains core internet protocols like TCP/IP, HTTP, and DNS?",opts:["IEEE","ICANN","IETF","ITU"],correct:2,fb:"Correct! The IETF (Internet Engineering Task Force) develops and maintains the core internet protocols — TCP/IP, HTTP, DNS, and more."},
+  {s:"Standards & Organizations",q:"Which organization defines the Wi-Fi (802.11) and Ethernet (802.3) standards?",opts:["IANA","TIA","ICANN","IEEE"],correct:3,fb:"Correct! IEEE (Institute of Electrical and Electronics Engineers) defines hardware networking standards — Wi-Fi 802.11 and Ethernet 802.3."},
+  {s:"Standards & Organizations",q:"What are RFCs and which organization manages them?",opts:["Routing Framework Codes — managed by ICANN","Request for Comments — official internet standard documents managed by the IETF","Regional Frequency Controls — managed by ITU","Registered Format Certificates — managed by IEEE"],correct:1,fb:"Correct! RFCs (Request for Comments) are the official technical documents of the internet — tracking the history and evolution of every standard. They are managed and published by the IETF."},
+  {s:"Standards & Organizations",q:"Which RFC defined TCP — still governing TCP communication today?",opts:["RFC 791","RFC 1034","RFC 793","RFC 1035"],correct:2,fb:"Correct! RFC 793 defined TCP (Transmission Control Protocol). Written in 1981, it remains the governing document for TCP to this day."},
+];
+
+let scores=new Array(questions.length).fill(null);
+
+function renderQuiz(){
+  const c=document.getElementById('quizContainer');
+  c.innerHTML='';
+  let lastSection='';
+  questions.forEach((q,qi)=>{
+    if(q.s!==lastSection){
+      const sl=document.createElement('div');
+      sl.className='quiz-section-label';
+      sl.style.marginBottom='12px';
+      sl.style.marginTop=lastSection?'24px':'0';
+      sl.textContent=q.s;
+      c.appendChild(sl);
+      lastSection=q.s;
+    }
+    const card=document.createElement('div');
+    card.className='quiz-card';
+    card.innerHTML=`<div class="quiz-q">Q${qi+1}. ${q.q}</div>
+      <div class="quiz-opts">${q.opts.map((o,oi)=>`<div class="quiz-opt" id="qo-${qi}-${oi}" onclick="answer(${qi},${oi})">${String.fromCharCode(65+oi)}. ${o}</div>`).join('')}</div>
+      <div class="quiz-fb" id="qf-${qi}"></div>`;
+    c.appendChild(card);
+  });
+  updateScore();
+}
+
+function answer(qi,oi){
+  if(scores[qi]!==null)return;
+  const correct=questions[qi].correct;
+  scores[qi]=(oi===correct)?1:0;
+  document.querySelectorAll(`[id^="qo-${qi}-"]`).forEach(el=>{
+    const idx=parseInt(el.id.split('-')[2]);
+    if(idx===correct)el.classList.add('correct');
+    else if(idx===oi)el.classList.add('wrong');
+  });
+  const fb=document.getElementById(`qf-${qi}`);
+  fb.textContent=scores[qi]?'✓ '+questions[qi].fb:'✗ Not quite. '+questions[qi].fb;
+  fb.className='quiz-fb show '+(scores[qi]?'ok':'fail');
+  updateScore();
+}
+
+function updateScore(){
+  const total=scores.filter(s=>s===1).length;
+  document.getElementById('scoreNum').textContent=total+' / '+questions.length;
+  document.getElementById('progressFill').style.width=(total/questions.length*100)+'%';
+}
+
+function resetQuiz(){
+  scores=new Array(questions.length).fill(null);
+  renderQuiz();
+}
+
+renderQuiz();
+</script>
+</body>
+</html>

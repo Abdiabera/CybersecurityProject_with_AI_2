@@ -1,0 +1,378 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --teal:#0B6F7A;
+  --teal-dark:#084D55;
+  --teal-mid:#0E8C99;
+  --teal-light:#D6F0F3;
+  --teal-xlight:#EEF9FA;
+  --teal-text:#083840;
+  --teal-border:#A8DDE3;
+  --green-accent:#3AB57A;
+}
+body{font-family:var(--font-sans);font-size:16px;background:var(--teal-xlight);color:var(--teal-text);}
+.wrap{padding:1.5rem 0;}
+
+.hero{background:var(--teal-dark);border-radius:12px;padding:1.8rem 2rem;margin-bottom:1.5rem;}
+.hero-eyebrow{font-size:14px;color:#A8DDE3;font-weight:500;letter-spacing:.05em;margin-bottom:10px;}
+.hero-title{font-size:28px;font-weight:500;color:#fff;margin-bottom:10px;line-height:1.3;}
+.hero-sub{font-size:16px;color:#A8DDE3;line-height:1.7;margin-bottom:14px;}
+.hero-credit{font-size:15px;color:#7BC8CF;border-top:0.5px solid #1A6B74;padding-top:12px;}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:1.5rem;}
+.stat{background:var(--teal);border-radius:10px;padding:1rem 1.1rem;}
+.stat-n{font-size:28px;font-weight:500;color:#fff;}
+.stat-l{font-size:14px;color:#A8DDE3;margin-top:4px;}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.tab{padding:10px 18px;border-radius:8px;border:1.5px solid var(--teal-border);background:#fff;font-size:15px;font-weight:500;color:var(--teal);cursor:pointer;transition:all .15s;}
+.tab.on{background:var(--teal);color:#fff;border-color:var(--teal);}
+.tab:hover:not(.on){background:var(--teal-light);}
+
+.panel{display:none;}
+.panel.on{display:block;}
+
+.sec-label{font-size:14px;font-weight:500;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;margin:1.4rem 0 10px;padding-bottom:6px;border-bottom:2px solid var(--teal-border);}
+.sec-label:first-child{margin-top:0;}
+
+.card{background:#fff;border:1.5px solid var(--teal-border);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:14px;}
+.card-body{font-size:16px;color:var(--teal-text);line-height:1.75;}
+
+.goal-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px;}
+.goal-card{background:#fff;border-radius:10px;padding:1rem 1.2rem;border-left:4px solid var(--teal);}
+.goal-card.amber{border-left-color:#B87A0A;}
+.goal-card.green{border-left-color:#2A9D5C;}
+.goal-title{font-size:16px;font-weight:500;color:var(--teal-text);margin-bottom:6px;}
+.goal-body{font-size:15px;color:#3A6066;line-height:1.65;}
+
+.item{display:flex;gap:14px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--teal-light);}
+.item:last-child{border-bottom:none;}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:7px;}
+.dot.amber{background:#B87A0A;}
+.dot.green{background:#2A9D5C;}
+.item-text{font-size:16px;color:var(--teal-text);line-height:1.7;}
+
+.lesson-item{display:flex;gap:14px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--teal-light);}
+.lesson-item:last-child{border-bottom:none;}
+.lnum{min-width:52px;height:28px;background:var(--teal-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--teal);flex-shrink:0;margin-top:2px;}
+.lnum.lab{background:#D4F0E0;color:#1A6640;}
+.lnum.final{background:#FEF3D6;color:#7A5200;}
+.ltext{font-size:16px;color:var(--teal-text);line-height:1.65;flex:1;}
+.lsub{font-size:14px;color:#5A8A90;margin-top:3px;}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:14px;color:#3A6066;}
+.leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+
+.standup-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:1.2rem;}
+.sq{background:#fff;border:1.5px solid var(--teal-border);border-radius:10px;padding:1rem 1.1rem;}
+.sq-num{font-size:14px;font-weight:500;color:var(--teal);margin-bottom:6px;}
+.sq-text{font-size:16px;color:var(--teal-text);line-height:1.6;}
+
+.tip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;}
+.tip{background:#fff;border:1.5px solid var(--teal-border);border-radius:10px;padding:1rem 1.2rem;}
+.tip-text{font-size:16px;color:var(--teal-text);line-height:1.7;}
+
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+.group-card{background:#fff;border:1.5px solid var(--teal-border);border-radius:12px;overflow:hidden;}
+.group-header{background:var(--teal);padding:.9rem 1.2rem;}
+.group-name{font-size:18px;font-weight:500;color:#fff;margin-bottom:2px;}
+.group-count{font-size:14px;color:#A8DDE3;}
+.group-body{padding:1rem 1.2rem;}
+.leader-row{display:flex;align-items:center;gap:10px;background:var(--teal-light);border-radius:8px;padding:.7rem .9rem;margin-bottom:10px;}
+.leader-badge{font-size:12px;font-weight:500;background:var(--teal);color:#fff;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.leader-name{font-size:16px;font-weight:500;color:var(--teal-text);}
+.member-list{list-style:none;}
+.member-list li{font-size:15px;color:#3A6066;padding:5px 0;border-bottom:1px solid var(--teal-light);display:flex;align-items:center;gap:8px;}
+.member-list li:last-child{border-bottom:none;}
+.member-list li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--teal-mid);flex-shrink:0;}
+
+.rotation-box{background:var(--teal-dark);border-radius:10px;padding:1.1rem 1.4rem;margin-bottom:1.4rem;}
+.rotation-text{font-size:16px;color:#A8DDE3;line-height:1.7;}
+.rotation-text strong{color:#fff;}
+
+.leader-resp{background:#fff;border:1.5px solid var(--teal-border);border-radius:12px;padding:1.2rem 1.4rem;}
+</style>
+
+<div class="wrap">
+
+<div class="hero">
+  <div class="hero-eyebrow">Cisco NetAcad &nbsp;|&nbsp; Per Scholas Greater Boston &nbsp;|&nbsp; Cohort 2026-BOS-02</div>
+  <div class="hero-title">Module 123, Cisco Networking Basics</div>
+  <div class="hero-sub">Team project kickoff &nbsp;·&nbsp; 27.5 hours &nbsp;·&nbsp; 5 instructional days &nbsp;·&nbsp; Packet Tracer and NetAcad platform</div>
+  <div class="hero-credit">Prepared by Instructors: Dr. Solomon Seifu (Lead) and Naly Rosario</div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-n">17</div><div class="stat-l">lessons to complete</div></div>
+  <div class="stat"><div class="stat-n">10</div><div class="stat-l">Packet Tracer labs</div></div>
+  <div class="stat"><div class="stat-n">27.5</div><div class="stat-l">total hours</div></div>
+  <div class="stat"><div class="stat-n">5</div><div class="stat-l">instructional days</div></div>
+  <div class="stat"><div class="stat-n">22</div><div class="stat-l">learners enrolled</div></div>
+  <div class="stat"><div class="stat-n">5</div><div class="stat-l">working groups</div></div>
+</div>
+
+<div class="tabs">
+  <div class="tab on" onclick="go('overview',this)">Overview</div>
+  <div class="tab" onclick="go('groups',this)">Working Groups</div>
+  <div class="tab" onclick="go('kpis',this)">All KPIs</div>
+  <div class="tab" onclick="go('team',this)">Responsibilities</div>
+  <div class="tab" onclick="go('standup',this)">Daily Standup</div>
+  <div class="tab" onclick="go('tips',this)">Tips for Success</div>
+</div>
+
+<div id="p-overview" class="panel on">
+  <div class="sec-label">Why this module matters</div>
+  <div class="goal-row">
+    <div class="goal-card">
+      <div class="goal-title">Ultimate goal</div>
+      <div class="goal-body">Secure employment in the cybersecurity field</div>
+    </div>
+    <div class="goal-card amber">
+      <div class="goal-title">High-level goal</div>
+      <div class="goal-body">Pass the CompTIA Security+ certification exam</div>
+    </div>
+    <div class="goal-card green">
+      <div class="goal-title">Current focus</div>
+      <div class="goal-body">Complete all assignments, labs, and quizzes for Module 123 on NetAcad and Packet Tracer</div>
+    </div>
+  </div>
+
+  <div class="sec-label">What you will be able to do by the end</div>
+  <div class="card">
+    <div class="item"><div class="dot"></div><div class="item-text">Explain how networks communicate, including types, components, and connection methods</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Set up a wireless router and connect devices to the internet securely</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Understand why standards and protocols matter for devices to communicate with each other</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Read and explain IP addresses, including both IPv4 and IPv6</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Configure a DHCP server to assign IP addresses automatically</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Explain how routers connect separate networks together</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Build a fully connected Local Area Network (LAN) from scratch</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Use tools like ping, ipconfig, and traceroute to test and fix network issues</div></div>
+  </div>
+</div>
+
+<div id="p-groups" class="panel">
+  <div class="rotation-box">
+    <div class="rotation-text"><strong>Leadership rotates daily.</strong> The assigned leader starts the module as group facilitator. From Day 2 onward, a different group member leads the standup each day so that everyone builds facilitation and leadership experience before the module ends.</div>
+  </div>
+
+  <div class="sec-label">Working Group Leader responsibilities</div>
+  <div class="leader-resp" style="margin-bottom:1.4rem;">
+    <div class="item"><div class="dot green"></div><div class="item-text">Initiate the daily morning standup for the group and keep it within 15 minutes</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Maintain the shared Standup Notes Document provided by the instructor</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Monitor that every group member is making progress on quizzes, labs, and reflections</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Flag blockers or concerns to Dr. Seifu or Naly Rosario as soon as they surface</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Attend Working Group leader check-in meetings with the instructor</div></div>
+  </div>
+
+  <div class="sec-label">Your assigned groups for Module 123</div>
+  <div class="groups-grid">
+
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-name">Group Alpha</div>
+        <div class="group-count">5 members</div>
+      </div>
+      <div class="group-body">
+        <div class="leader-row">
+          <span class="leader-badge">Leader</span>
+          <span class="leader-name">Magdala Richards</span>
+        </div>
+        <ul class="member-list">
+          <li>Yuxuan Liu</li>
+          <li>Ciara ONeil</li>
+          <li>Henry Capita</li>
+          <li>Abdi Abera</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-name">Group Beta</div>
+        <div class="group-count">5 members</div>
+      </div>
+      <div class="group-body">
+        <div class="leader-row">
+          <span class="leader-badge">Leader</span>
+          <span class="leader-name">Kevin Fernandez</span>
+        </div>
+        <ul class="member-list">
+          <li>Tatiana Stridh</li>
+          <li>Devlin McDonough</li>
+          <li>Fikirte Tefera</li>
+          <li>Cedric Sanchez</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-name">Group Gamma</div>
+        <div class="group-count">4 members</div>
+      </div>
+      <div class="group-body">
+        <div class="leader-row">
+          <span class="leader-badge">Leader</span>
+          <span class="leader-name">Vanessa Difranco</span>
+        </div>
+        <ul class="member-list">
+          <li>Michael Francois</li>
+          <li>Calvin Depina</li>
+          <li>Abdellah Jrari</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-name">Group Delta</div>
+        <div class="group-count">4 members</div>
+      </div>
+      <div class="group-body">
+        <div class="leader-row">
+          <span class="leader-badge">Leader</span>
+          <span class="leader-name">Sir Porte</span>
+        </div>
+        <ul class="member-list">
+          <li>Alvin Der</li>
+          <li>Dylan Crovo</li>
+          <li>Ivaldo Gomes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="group-card">
+      <div class="group-header">
+        <div class="group-name">Group Echo</div>
+        <div class="group-count">4 members</div>
+      </div>
+      <div class="group-body">
+        <div class="leader-row">
+          <span class="leader-badge">Leader</span>
+          <span class="leader-name">Shirley Inocente</span>
+        </div>
+        <ul class="member-list">
+          <li>Natas Mann</li>
+          <li>Leipawan Wongwajarachote</li>
+          <li>Ali Ali</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="p-kpis" class="panel">
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:#A8DDE3;"></div>NetAcad lesson</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#A8E0C0;"></div>Packet Tracer lab</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#FAC775;"></div>Final assessment</div>
+  </div>
+  <div class="card">
+    <div class="lesson-item"><div class="lnum">123.1</div><div class="ltext">Communications in a Connected World<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.2</div><div class="ltext">Network Components, Types, and Connections<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.3</div><div class="ltext">Wireless and Mobile Networks<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.4</div><div class="ltext">Build a Home Network<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">4.4.4 Packet Tracer, Configure a Wireless Router and Client<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.5</div><div class="ltext">Communication Principles<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.6</div><div class="ltext">Network Media<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.7</div><div class="ltext">The Access Layer<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.8</div><div class="ltext">The Internet Protocol<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">8.1.3 Packet Tracer, Connect to a Web Server<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.9</div><div class="ltext">IPv4 Addressing<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.10</div><div class="ltext">IPv6 Addressing<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.11</div><div class="ltext">Dynamic Addressing with DHCP<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">Packet Tracer, Configure DHCP on a Wireless Router<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.12</div><div class="ltext">Gateways to Other Networks<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">Packet Tracer, Examine NAT on a Wireless Router<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.13</div><div class="ltext">Address Resolution<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">13.1.3 Packet Tracer, Identify MAC and IP Addresses<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.14</div><div class="ltext">Routing Between Networks<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">14.3.3 Packet Tracer, Observe Traffic Flow in a Routed Network<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">14.3.4 Packet Tracer, Create a LAN<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.15</div><div class="ltext">Transport Layer<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.16</div><div class="ltext">Application Layer Services<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">16.1.5 Packet Tracer, The Client Interaction<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">16.4.3 Packet Tracer, Observe Web Requests<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">16.5.3 Packet Tracer, Use FTP Services<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">16.6.4 Packet Tracer, Use Telnet and SSH<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum">123.17</div><div class="ltext">Network Testing Utilities<div class="lsub">Complete all course activities and requirements</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">ALAB</div><div class="ltext">17.1.3 Packet Tracer, Use the ipconfig Command<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum lab">GLAB</div><div class="ltext">17.1.6 Packet Tracer, Use the ping Command<div class="lsub">Complete and submit</div></div></div>
+    <div class="lesson-item"><div class="lnum final">POC</div><div class="ltext">POC 123, Cisco Networking Basics Badge<div class="lsub">Earn the badge on NetAcad</div></div></div>
+    <div class="lesson-item"><div class="lnum final">SBA</div><div class="ltext">SBA 123, Cisco Networking Basics<div class="lsub">Final skills-based assessment</div></div></div>
+  </div>
+</div>
+
+<div id="p-team" class="panel">
+  <div class="sec-label">What every learner must do individually</div>
+  <div class="card">
+    <div class="item"><div class="dot"></div><div class="item-text">Submit and pass all required assignments, including quizzes, labs, reflections, and checkpoint reviews</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Participate in daily Working Group standups and contribute to team collaboration</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Ask for help when stuck and offer help when you can</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Track your own progress and share updates with your Working Group</div></div>
+    <div class="item"><div class="dot"></div><div class="item-text">Submit your own Proof of Completion (POC), collaborating on challenges is encouraged but each person must submit their own work</div></div>
+  </div>
+
+  <div class="sec-label">What the Working Group does together</div>
+  <div class="card">
+    <div class="item"><div class="dot amber"></div><div class="item-text">Treat Module 123 as a real-world project with clear deliverables and deadlines</div></div>
+    <div class="item"><div class="dot amber"></div><div class="item-text">Help each other troubleshoot access, navigation, and course completion issues</div></div>
+    <div class="item"><div class="dot amber"></div><div class="item-text">Bring up blockers during standups so the group can help resolve them quickly</div></div>
+    <div class="item"><div class="dot amber"></div><div class="item-text">Log progress in a shared team document throughout the module</div></div>
+  </div>
+
+  <div class="sec-label">Working Group Leader responsibilities</div>
+  <div class="card">
+    <div class="item"><div class="dot green"></div><div class="item-text">Initiate the daily morning standup and keep it within 15 minutes</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Maintain the shared Standup Notes Document provided by the instructor</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Monitor that every group member is completing quizzes, labs, and reflections</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Flag any issues or blockers to the instructor as soon as they surface</div></div>
+    <div class="item"><div class="dot green"></div><div class="item-text">Attend Working Group leader check-in meetings with Dr. Seifu or Naly Rosario</div></div>
+  </div>
+</div>
+
+<div id="p-standup" class="panel">
+  <div class="sec-label">When and how</div>
+  <div class="card" style="margin-bottom:1.2rem;">
+    <div class="card-body">The standup happens at the <strong>start of every class</strong> and lasts <strong>15 minutes</strong>. A different Working Group member leads it each day, which means every learner gets to practice facilitating before this module ends. The leader that day logs the notes in the shared document.</div>
+  </div>
+
+  <div class="sec-label">Three questions every member answers</div>
+  <div class="standup-row">
+    <div class="sq"><div class="sq-num">Question 1</div><div class="sq-text">What did you complete yesterday?</div></div>
+    <div class="sq"><div class="sq-num">Question 2</div><div class="sq-text">What will you focus on today?</div></div>
+    <div class="sq"><div class="sq-num">Question 3</div><div class="sq-text">Are there any blockers stopping your progress?</div></div>
+  </div>
+
+  <div class="sec-label">Why this matters</div>
+  <div class="card">
+    <div class="card-body">This is the exact standup format used in real cybersecurity and tech teams every single day. Practicing it now means you walk into your first job already knowing how to communicate your progress clearly and professionally. It is not a performance, it is a habit you are building starting today.</div>
+  </div>
+</div>
+
+<div id="p-tips" class="panel">
+  <div class="sec-label">How to succeed in this module</div>
+  <div class="tip-grid">
+    <div class="tip"><div class="tip-text">Communicate often and openly with your Working Group, and do not wait until you are completely stuck</div></div>
+    <div class="tip"><div class="tip-text">Take notes during walkthroughs and demos, because you will need them when doing the labs independently</div></div>
+    <div class="tip"><div class="tip-text">Ask for help early and offer support to teammates who are behind</div></div>
+    <div class="tip"><div class="tip-text">Plan your day at the start of each session and know exactly which lesson or lab you are targeting</div></div>
+    <div class="tip"><div class="tip-text">Use the shared documentation and checklists to track what is done and what still needs attention</div></div>
+    <div class="tip"><div class="tip-text">Hold each other accountable, because a strong team does not leave anyone behind</div></div>
+    <div class="tip"><div class="tip-text">Collaborate on challenges but always submit your own Proof of Completion (POC)</div></div>
+    <div class="tip"><div class="tip-text">Think of each task as a real-world ticket, not just an assignment, and it will change how seriously you approach it</div></div>
+  </div>
+</div>
+
+</div>
+<script>
+function go(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  el.classList.add('on');
+}
+</script>

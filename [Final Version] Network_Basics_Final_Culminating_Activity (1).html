@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Basics — Final Culminating Activity | Per Scholas Greater Boston</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:       #0c1a2e;
+  --navy-mid:   #112240;
+  --navy-light: #1a3560;
+  --gold:       #c8972a;
+  --gold-light: #e8b84b;
+  --gold-pale:  #fdf6e3;
+  --teal:       #0d9488;
+  --teal-pale:  #e6f7f6;
+  --red:        #c0392b;
+  --red-pale:   #fdecea;
+  --green:      #1a7f4b;
+  --green-pale: #e9f7ef;
+  --orange:     #c96a1a;
+  --orange-pale:#fef3e2;
+  --blue:       #1d4ed8;
+  --blue-pale:  #eff6ff;
+  --white:      #ffffff;
+  --bg:         #f2f5f9;
+  --border:     #d4dce8;
+  --text:       #0c1a2e;
+  --text-sec:   #4a5568;
+  --shadow:     0 4px 20px rgba(12,26,46,0.10);
+  --shadow-lg:  0 8px 40px rgba(12,26,46,0.14);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);font-size:16px;line-height:1.65}
+
+/* ─── HEADER ─── */
+.site-header{background:var(--navy);color:#fff;padding:0;position:relative;overflow:hidden}
+.site-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-light) 50%,var(--gold))}
+.header-inner{max-width:1100px;margin:0 auto;padding:32px 40px 28px;position:relative;z-index:1}
+.header-eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:10px}
+.header-eyebrow span{color:var(--gold-light);font-weight:700}
+.site-header h1{font-family:'Merriweather',serif;font-size:clamp(22px,4vw,36px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:8px}
+.site-header h1 em{color:var(--gold-light);font-style:normal}
+.header-sub{font-size:15px;color:rgba(255,255,255,.60);margin-bottom:20px}
+.header-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.htag{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:600;color:rgba(255,255,255,.75);letter-spacing:.04em}
+.htag.gold{background:rgba(200,151,42,.15);border-color:rgba(200,151,42,.35);color:var(--gold-light)}
+.header-instructor{font-size:13px;color:rgba(255,255,255,.50)}
+.header-instructor strong{color:rgba(255,255,255,.80)}
+.header-bg-pattern{position:absolute;right:-80px;top:-60px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(200,151,42,.10) 0%,transparent 65%);pointer-events:none}
+
+/* ─── MISSION CONTROL BAR ─── */
+.mission-bar{background:var(--navy-mid);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100;padding:0}
+.mission-inner{max-width:1100px;margin:0 auto;padding:0 40px;display:flex;align-items:center;gap:0}
+.mission-btn{display:flex;align-items:center;gap:8px;padding:14px 18px;font-size:13px;font-weight:600;color:rgba(255,255,255,.50);cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
+.mission-btn:hover{color:rgba(255,255,255,.85)}
+.mission-btn.active{color:var(--gold-light);border-bottom-color:var(--gold)}
+.mission-btn .m-num{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.10);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mission-btn.active .m-num{background:var(--gold);color:var(--navy)}
+.mission-btn.done .m-num{background:var(--green);color:#fff}
+.score-pill{margin-left:auto;background:rgba(200,151,42,.15);border:1px solid rgba(200,151,42,.35);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:700;color:var(--gold-light);display:flex;align-items:center;gap:6px;white-space:nowrap}
+
+/* ─── PROGRESS ─── */
+.progress-strip{background:rgba(255,255,255,.05);height:4px}
+.progress-fill{height:4px;background:linear-gradient(90deg,var(--gold),var(--gold-light));transition:width .5s ease;width:0%}
+
+/* ─── MAIN LAYOUT ─── */
+.main{max-width:1100px;margin:0 auto;padding:40px 40px 80px}
+.part{display:none}
+.part.active{display:block}
+
+/* ─── PART HEADER ─── */
+.part-header{background:var(--white);border-radius:14px;padding:32px 36px;margin-bottom:28px;border-left:5px solid var(--gold);box-shadow:var(--shadow)}
+.part-eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px}
+.part-header h2{font-family:'Merriweather',serif;font-size:26px;font-weight:900;color:var(--navy);margin-bottom:8px}
+.part-header p{font-size:15px;color:var(--text-sec);max-width:700px;line-height:1.6}
+.part-stats{display:flex;gap:24px;margin-top:16px;flex-wrap:wrap}
+.pstat{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-sec)}
+.pstat-icon{font-size:18px}
+.pstat strong{color:var(--navy);font-weight:700}
+
+/* ─── QUIZ CARDS ─── */
+.quiz-grid{display:flex;flex-direction:column;gap:20px}
+.q-card{background:var(--white);border-radius:12px;padding:26px 28px;box-shadow:var(--shadow);border:1px solid var(--border);transition:box-shadow .2s}
+.q-card:hover{box-shadow:var(--shadow-lg)}
+.q-meta{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.q-num{width:32px;height:32px;border-radius:8px;background:var(--navy);color:var(--gold-light);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Source Code Pro',monospace;flex-shrink:0}
+.q-topic{font-size:11px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:var(--text-sec);background:var(--bg);padding:3px 10px;border-radius:12px}
+.q-text{font-size:16px;font-weight:600;color:var(--navy);line-height:1.55;margin-bottom:16px}
+.q-scenario{background:var(--blue-pale);border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:16px;font-size:14px;color:#1e3a5f;line-height:1.6}
+.q-scenario strong{color:var(--blue)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:flex-start;gap:12px;padding:11px 16px;border:2px solid var(--border);border-radius:8px;cursor:pointer;transition:all .18s;background:var(--bg);font-size:15px;line-height:1.5;text-align:left;width:100%}
+.opt:hover:not(.locked){border-color:var(--navy-light);background:#edf2f8}
+.opt-letter{width:26px;height:26px;border-radius:6px;background:var(--border);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Source Code Pro',monospace;color:var(--text-sec);margin-top:1px}
+.opt.correct{border-color:var(--green);background:var(--green-pale)}
+.opt.correct .opt-letter{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-pale)}
+.opt.wrong .opt-letter{background:var(--red);color:#fff}
+.opt.locked{cursor:default}
+.feedback{display:none;margin-top:14px;border-radius:10px;overflow:hidden;font-size:14px}
+.feedback.show{display:block}
+.fb-correct{background:var(--green-pale);border:1px solid #a7d7b8}
+.fb-wrong{background:var(--red-pale);border:1px solid #f0b0a8}
+.fb-header{padding:10px 16px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px}
+.fb-correct .fb-header{background:#d4edda;color:var(--green)}
+.fb-wrong .fb-header{background:#f8d7da;color:var(--red)}
+.fb-body{padding:12px 16px;line-height:1.6;color:var(--text)}
+.fb-body ul{padding-left:18px;margin-top:6px}
+.fb-body li{margin-bottom:4px}
+.q-points{font-size:12px;font-weight:700;color:var(--gold);margin-left:auto;display:flex;align-items:center;gap:4px}
+
+/* ─── SCENARIO CARDS ─── */
+.scenario-card{background:var(--white);border-radius:14px;padding:28px 30px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:24px}
+.scenario-badge{display:inline-flex;align-items:center;gap:6px;background:var(--orange-pale);border:1px solid rgba(201,106,26,.3);color:var(--orange);font-size:11px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:12px}
+.scenario-card h3{font-family:'Merriweather',serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:12px}
+.scenario-situation{background:var(--navy);color:#e8edf5;border-radius:10px;padding:16px 20px;margin-bottom:18px;font-size:14px;line-height:1.7}
+.scenario-situation .label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-light);font-weight:700;margin-bottom:6px}
+.scenario-task{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:14px}
+
+/* ─── THINKING EXERCISES ─── */
+.think-card{background:var(--white);border-radius:14px;padding:28px 30px;box-shadow:var(--shadow);margin-bottom:24px;border-top:4px solid var(--teal)}
+.think-badge{background:var(--teal-pale);color:var(--teal);font-size:11px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:12px}
+.think-card h3{font-family:'Merriweather',serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.think-card p{font-size:15px;color:var(--text-sec);margin-bottom:16px}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.match-col{background:var(--bg);border-radius:10px;padding:14px}
+.match-col h4{font-size:12px;letter-spacing:.10em;text-transform:uppercase;color:var(--text-sec);font-weight:700;margin-bottom:10px}
+.match-item{background:var(--white);border:1px solid var(--border);border-radius:7px;padding:9px 12px;font-size:14px;margin-bottom:6px;cursor:pointer;transition:all .18s}
+.match-item:hover{border-color:var(--teal);background:var(--teal-pale)}
+.match-item.selected{border-color:var(--teal);background:var(--teal-pale);font-weight:600}
+.match-item.matched-correct{border-color:var(--green);background:var(--green-pale)}
+.match-item.matched-wrong{border-color:var(--red);background:var(--red-pale)}
+.flow-step{display:flex;align-items:center;gap:0;margin-bottom:12px;flex-wrap:wrap}
+.flow-box{background:var(--bg);border:2px solid var(--border);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:grab;text-align:center;min-width:100px}
+.flow-arrow{color:var(--border);font-size:20px;margin:0 4px}
+.reveal-btn{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;margin-top:12px;transition:background .2s}
+.reveal-btn:hover{background:#0b7a6e}
+
+/* ─── CHALLENGE ROUND ─── */
+.challenge-header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);border-radius:14px;padding:28px 32px;margin-bottom:24px;border:2px solid var(--gold);position:relative;overflow:hidden}
+.challenge-header::before{content:'⚡';position:absolute;right:30px;top:50%;transform:translateY(-50%);font-size:80px;opacity:.06}
+.challenge-header h2{font-family:'Merriweather',serif;font-size:22px;color:#fff;font-weight:900;margin-bottom:6px}
+.challenge-header p{font-size:15px;color:rgba(255,255,255,.60)}
+.challenge-tag{background:var(--gold);color:var(--navy);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:12px}
+.c-card{background:var(--white);border-radius:12px;padding:24px 26px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:20px;border-left:4px solid var(--gold)}
+.c-type{font-size:11px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.c-card h3{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:12px;line-height:1.5}
+.mistake-block{background:#fff8e1;border:2px solid #ffc107;border-radius:10px;padding:16px 20px;font-family:'Source Code Pro',monospace;font-size:13px;line-height:1.8;margin-bottom:14px;color:#333}
+.mistake-block .wrong-line{background:#ffebee;border-radius:4px;padding:2px 6px;color:#c62828;display:inline-block}
+.bonus-badge{background:linear-gradient(135deg,#f8b500,#e67e00);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;display:inline-block;margin-bottom:6px}
+
+/* ─── REFLECTION SECTION ─── */
+.reflect-card{background:var(--white);border-radius:14px;padding:30px 32px;box-shadow:var(--shadow);margin-bottom:24px}
+.reflect-card h3{font-family:'Merriweather',serif;font-size:20px;color:var(--navy);font-weight:700;margin-bottom:6px}
+.reflect-card p{font-size:15px;color:var(--text-sec);margin-bottom:24px}
+.confidence-item{margin-bottom:20px}
+.conf-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.conf-topic{font-size:15px;font-weight:600;color:var(--navy)}
+.conf-val{font-size:14px;font-weight:700;color:var(--gold)}
+.conf-slider{width:100%;height:8px;border-radius:4px;outline:none;cursor:pointer;accent-color:var(--gold);background:var(--border)}
+.conf-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--text-sec);margin-top:4px}
+.review-checklist{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.review-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;transition:all .18s;background:var(--bg)}
+.review-item input{accent-color:var(--gold);width:16px;height:16px;flex-shrink:0}
+.review-item:has(input:checked){background:var(--gold-pale);border-color:var(--gold)}
+
+/* ─── BUTTONS ─── */
+.btn-primary{background:var(--navy);color:#fff;border:none;border-radius:10px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{background:var(--navy-light)}
+.btn-gold{background:var(--gold);color:var(--navy);border:none;border-radius:10px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-gold:hover{background:var(--gold-light)}
+.btn-ghost{background:transparent;color:var(--navy);border:2px solid var(--border);border-radius:10px;padding:12px 28px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-ghost:hover{border-color:var(--navy);background:var(--bg)}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+
+/* ─── SCORE PANEL ─── */
+.score-panel{background:var(--white);border-radius:14px;padding:28px 32px;box-shadow:var(--shadow);margin-bottom:28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;border-bottom:4px solid var(--gold)}
+.score-circle{width:90px;height:90px;border-radius:50%;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.sc-num{font-family:'Merriweather',serif;font-size:28px;font-weight:900;color:var(--gold-light);line-height:1}
+.sc-label{font-size:10px;color:rgba(255,255,255,.5);font-weight:600;letter-spacing:.08em}
+.score-detail{flex:1}
+.score-detail h3{font-family:'Merriweather',serif;font-size:20px;color:var(--navy);font-weight:700;margin-bottom:4px}
+.score-detail p{font-size:14px;color:var(--text-sec)}
+.score-bars{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px}
+.sbar-item{text-align:center}
+.sbar-val{font-size:20px;font-weight:700;color:var(--navy);font-family:'Merriweather',serif}
+.sbar-lab{font-size:11px;color:var(--text-sec);font-weight:600}
+
+/* ─── FINAL RESULTS ─── */
+.results-panel{display:none;background:var(--navy);color:#fff;border-radius:16px;padding:40px;text-align:center;margin-top:32px}
+.results-panel.show{display:block}
+.results-panel h2{font-family:'Merriweather',serif;font-size:28px;font-weight:900;color:var(--gold-light);margin-bottom:8px}
+.results-panel p{color:rgba(255,255,255,.65);font-size:16px}
+.final-score-big{font-family:'Merriweather',serif;font-size:72px;font-weight:900;color:var(--gold-light);line-height:1;margin:20px 0 8px}
+.final-grade{font-size:22px;font-weight:700;color:#fff;margin-bottom:24px}
+.topic-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:24px;text-align:left}
+.topic-result{background:rgba(255,255,255,.06);border-radius:10px;padding:14px 16px}
+.topic-result .tr-name{font-size:13px;font-weight:700;color:rgba(255,255,255,.80);margin-bottom:6px}
+.topic-result .tr-bar-bg{height:6px;background:rgba(255,255,255,.12);border-radius:3px}
+.topic-result .tr-bar-fill{height:6px;border-radius:3px;background:var(--gold)}
+.topic-result .tr-score{font-size:12px;color:rgba(255,255,255,.45);margin-top:4px}
+
+/* ─── INSTRUCTOR KEY ─── */
+.instructor-key{background:var(--navy);color:#fff;border-radius:14px;padding:32px;margin-top:40px;border:2px solid var(--gold)}
+.ik-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.ik-badge{background:var(--gold);color:var(--navy);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:20px}
+.ik-header h3{font-family:'Merriweather',serif;font-size:20px;color:#fff;font-weight:700}
+.ik-section{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.10)}
+.ik-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.ik-section h4{font-size:14px;font-weight:700;color:var(--gold-light);margin-bottom:10px;letter-spacing:.04em}
+.ik-section p,.ik-section li{font-size:14px;color:rgba(255,255,255,.65);line-height:1.7}
+.ik-section ul{padding-left:18px}
+.ik-answers{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;font-size:13px}
+.ik-answer{background:rgba(255,255,255,.06);border-radius:7px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center}
+.ik-answer .ans-correct{color:var(--gold-light);font-weight:700;font-family:'Source Code Pro',monospace}
+.tip-box{background:rgba(200,151,42,.10);border:1px solid rgba(200,151,42,.25);border-radius:8px;padding:14px 16px;font-size:14px;color:rgba(255,255,255,.70);line-height:1.6;margin-top:10px}
+.tip-box strong{color:var(--gold-light)}
+
+/* ─── FOOTER ─── */
+.site-footer{background:var(--navy);color:rgba(255,255,255,.35);font-size:13px;text-align:center;padding:24px 40px;margin-top:0;border-top:1px solid rgba(255,255,255,.08)}
+.site-footer strong{color:rgba(255,255,255,.65)}
+
+/* ─── UTILITY ─── */
+.section-divider{height:1px;background:var(--border);margin:32px 0}
+.hidden{display:none!important}
+.text-center{text-align:center}
+.mt-16{margin-top:16px}
+.mt-24{margin-top:24px}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:700px){
+  .header-inner,.main{padding-left:20px;padding-right:20px}
+  .mission-inner{padding:0 8px;overflow-x:auto}
+  .mission-btn{padding:12px 10px;font-size:12px;gap:5px}
+  .match-grid,.review-checklist{grid-template-columns:1fr}
+  .score-panel{flex-direction:column;text-align:center}
+  .topic-results{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header class="site-header">
+  <div class="header-bg-pattern"></div>
+  <div class="header-inner">
+    <div class="header-eyebrow"><span>Per Scholas Greater Boston</span> &nbsp;·&nbsp; Cybersecurity Program &nbsp;·&nbsp; Cohort 2026-BOS-02</div>
+    <h1>Network Basics — <em>Final Culminating Activity</em></h1>
+    <p class="header-sub">Cisco Networking Basics &nbsp;|&nbsp; End-of-Course Assessment &nbsp;|&nbsp; All Modules</p>
+    <div class="header-tags">
+      <span class="htag gold">🏁 Final Assessment</span>
+      <span class="htag">OSI &amp; TCP/IP</span>
+      <span class="htag">IP Addressing</span>
+      <span class="htag">Routing &amp; Switching</span>
+      <span class="htag">DHCP &amp; DNS</span>
+      <span class="htag">Transport Layer</span>
+      <span class="htag">Network Security</span>
+    </div>
+    <div class="header-instructor">Prepared by: <strong>Dr. Solomon Seifu</strong> (Lead Instructor) &amp; <strong>Naly Rosario</strong></div>
+  </div>
+</header>
+
+<!-- ─── STICKY NAV ─── -->
+<nav class="mission-bar">
+  <div class="mission-inner">
+    <button class="mission-btn active" onclick="showPart(1,this)" id="nav1">
+      <span class="m-num">1</span> Core Quiz
+    </button>
+    <button class="mission-btn" onclick="showPart(2,this)" id="nav2">
+      <span class="m-num">2</span> Scenarios
+    </button>
+    <button class="mission-btn" onclick="showPart(3,this)" id="nav3">
+      <span class="m-num">3</span> Thinking Exercises
+    </button>
+    <button class="mission-btn" onclick="showPart(4,this)" id="nav4">
+      <span class="m-num">4</span> Challenge Round
+    </button>
+    <button class="mission-btn" onclick="showPart(5,this)" id="nav5">
+      <span class="m-num">5</span> Reflection
+    </button>
+    <div class="score-pill">⭐ Total Score: <span id="totalScoreDisplay">0</span> pts</div>
+  </div>
+  <div class="progress-strip"><div class="progress-fill" id="progressFill"></div></div>
+</nav>
+
+<!-- ─── MAIN ─── -->
+<main class="main">
+
+<!-- ══════════════════════════════════════════
+     PART 1 — CORE QUIZ
+══════════════════════════════════════════ -->
+<div class="part active" id="part1">
+  <div class="part-header">
+    <div class="part-eyebrow">Part 1 of 5</div>
+    <h2>🎯 Core Knowledge Quiz</h2>
+    <p>Twenty carefully selected questions covering every major module. Read each question carefully, select your answer, and read the feedback to solidify your understanding. Each correct answer earns <strong>5 points</strong>.</p>
+    <div class="part-stats">
+      <div class="pstat"><span class="pstat-icon">📝</span><strong>20 Questions</strong></div>
+      <div class="pstat"><span class="pstat-icon">⭐</span><strong>5 pts each &nbsp;|&nbsp; 100 pts total</strong></div>
+      <div class="pstat"><span class="pstat-icon">🔀</span><strong>Answer choices randomized</strong></div>
+    </div>
+  </div>
+
+  <div class="score-panel">
+    <div class="score-circle">
+      <span class="sc-num" id="p1score">0</span>
+      <span class="sc-label">/ 100 pts</span>
+    </div>
+    <div class="score-detail">
+      <h3>Part 1 Score Tracker</h3>
+      <p>Answer a question to see your score update. Each correct answer earns 5 points.</p>
+    </div>
+    <div class="score-bars">
+      <div class="sbar-item"><div class="sbar-val" id="p1correct">0</div><div class="sbar-lab">Correct</div></div>
+      <div class="sbar-item"><div class="sbar-val" id="p1wrong">0</div><div class="sbar-lab">Incorrect</div></div>
+      <div class="sbar-item"><div class="sbar-val" id="p1remain">20</div><div class="sbar-lab">Remaining</div></div>
+    </div>
+  </div>
+
+  <div class="quiz-grid" id="p1quiz"></div>
+
+  <div class="btn-row">
+    <button class="btn-gold" onclick="showPart(2,document.getElementById('nav2'))">Continue to Part 2 — Scenarios →</button>
+    <button class="btn-ghost" onclick="resetPart1()">↺ Reset Part 1</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PART 2 — SCENARIO-BASED QUESTIONS
+══════════════════════════════════════════ -->
+<div class="part" id="part2">
+  <div class="part-header">
+    <div class="part-eyebrow">Part 2 of 5</div>
+    <h2>🌐 Real-World Scenarios</h2>
+    <p>Each scenario presents a realistic networking situation. Analyze the situation carefully and select the best course of action. These questions test critical thinking, not just memorization. Each correct answer earns <strong>8 points</strong>.</p>
+    <div class="part-stats">
+      <div class="pstat"><span class="pstat-icon">🏢</span><strong>5 Scenarios</strong></div>
+      <div class="pstat"><span class="pstat-icon">⭐</span><strong>8 pts each &nbsp;|&nbsp; 40 pts total</strong></div>
+    </div>
+  </div>
+
+  <div id="p2quiz"></div>
+
+  <div class="btn-row">
+    <button class="btn-gold" onclick="showPart(3,document.getElementById('nav3'))">Continue to Part 3 — Thinking Exercises →</button>
+    <button class="btn-ghost" onclick="showPart(1,document.getElementById('nav1'))">← Back to Part 1</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PART 3 — THINKING EXERCISES
+══════════════════════════════════════════ -->
+<div class="part" id="part3">
+  <div class="part-header">
+    <div class="part-eyebrow">Part 3 of 5</div>
+    <h2>🧠 Thinking Exercises</h2>
+    <p>No multiple choice here. These exercises ask you to match, sequence, and identify — the same skills you will use on the job. Work through each exercise and reveal the answer to check your thinking. Each exercise earns <strong>10 points</strong> when you engage with it.</p>
+    <div class="part-stats">
+      <div class="pstat"><span class="pstat-icon">🔗</span><strong>3 Exercises</strong></div>
+      <div class="pstat"><span class="pstat-icon">⭐</span><strong>10 pts each &nbsp;|&nbsp; 30 pts total</strong></div>
+    </div>
+  </div>
+
+  <!-- Exercise 1: Protocol Matching -->
+  <div class="think-card" id="te1">
+    <span class="think-badge">Exercise 1 — Protocol Matching</span>
+    <h3>Match Each Protocol to Its Correct Description</h3>
+    <p>For each protocol on the left, find its matching description on the right. Think carefully — some descriptions are intentionally similar.</p>
+    <div class="match-grid">
+      <div class="match-col">
+        <h4>Protocols</h4>
+        <div class="match-item" id="pm-dhcp" onclick="selectProtocol('DHCP',this)">DHCP</div>
+        <div class="match-item" id="pm-dns" onclick="selectProtocol('DNS',this)">DNS</div>
+        <div class="match-item" id="pm-arp" onclick="selectProtocol('ARP',this)">ARP</div>
+        <div class="match-item" id="pm-icmp" onclick="selectProtocol('ICMP',this)">ICMP</div>
+        <div class="match-item" id="pm-tcp" onclick="selectProtocol('TCP',this)">TCP</div>
+        <div class="match-item" id="pm-udp" onclick="selectProtocol('UDP',this)">UDP</div>
+      </div>
+      <div class="match-col">
+        <h4>Descriptions (click after selecting a protocol)</h4>
+        <div class="match-item" id="md-1" onclick="matchDesc('Automatically assigns IP addresses to devices on a network',this)">Automatically assigns IP addresses to devices on a network</div>
+        <div class="match-item" id="md-2" onclick="matchDesc('Translates human-readable domain names to IP addresses',this)">Translates human-readable domain names to IP addresses</div>
+        <div class="match-item" id="md-3" onclick="matchDesc('Resolves IP addresses to MAC addresses on a local network',this)">Resolves IP addresses to MAC addresses on a local network</div>
+        <div class="match-item" id="md-4" onclick="matchDesc('Sends error messages and operational information about network conditions',this)">Sends error messages and operational information about network conditions</div>
+        <div class="match-item" id="md-5" onclick="matchDesc('Provides reliable, connection-oriented, ordered data delivery',this)">Provides reliable, connection-oriented, ordered data delivery</div>
+        <div class="match-item" id="md-6" onclick="matchDesc('Fast, connectionless delivery — no guarantee of arrival or order',this)">Fast, connectionless delivery — no guarantee of arrival or order</div>
+      </div>
+    </div>
+    <div id="te1-feedback" style="margin-top:14px;display:none"></div>
+    <button class="reveal-btn" onclick="revealMatching()">Check My Matches</button>
+    <button class="reveal-btn" style="background:var(--navy);margin-left:8px" onclick="awardThinking(1,'te1')">✓ Mark Complete (+10 pts)</button>
+  </div>
+
+  <!-- Exercise 2: Packet Flow Sequencing -->
+  <div class="think-card" id="te2">
+    <span class="think-badge">Exercise 2 — Packet Flow Sequencing</span>
+    <h3>Put the Steps of a TCP Connection in the Correct Order</h3>
+    <p>A TCP connection involves a specific 3-step process before data can be sent. Number these events in the correct order by thinking through the TCP three-way handshake. Then click Reveal to verify.</p>
+    <div style="background:var(--bg);border-radius:10px;padding:16px 20px;font-size:14px;line-height:2">
+      <div>☐ &nbsp;<strong>A.</strong> The client sends a SYN packet to the server to initiate a connection</div>
+      <div>☐ &nbsp;<strong>B.</strong> The server responds with a SYN-ACK packet acknowledging the request</div>
+      <div>☐ &nbsp;<strong>C.</strong> The client sends an ACK packet and the connection is established</div>
+      <div>☐ &nbsp;<strong>D.</strong> Data transmission begins between client and server</div>
+    </div>
+    <div id="te2-answer" class="hidden" style="background:var(--green-pale);border:1px solid #a7d7b8;border-radius:10px;padding:16px;margin-top:12px;font-size:14px">
+      <strong style="color:var(--green)">✅ Correct Order: A → B → C → D</strong><br><br>
+      <strong>Step 1 (A):</strong> The client sends a SYN (synchronize) packet — "I want to connect."<br>
+      <strong>Step 2 (B):</strong> The server responds with SYN-ACK — "I hear you, I'm ready."<br>
+      <strong>Step 3 (C):</strong> The client sends ACK — "Acknowledged, let's go." Connection established.<br>
+      <strong>Step 4 (D):</strong> Data now flows reliably in both directions over the established connection.
+    </div>
+    <div class="btn-row">
+      <button class="reveal-btn" onclick="document.getElementById('te2-answer').classList.remove('hidden')">Reveal Answer</button>
+      <button class="reveal-btn" style="background:var(--navy)" onclick="awardThinking(2,'te2')">✓ Mark Complete (+10 pts)</button>
+    </div>
+  </div>
+
+  <!-- Exercise 3: Identify Network Components -->
+  <div class="think-card" id="te3">
+    <span class="think-badge">Exercise 3 — Identify the Device</span>
+    <h3>Read Each Description and Identify the Correct Network Device</h3>
+    <p>Each clue describes one network device. Name the device and then reveal the answer to verify.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
+      <div style="background:var(--bg);border-radius:8px;padding:12px 16px">
+        <strong>Clue 1:</strong> I operate at Layer 2. I learn which MAC address is on which port and only forward frames to the correct destination, reducing unnecessary traffic on the LAN.
+        <div id="clue1-ans" class="hidden" style="color:var(--green);font-weight:700;margin-top:4px">✅ Answer: Network Switch</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px 16px">
+        <strong>Clue 2:</strong> I operate at Layer 3. I forward packets between different networks and make decisions based on IP addresses, not MAC addresses.
+        <div id="clue2-ans" class="hidden" style="color:var(--green);font-weight:700;margin-top:4px">✅ Answer: Router</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px 16px">
+        <strong>Clue 3:</strong> I have no intelligence — I receive a signal on one port and broadcast it out of every other port. I operate at Layer 1 only.
+        <div id="clue3-ans" class="hidden" style="color:var(--green);font-weight:700;margin-top:4px">✅ Answer: Hub</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px 16px">
+        <strong>Clue 4:</strong> I connect your home network to your ISP. I translate signals between your home's network and the ISP's infrastructure (cable or DSL).
+        <div id="clue4-ans" class="hidden" style="color:var(--green);font-weight:700;margin-top:4px">✅ Answer: Modem</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px 16px">
+        <strong>Clue 5:</strong> I allow wireless devices to connect to a wired network. I am commonly found in offices and classrooms and extend network access without a physical cable.
+        <div id="clue5-ans" class="hidden" style="color:var(--green);font-weight:700;margin-top:4px">✅ Answer: Wireless Access Point (WAP)</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="reveal-btn" onclick="revealClues()">Reveal All Answers</button>
+      <button class="reveal-btn" style="background:var(--navy)" onclick="awardThinking(3,'te3')">✓ Mark Complete (+10 pts)</button>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-gold" onclick="showPart(4,document.getElementById('nav4'))">Continue to Part 4 — Challenge Round →</button>
+    <button class="btn-ghost" onclick="showPart(2,document.getElementById('nav2'))">← Back to Part 2</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PART 4 — CHALLENGE ROUND
+══════════════════════════════════════════ -->
+<div class="part" id="part4">
+  <div class="challenge-header">
+    <span class="challenge-tag">⚡ CHALLENGE ROUND</span>
+    <h2>Advanced Challenge — Level Up</h2>
+    <p>These questions go deeper. Find the mistake, tackle harder scenarios, and earn bonus points. Each question earns <strong>10 points</strong>.</p>
+  </div>
+
+  <div class="score-panel">
+    <div class="score-circle">
+      <span class="sc-num" id="p4score">0</span>
+      <span class="sc-label">/ 80 pts</span>
+    </div>
+    <div class="score-detail">
+      <h3>Challenge Round Score</h3>
+      <p>8 challenge questions — 10 points each.</p>
+    </div>
+    <div class="score-bars">
+      <div class="sbar-item"><div class="sbar-val" id="p4correct">0</div><div class="sbar-lab">Correct</div></div>
+      <div class="sbar-item"><div class="sbar-val" id="p4wrong">0</div><div class="sbar-lab">Incorrect</div></div>
+    </div>
+  </div>
+
+  <div id="p4quiz"></div>
+
+  <div class="btn-row">
+    <button class="btn-gold" onclick="showPart(5,document.getElementById('nav5'))">Continue to Part 5 — Reflection →</button>
+    <button class="btn-ghost" onclick="showPart(3,document.getElementById('nav3'))">← Back to Part 3</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PART 5 — REFLECTION
+══════════════════════════════════════════ -->
+<div class="part" id="part5">
+  <div class="part-header">
+    <div class="part-eyebrow">Part 5 of 5</div>
+    <h2>💬 Reflection &amp; Confidence Check</h2>
+    <p>The final step is about you — not just right or wrong answers. Assess your own confidence, identify what you want to review, and see your complete results. Honest reflection is how real learning happens.</p>
+  </div>
+
+  <!-- Confidence Sliders -->
+  <div class="reflect-card">
+    <h3>📊 How Confident Do You Feel?</h3>
+    <p>Rate your confidence in each topic area from 1 (need more review) to 10 (I've got it).</p>
+    <div id="sliders-container"></div>
+  </div>
+
+  <!-- Areas to Review -->
+  <div class="reflect-card">
+    <h3>📌 Topics I Want to Review Before the Exam</h3>
+    <p>Check any topics where you feel you need additional practice or clarification.</p>
+    <div class="review-checklist">
+      <label class="review-item"><input type="checkbox"> OSI Model — 7 layers and their functions</label>
+      <label class="review-item"><input type="checkbox"> TCP/IP vs OSI — how they map to each other</label>
+      <label class="review-item"><input type="checkbox"> IPv4 addressing and subnet masks</label>
+      <label class="review-item"><input type="checkbox"> IPv6 address format and transition methods</label>
+      <label class="review-item"><input type="checkbox"> TCP vs UDP — when to use each</label>
+      <label class="review-item"><input type="checkbox"> DHCP — how IP assignment works</label>
+      <label class="review-item"><input type="checkbox"> DNS — how domain name resolution works</label>
+      <label class="review-item"><input type="checkbox"> ARP — how MAC addresses are resolved</label>
+      <label class="review-item"><input type="checkbox"> Routing — how routers forward packets</label>
+      <label class="review-item"><input type="checkbox"> Switching — MAC address tables</label>
+      <label class="review-item"><input type="checkbox"> Transport Layer — ports and sockets</label>
+      <label class="review-item"><input type="checkbox"> Network security — basic concepts</label>
+    </div>
+  </div>
+
+  <!-- Final Results -->
+  <div class="reflect-card">
+    <h3>🏆 Your Final Results</h3>
+    <p>Click the button below to calculate your complete score across all four assessment parts.</p>
+    <div class="btn-row">
+      <button class="btn-gold" onclick="showFinalResults()">Calculate My Final Score 🏆</button>
+    </div>
+    <div class="results-panel" id="finalResults">
+      <h2>Assessment Complete!</h2>
+      <p>Cisco Networking Basics — Final Culminating Activity</p>
+      <div class="final-score-big" id="finalScoreBig">0%</div>
+      <div class="final-grade" id="finalGrade">—</div>
+      <div class="topic-results" id="topicResults"></div>
+      <p style="margin-top:24px;font-size:14px;color:rgba(255,255,255,.45)">Per Scholas Greater Boston &nbsp;·&nbsp; Cohort 2026-BOS-02 &nbsp;·&nbsp; Cisco Networking Basics</p>
+    </div>
+  </div>
+
+  <!-- Instructor Answer Key — Password Locked -->
+  <div style="margin-top:40px">
+
+    <!-- LOCKED STATE -->
+    <div id="ik-locked" style="background:var(--navy);border-radius:14px;padding:36px 32px;border:2px solid rgba(200,151,42,0.35);text-align:center">
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(200,151,42,0.12);border:2px solid rgba(200,151,42,0.30);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px">🔒</div>
+      <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-light);font-weight:700;margin-bottom:8px">Restricted Access</div>
+      <h3 style="font-family:'Merriweather',serif;font-size:20px;color:#fff;font-weight:700;margin-bottom:8px">Instructor Answer Key &amp; Facilitation Guide</h3>
+      <p style="font-size:14px;color:rgba(255,255,255,0.45);max-width:480px;margin:0 auto 24px;line-height:1.6">This section is reserved for the instructor. If you are a learner, please complete your reflection above and submit your portal to your instructor.</p>
+      <div style="display:flex;align-items:center;gap:10px;max-width:360px;margin:0 auto">
+        <input type="password" id="ik-password-input" placeholder="Enter instructor access code" onkeydown="if(event.key==='Enter')unlockInstructorKey()"
+          style="flex:1;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.18);border-radius:9px;padding:11px 16px;font-size:14px;color:#fff;font-family:'Source Sans 3',sans-serif;outline:none"
+          onfocus="this.style.borderColor='rgba(200,151,42,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.18)'">
+        <button onclick="unlockInstructorKey()"
+          style="background:var(--gold);color:var(--navy);border:none;border-radius:9px;padding:11px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Source Sans 3',sans-serif;white-space:nowrap;transition:background .2s"
+          onmouseover="this.style.background='#e8b84b'" onmouseout="this.style.background='var(--gold)'">Unlock</button>
+      </div>
+      <div id="ik-error" style="margin-top:10px;font-size:13px;color:#f87171;display:none">Incorrect access code. Please try again.</div>
+    </div>
+
+    <!-- UNLOCKED STATE (hidden until correct password) -->
+    <div id="ik-unlocked" style="display:none">
+      <div class="instructor-key">
+        <div class="ik-header">
+          <span class="ik-badge">✅ Instructor Access Granted</span>
+          <h3>Answer Key &amp; Facilitation Guide</h3>
+          <button onclick="lockInstructorKey()" style="margin-left:auto;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:6px 14px;font-size:12px;color:rgba(255,255,255,0.55);cursor:pointer;font-family:'Source Sans 3',sans-serif">🔒 Lock Again</button>
+        </div>
+
+        <div class="ik-section">
+          <h4>Part 1 — Core Quiz Answer Key</h4>
+          <div class="ik-answers" id="p1answerKey"></div>
+        </div>
+
+        <div class="ik-section">
+          <h4>Part 2 — Scenario Answer Key</h4>
+          <div class="ik-answers" id="p2answerKey"></div>
+        </div>
+
+        <div class="ik-section">
+          <h4>Part 4 — Challenge Round Answer Key</h4>
+          <div class="ik-answers" id="p4answerKey"></div>
+        </div>
+
+        <div class="ik-section">
+          <h4>How to Facilitate This Activity</h4>
+          <div class="tip-box">
+            <strong>Suggested Timing:</strong> Allocate 90–120 minutes for the full portal. Recommended breakdown: Part 1 (25 min) → Part 2 (20 min) → Part 3 (15 min) → Part 4 (20 min) → Part 5 Reflection (15 min) → Full class debrief (10 min).
+          </div>
+          <ul style="margin-top:12px">
+            <li>After Part 1, pause and ask the class: <em>"Which question surprised you most, and why?"</em></li>
+            <li>For Part 2 scenarios, encourage learners to explain their reasoning out loud — this is where real understanding is revealed.</li>
+            <li>Part 3 Thinking Exercises work well as pair activities. Let learners discuss before revealing answers.</li>
+            <li>Use the Challenge Round as a competition element — first learner to get all 8 correct wins recognition.</li>
+            <li>The Reflection section is private. Encourage honest self-assessment. Use the checked "Topics to Review" as your guide for the final review session.</li>
+            <li>After all parts, hold a 10-minute debrief asking: <em>"Name one concept that fully clicked for you today. Name one concept you still want to revisit."</em></li>
+          </ul>
+        </div>
+
+        <div class="ik-section">
+          <h4>Grading Guidance</h4>
+          <div class="tip-box">
+            <strong>Total Maximum Points: 250</strong><br>
+            Part 1 Core Quiz: 100 pts (20 × 5 pts) &nbsp;|&nbsp;
+            Part 2 Scenarios: 40 pts (5 × 8 pts) &nbsp;|&nbsp;
+            Part 3 Exercises: 30 pts (3 × 10 pts) &nbsp;|&nbsp;
+            Part 4 Challenge: 80 pts (8 × 10 pts)<br><br>
+            <strong>Grade Scale:</strong> 90–100% = Exceeds Expectations &nbsp;|&nbsp; 75–89% = Meets Expectations &nbsp;|&nbsp; 60–74% = Approaching &nbsp;|&nbsp; Below 60% = Needs Review
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</main>
+
+<!-- ─── FOOTER ─── -->
+<footer class="site-footer">
+  <strong>Dr. Solomon Seifu</strong> (Lead Instructor) &amp; <strong>Naly Rosario</strong> &nbsp;|&nbsp;
+  Per Scholas Greater Boston — Cybersecurity Program &nbsp;|&nbsp; Cohort 2026-BOS-02<br>
+  <span style="margin-top:4px;display:block">Cisco Networking Basics — Final Culminating Activity Portal</span>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  DATA — ALL QUESTIONS
+// ═══════════════════════════════════════════════════════
+
+const p1Questions = [
+  {
+    topic:'OSI Model',
+    text:'What is the correct order of the OSI model layers from Layer 1 (bottom) to Layer 7 (top)?',
+    opts:[
+      {t:'Physical, Data Link, Network, Transport, Session, Presentation, Application', correct:true, why:'Correct! The OSI model has 7 layers. The mnemonic "Please Do Not Throw Sausage Pizza Away" (bottom to top) helps you remember this order every time.'},
+      {t:'Application, Presentation, Session, Transport, Network, Data Link, Physical', correct:false, why:'This is the order from top (Layer 7) to bottom (Layer 1) — the reverse. When reading the OSI model, Layer 1 (Physical) is at the bottom.'},
+      {t:'Physical, Network, Data Link, Transport, Application, Session, Presentation', correct:false, why:'The Data Link layer (Layer 2) must come before the Network layer (Layer 3). This order incorrectly swaps them.'},
+      {t:'Physical, Data Link, Transport, Network, Session, Presentation, Application', correct:false, why:'Network (Layer 3) always comes before Transport (Layer 4). This option incorrectly swaps those two layers.'}
+    ]
+  },
+  {
+    topic:'TCP/IP Model',
+    text:'The TCP/IP model has four layers. Which of the following correctly maps the TCP/IP Application layer to the OSI model?',
+    opts:[
+      {t:'It maps to OSI Layers 5, 6, and 7 — Session, Presentation, and Application', correct:true, why:'Correct! The TCP/IP Application layer is a combined layer that encompasses the OSI Session (5), Presentation (6), and Application (7) layers. TCP/IP simplifies the top three OSI layers into one.'},
+      {t:'It maps only to OSI Layer 7 — Application', correct:false, why:'The TCP/IP Application layer is broader than just OSI Layer 7. It also absorbs Session (Layer 5) and Presentation (Layer 6) functionality.'},
+      {t:'It maps to OSI Layers 3 and 4 — Network and Transport', correct:false, why:'Layers 3 and 4 map to the TCP/IP Internet and Transport layers, respectively — not the Application layer.'},
+      {t:'It maps to OSI Layer 4 only — Transport', correct:false, why:'TCP/IP has its own Transport layer that directly corresponds to OSI Layer 4. The Application layer is a separate, higher-level layer.'}
+    ]
+  },
+  {
+    topic:'IP Addressing',
+    text:'A host has the IP address 192.168.10.50 with a subnet mask of 255.255.255.0. What is the network address?',
+    opts:[
+      {t:'192.168.10.0', correct:true, why:'Correct! With a /24 subnet mask (255.255.255.0), the network portion covers the first three octets. The host portion (last octet) is zeroed out: 192.168.10.0.'},
+      {t:'192.168.10.50', correct:false, why:'This is the host address itself, not the network address. The network address is found by ANDing the IP address with the subnet mask.'},
+      {t:'192.168.10.255', correct:false, why:'This is the broadcast address for the 192.168.10.0 network — it sends data to all hosts in the subnet, not the network address itself.'},
+      {t:'192.168.0.0', correct:false, why:'A /24 mask preserves three octets, not two. The network address is 192.168.10.0, not 192.168.0.0.'}
+    ]
+  },
+  {
+    topic:'IPv6',
+    text:'Which of the following is a valid compressed IPv6 address notation?',
+    opts:[
+      {t:'2001:db8::1', correct:true, why:'Correct! The double colon (::) can replace one or more consecutive groups of all zeros. 2001:db8::1 expands to 2001:0db8:0000:0000:0000:0000:0000:0001.'},
+      {t:'2001::db8::1', correct:false, why:'A double colon (::) can only appear ONCE in an IPv6 address. Using it twice makes the address ambiguous — a device cannot know how many zeros each :: represents.'},
+      {t:'2001.db8.0.1', correct:false, why:'IPv6 addresses use colons (:) as separators, not periods. Periods are used in IPv4 addresses only.'},
+      {t:'2001:db8:0:0:0:0:1', correct:false, why:'This is missing one group — IPv6 has exactly 8 groups of 16-bit hextets. This address only has 7 groups and is not valid in this form.'}
+    ]
+  },
+  {
+    topic:'Routing',
+    text:'A router receives a packet destined for 10.5.0.0/16. The routing table has the following entries: 10.5.0.0/16, 10.5.0.0/24, and 0.0.0.0/0. Which route will the router use?',
+    opts:[
+      {t:'10.5.0.0/24 — routers always select the most specific (longest prefix) match', correct:true, why:'Correct! Routers use longest prefix match. /24 is more specific than /16, so it wins. The more bits that match the destination, the more specific the route — and routers always prefer the most specific match.'},
+      {t:'0.0.0.0/0 — this is the default route and takes priority', correct:false, why:'The default route (0.0.0.0/0) is used only when no more specific match exists. It is the last resort, not the first choice.'},
+      {t:'10.5.0.0/16 — the first matching entry in the routing table wins', correct:false, why:'Routers do not use first-match logic. They always select the longest (most specific) prefix match, regardless of entry order in the routing table.'},
+      {t:'The router will drop the packet because multiple matches exist', correct:false, why:'Multiple matching routes do not cause packet drops. The router has a clear rule — select the longest (most specific) prefix match among all candidates.'}
+    ]
+  },
+  {
+    topic:'Switching',
+    text:'A switch receives a frame with a destination MAC address that is NOT in its MAC address table. What does the switch do?',
+    opts:[
+      {t:'It floods the frame out of all ports except the port it arrived on', correct:true, why:'Correct! This is called "flooding." When a switch does not know where to send a frame (unknown unicast), it forwards it out every port except the ingress port. The correct destination device will respond, and the switch learns its MAC address.'},
+      {t:'It drops the frame to prevent network loops', correct:false, why:'Switches do not drop unknown unicast frames — that would break connectivity. Dropping occurs for specific filtered addresses or in certain error conditions, not for unknown destinations.'},
+      {t:'It sends an ARP request to find the correct port', correct:false, why:'ARP is performed by end devices (like PCs), not by switches. A switch\'s job is to forward frames based on MAC addresses — it does not generate ARP requests.'},
+      {t:'It forwards the frame only to the default gateway port', correct:false, why:'Switches have no concept of a default gateway — that is a Layer 3 routing concept. The switch operates at Layer 2 and simply floods the unknown frame.'}
+    ]
+  },
+  {
+    topic:'DHCP',
+    text:'Which sequence correctly describes how a device obtains an IP address via DHCP?',
+    opts:[
+      {t:'DISCOVER → OFFER → REQUEST → ACK (DORA)', correct:true, why:'Correct! DORA is the DHCP handshake: the client broadcasts a Discover message, the server responds with an Offer, the client sends a Request to accept, and the server sends an ACK to confirm. Remember DORA.'},
+      {t:'REQUEST → DISCOVER → OFFER → ACK', correct:false, why:'The client must first Discover the server before it can Request an address. The correct order starts with Discover — not Request.'},
+      {t:'ACK → DISCOVER → OFFER → REQUEST', correct:false, why:'ACK is the final confirmation from the server, not the first step. The process always begins with the client broadcasting a DISCOVER message.'},
+      {t:'OFFER → REQUEST → DISCOVER → ACK', correct:false, why:'The server cannot make an Offer before the client sends a Discover. The client must initiate the process first with the DISCOVER broadcast.'}
+    ]
+  },
+  {
+    topic:'DNS',
+    text:'What is the primary purpose of DNS in a network?',
+    opts:[
+      {t:'To translate human-readable domain names (like www.cisco.com) into IP addresses', correct:true, why:'Correct! DNS is the "phone book of the internet." Humans use domain names; computers communicate using IP addresses. DNS bridges the gap by resolving names to addresses so users do not need to remember IP numbers.'},
+      {t:'To automatically assign IP addresses to devices on a network', correct:false, why:'Automatic IP address assignment is the role of DHCP (Dynamic Host Configuration Protocol), not DNS.'},
+      {t:'To encrypt web traffic between clients and servers', correct:false, why:'Encryption is handled by protocols like TLS/SSL (used in HTTPS). DNS is solely responsible for name-to-address translation.'},
+      {t:'To route packets between different networks', correct:false, why:'Packet routing between networks is the function of routers using routing protocols. DNS only resolves names — it does not route traffic.'}
+    ]
+  },
+  {
+    topic:'Transport Layer',
+    text:'Which statement BEST describes the difference between TCP and UDP?',
+    opts:[
+      {t:'TCP is reliable and connection-oriented; UDP is fast and connectionless with no delivery guarantee', correct:true, why:'Correct! TCP establishes a connection (3-way handshake), numbers segments, and requires acknowledgements — making it reliable but slower. UDP sends data without establishing a connection or confirming delivery — making it faster but unreliable.'},
+      {t:'TCP is used for video streaming; UDP is used for file transfers', correct:false, why:'It is actually the opposite. UDP is preferred for real-time streaming (low latency matters more than perfection), while TCP is used for file transfers (every byte must arrive correctly).'},
+      {t:'Both TCP and UDP use connection establishment before sending data', correct:false, why:'Only TCP uses connection establishment (3-way handshake). UDP sends data immediately without any prior connection setup.'},
+      {t:'UDP guarantees data delivery but is slower; TCP does not guarantee delivery', correct:false, why:'This is the reverse. TCP provides guaranteed delivery through acknowledgements and retransmission. UDP provides no delivery guarantee — it sends and moves on.'}
+    ]
+  },
+  {
+    topic:'Transport Layer',
+    text:'A web server is listening on TCP port 443. What service is this most likely running?',
+    opts:[
+      {t:'HTTPS — secure web browsing encrypted with TLS', correct:true, why:'Correct! Port 443 is the well-known port for HTTPS (HTTP Secure). HTTPS uses TLS encryption to protect web traffic. Port 80 is unencrypted HTTP, while 443 is always the secure version.'},
+      {t:'HTTP — standard unencrypted web browsing', correct:false, why:'Unencrypted HTTP runs on port 80, not 443. Port 443 is always HTTPS — the secure, encrypted version.'},
+      {t:'FTP — file transfer protocol', correct:false, why:'FTP uses ports 20 (data) and 21 (control). Port 443 is exclusively associated with HTTPS.'},
+      {t:'SSH — secure shell remote access', correct:false, why:'SSH uses port 22. Port 443 is HTTPS. Knowing your well-known port numbers is a critical skill for both networking and the Security+ exam.'}
+    ]
+  },
+  {
+    topic:'ARP',
+    text:'What does ARP (Address Resolution Protocol) do?',
+    opts:[
+      {t:'It resolves an IP address to a MAC address on the local network', correct:true, why:'Correct! When a device knows the IP address of a target but needs the MAC address to actually deliver the frame, it broadcasts an ARP Request: "Who has IP X? Tell me your MAC." The device with that IP replies with an ARP Reply containing its MAC address.'},
+      {t:'It resolves a domain name to an IP address', correct:false, why:'Domain name to IP address resolution is performed by DNS. ARP works at Layer 2 and only resolves IP addresses to MAC addresses on the same local network segment.'},
+      {t:'It assigns IP addresses to devices automatically', correct:false, why:'Automatic IP assignment is DHCP\'s job. ARP is only used to find the MAC address corresponding to a known IP address on the local LAN.'},
+      {t:'It sends error messages when a host is unreachable', correct:false, why:'Sending network error messages is the function of ICMP (Internet Control Message Protocol), which is also used by the "ping" command. ARP is strictly for IP-to-MAC resolution.'}
+    ]
+  },
+  {
+    topic:'OSI Model',
+    text:'At which OSI layer does a router primarily operate?',
+    opts:[
+      {t:'Layer 3 — Network layer', correct:true, why:'Correct! Routers operate at Layer 3 (Network layer) and make forwarding decisions based on IP addresses. This is why routing protocols and IP addressing are "Layer 3" technologies.'},
+      {t:'Layer 2 — Data Link layer', correct:false, why:'Layer 2 is where switches operate, using MAC addresses. Routers work at Layer 3 — they examine IP headers, not MAC frames.'},
+      {t:'Layer 4 — Transport layer', correct:false, why:'Layer 4 handles end-to-end communication using TCP and UDP. Routers do not operate at Layer 4 — they forward IP packets at Layer 3.'},
+      {t:'Layer 1 — Physical layer', correct:false, why:'Layer 1 is the physical medium (cables, signals). Hubs operate here. Routers operate at Layer 3, examining and forwarding IP packets.'}
+    ]
+  },
+  {
+    topic:'Network Types',
+    text:'Which network type covers the smallest geographic area and is most commonly found in a single building or home?',
+    opts:[
+      {t:'LAN — Local Area Network', correct:true, why:'Correct! A LAN is confined to a small geographic area — typically a single building, floor, or home. It uses high-speed connections (Ethernet or Wi-Fi) to connect devices within that area.'},
+      {t:'WAN — Wide Area Network', correct:false, why:'A WAN spans large geographic areas — cities, countries, or even globally. The internet itself is the world\'s largest WAN. A home network is a LAN, not a WAN.'},
+      {t:'MAN — Metropolitan Area Network', correct:false, why:'A MAN covers a metropolitan area such as a city or campus — larger than a LAN but smaller than a WAN. A single building is a LAN.'},
+      {t:'SAN — Storage Area Network', correct:false, why:'A SAN is a specialized network dedicated to high-speed access to storage devices. It is not defined by geographic size but by its storage-focused purpose.'}
+    ]
+  },
+  {
+    topic:'IP Addressing',
+    text:'Which class of IPv4 address begins with the binary pattern 1110 in the first octet and is used for multicast?',
+    opts:[
+      {t:'Class D — range 224.0.0.0 to 239.255.255.255', correct:true, why:'Correct! Class D addresses (224.0.0.0–239.255.255.255) are reserved for multicast communication — one sender to a specific group of receivers. They are not used for individual host addressing.'},
+      {t:'Class A — range 1.0.0.0 to 126.255.255.255', correct:false, why:'Class A addresses begin with binary 0 and support very large networks with millions of host addresses. They are not used for multicast.'},
+      {t:'Class B — range 128.0.0.0 to 191.255.255.255', correct:false, why:'Class B addresses begin with binary 10 and are used for medium-to-large networks. They are not multicast addresses.'},
+      {t:'Class C — range 192.0.0.0 to 223.255.255.255', correct:false, why:'Class C addresses begin with binary 110 and support smaller networks (254 hosts per network). Multicast is Class D — above the Class C range.'}
+    ]
+  },
+  {
+    topic:'Network Security',
+    text:'A network administrator notices that an unauthorized device is sending out IP addresses on the network, overwriting the legitimate DHCP server. What type of attack is this?',
+    opts:[
+      {t:'DHCP Spoofing (also called a Rogue DHCP Server attack)', correct:true, why:'Correct! A rogue DHCP server intercepts or competes with the legitimate DHCP server. It can assign incorrect IP addresses, wrong default gateways (pointing to an attacker), or wrong DNS servers — enabling man-in-the-middle attacks. The defense is DHCP Snooping.'},
+      {t:'ARP Poisoning', correct:false, why:'ARP Poisoning sends fake ARP replies to corrupt a device\'s ARP cache, associating the attacker\'s MAC with a legitimate IP. It is a different Layer 2 attack — not specifically about hijacking DHCP.'},
+      {t:'MAC Flooding', correct:false, why:'MAC Flooding overwhelms a switch\'s MAC address table, causing it to broadcast all traffic like a hub. This is a switch-level attack, not a DHCP-level attack.'},
+      {t:'Denial of Service (DoS)', correct:false, why:'While a rogue DHCP server can contribute to denial of service, the specific attack described — an unauthorized device issuing DHCP responses — is called DHCP Spoofing or a Rogue DHCP Server attack.'}
+    ]
+  },
+  {
+    topic:'Signals & Transmission',
+    text:'Which transmission medium provides the highest bandwidth, is immune to electromagnetic interference, and uses light to carry data?',
+    opts:[
+      {t:'Fiber optic cable', correct:true, why:'Correct! Fiber optic cables transmit data as pulses of light through glass or plastic strands. Because light is not affected by electromagnetic interference (EMI), fiber is ideal for long distances and high-bandwidth connections.'},
+      {t:'Coaxial cable', correct:false, why:'Coaxial cable uses copper and transmits electrical signals. While it has good shielding against interference, it is not immune to EMI and does not match fiber optic bandwidth or distance capabilities.'},
+      {t:'UTP (Unshielded Twisted Pair)', correct:false, why:'UTP is the most common cable type for Ethernet LANs. It uses copper wire and is susceptible to EMI. It does not use light and has significantly lower bandwidth than fiber over long distances.'},
+      {t:'Wireless (Wi-Fi)', correct:false, why:'Wi-Fi uses radio waves and is highly susceptible to interference from other wireless devices, walls, and electronic equipment. It does not use light signals and cannot match fiber\'s bandwidth or reliability.'}
+    ]
+  },
+  {
+    topic:'MAC Addresses',
+    text:'When a packet travels from PC-A to PC-B through a router, what changes at each router hop?',
+    opts:[
+      {t:'The source and destination MAC addresses change; the source and destination IP addresses stay the same', correct:true, why:'Correct! IP addresses identify the original source and final destination — they do not change as the packet travels. MAC addresses, however, are Layer 2 and only have local significance. At each router, the frame is stripped and rebuilt with new MAC addresses for the next network segment.'},
+      {t:'The source and destination IP addresses change; the MAC addresses stay the same', correct:false, why:'The opposite is true. IP addresses remain constant from source to destination. MAC addresses change at each hop because they are only used within a single network segment.'},
+      {t:'Both the IP addresses and MAC addresses change at every router', correct:false, why:'IP addresses (source and destination) do NOT change — they identify the original sender and final receiver end-to-end. Only MAC addresses change at each router hop.'},
+      {t:'Nothing changes — routers forward packets without modifying any headers', correct:false, why:'Routers do modify headers. They decrement the TTL (Time To Live) field in the IP header and replace both the source and destination MAC addresses in the Ethernet frame at each hop.'}
+    ]
+  },
+  {
+    topic:'Network Concepts',
+    text:'What is the difference between bandwidth and throughput?',
+    opts:[
+      {t:'Bandwidth is the maximum theoretical capacity; throughput is the actual data transfer rate achieved', correct:true, why:'Correct! Bandwidth is like the width of a highway — the maximum number of lanes. Throughput is how many cars actually travel at a given time — the real-world speed after accounting for congestion, overhead, and interference.'},
+      {t:'Bandwidth and throughput are exactly the same thing', correct:false, why:'They are related but different concepts. Bandwidth is theoretical maximum; throughput is real-world actual performance, which is almost always lower than bandwidth.'},
+      {t:'Throughput is always higher than bandwidth', correct:false, why:'Throughput can never exceed bandwidth — bandwidth is the ceiling. Real-world factors (protocol overhead, interference, congestion) always reduce throughput below the stated bandwidth.'},
+      {t:'Bandwidth measures speed; throughput measures distance', correct:false, why:'Neither term measures distance. Bandwidth = maximum capacity. Throughput = actual delivered data rate. Distance is a separate consideration affecting signal quality and latency.'}
+    ]
+  },
+  {
+    topic:'Application Layer',
+    text:'A web browser sends an HTTP request to a server. At which layer of the OSI model does the HTTP protocol operate?',
+    opts:[
+      {t:'Layer 7 — Application layer', correct:true, why:'Correct! HTTP (Hypertext Transfer Protocol) is an Application layer protocol. It defines how web browsers and servers communicate — the format of requests and responses for web content.'},
+      {t:'Layer 4 — Transport layer', correct:false, why:'The Transport layer handles TCP and UDP — the protocols that carry HTTP data. HTTP itself is defined at Layer 7; TCP is what transports it.'},
+      {t:'Layer 3 — Network layer', correct:false, why:'Layer 3 is the Network layer where IP addressing and routing occur. HTTP operates much higher, at Layer 7.'},
+      {t:'Layer 6 — Presentation layer', correct:false, why:'The Presentation layer handles data encoding, encryption, and compression formatting. HTTP is an Application layer (Layer 7) protocol — the layer where end-user services like web, email, and DNS are defined.'}
+    ]
+  },
+  {
+    topic:'Network Troubleshooting',
+    text:'A network technician uses the "ping" command and receives "Request Timed Out" responses. What does this most likely indicate?',
+    opts:[
+      {t:'The destination host is unreachable — it may be down, blocking ICMP, or a routing issue exists', correct:true, why:'Correct! "Request Timed Out" means the ICMP echo request was sent but no reply was received within the timeout period. This can mean the host is offline, a firewall is blocking ICMP, or there is a routing problem preventing the packets from reaching the destination.'},
+      {t:'The DNS server is not resolving the hostname correctly', correct:false, why:'DNS issues typically produce different error messages. "Request Timed Out" specifically means ICMP packets were sent but no reply came back — a connectivity issue, not a name resolution issue.'},
+      {t:'The network interface card (NIC) on the local machine is faulty', correct:false, why:'If the local NIC were faulty, the ping would fail immediately with a different error before packets even left the machine. "Request Timed Out" means the packet was sent but no reply arrived.'},
+      {t:'The DHCP server failed to assign an IP address', correct:false, why:'If DHCP failed, the local machine would have an APIPA address (169.254.x.x) and would show a different kind of connectivity failure. "Request Timed Out" indicates sent-but-unreachable, not a local addressing problem.'}
+    ]
+  }
+];
+
+const p2Questions = [
+  {
+    title:'The School Campus Connectivity Problem',
+    situation:'A school campus has 5 buildings connected by a central switch. Students in Building A report they cannot access the internet, but they can ping each other within Building A. Students in Buildings B, C, D, and E have no issues. The IT team checks and confirms that the switch port connecting Building A is active.',
+    task:'What is the MOST LIKELY cause of the problem, and what should the IT team investigate first?',
+    opts:[
+      {t:'The default gateway configured on Building A\'s devices is incorrect or missing — investigate the gateway settings on Building A\'s devices', correct:true, why:'Correct! If devices can reach each other within Building A (local LAN communication works — Layer 2/Layer 3 local is fine) but cannot reach the internet, the default gateway is the prime suspect. Without a correct gateway, packets destined for external networks have nowhere to go.'},
+      {t:'The switch port for Building A has a VLAN misconfiguration — reassign it to the correct VLAN', correct:false, why:'A VLAN issue would likely prevent Building A devices from communicating with each other at all. Since internal communication works, VLAN configuration is not the primary problem.'},
+      {t:'The ISP has cut internet service to the campus — contact the ISP immediately', correct:false, why:'If the ISP cut service, all buildings would be affected. Since only Building A has the problem and the other buildings are fine, the issue is local to Building A\'s configuration, not the ISP.'},
+      {t:'Building A\'s switch port needs to be reset — power cycle the switch', correct:false, why:'Power cycling the switch would affect all buildings. The issue is isolated to Building A, and it is a logical/configuration problem (gateway), not a physical layer problem requiring hardware reset.'}
+    ]
+  },
+  {
+    title:'Protocol Selection for a New Application',
+    situation:'A software team is designing a new real-time voice call application. The application needs to transmit audio data between users with the lowest possible delay. The team knows that some packet loss is acceptable — a tiny gap in audio is better than a long pause caused by waiting for retransmission.',
+    task:'Which transport protocol should the development team choose, and why?',
+    opts:[
+      {t:'UDP — because low latency matters more than guaranteed delivery for real-time voice', correct:true, why:'Correct! Voice and video applications use UDP precisely because a small amount of packet loss is tolerable (users hear a tiny glitch), but the delay caused by TCP\'s retransmission mechanism would make the call sound choppy and unusable. VoIP, video calls, and live streaming all use UDP for this reason.'},
+      {t:'TCP — because TCP guarantees all audio data arrives completely and in order', correct:false, why:'TCP\'s retransmission mechanism would cause delays that are unacceptable for real-time voice. Waiting for a retransmitted audio packet that is already 500ms late is worse than the missing packet itself — the audio would stutter and break up.'},
+      {t:'ICMP — because it is the fastest protocol at the Network layer', correct:false, why:'ICMP is used for network diagnostics (ping, traceroute) — it is not a data transport protocol. Application data is never sent using ICMP.'},
+      {t:'HTTP — because it is the standard application protocol for transmitting data', correct:false, why:'HTTP is an Application layer protocol for web content — it runs over TCP. Using HTTP for real-time voice would combine the worst of both worlds: TCP delays plus HTTP overhead.'}
+    ]
+  },
+  {
+    title:'The DHCP Mystery',
+    situation:'A new employee starts work on Monday and plugs their laptop into the office network. Their laptop shows "Limited Connectivity." They run "ipconfig" and see the address 169.254.45.122 with subnet mask 255.255.0.0. The IT team checks the DHCP server and finds it is running and serving other clients normally.',
+    task:'What is the MOST LIKELY cause and best immediate resolution?',
+    opts:[
+      {t:'The laptop received an APIPA address because it could not reach the DHCP server — check the patch cable and switch port connection', correct:true, why:'Correct! 169.254.x.x is an APIPA (Automatic Private IP Addressing) address that Windows assigns itself when it cannot contact a DHCP server. Since the DHCP server is fine and other clients work, the issue is physical — likely a bad cable, wrong port, or the port needs to be enabled on the switch.'},
+      {t:'The employee needs to manually assign a static IP address to their laptop', correct:false, why:'Manually assigning a static IP is a workaround, not a solution. The underlying problem is that the laptop cannot reach the DHCP server — that connectivity issue should be diagnosed and fixed first.'},
+      {t:'The DHCP server has run out of available IP addresses to assign', correct:false, why:'If the DHCP pool were exhausted, other clients would also fail to get new leases. Since other clients work normally, the DHCP server has available addresses — the problem is that this specific laptop cannot reach the server.'},
+      {t:'The laptop needs Windows to be reinstalled to reset the network stack', correct:false, why:'A Windows reinstall would be a last resort for a drastic software failure. A 169.254 APIPA address almost always indicates a physical connectivity or DHCP reachability problem — start with cable and port checks, not OS reinstalls.'}
+    ]
+  },
+  {
+    title:'The Subnetting Decision',
+    situation:'A network engineer is designing the IP addressing scheme for a company with 4 departments: Sales (60 hosts), Engineering (110 hosts), HR (20 hosts), and Management (8 hosts). The company has been given the address block 192.168.10.0/24 to work with.',
+    task:'Which approach is the BEST practice for assigning subnets to this organization?',
+    opts:[
+      {t:'Use Variable Length Subnet Masking (VLSM) to create subnets sized appropriately for each department', correct:true, why:'Correct! VLSM allows you to create subnets of different sizes from the same address block. Engineering needs a /25 (126 hosts), Sales a /26 (62 hosts), HR a /27 (30 hosts), and Management a /28 (14 hosts). This conserves IP space — a crucial skill in IP addressing design.'},
+      {t:'Divide 192.168.10.0/24 into four equal /26 subnets for simplicity', correct:false, why:'Equal /26 subnets give 62 usable hosts each. Engineering needs 110 hosts — a /26 is too small. Equal subnetting wastes addresses in small departments and fails to serve large departments. VLSM is the correct approach.'},
+      {t:'Give all departments the same /24 network since you have plenty of addresses', correct:false, why:'A /24 gives 254 usable hosts per subnet, but using the same /24 for all departments means they share one broadcast domain — inefficient, insecure, and poor network design. Departments should be separated into their own subnets.'},
+      {t:'Use DHCP to automatically handle all addressing without any subnetting', correct:false, why:'DHCP assigns addresses but does not create subnets. Subnetting is a design decision made by the administrator to organize the network — DHCP simply distributes the addresses within already-designed subnets.'}
+    ]
+  },
+  {
+    title:'The Network Security Incident',
+    situation:'A network analyst notices that a workstation on the internal network is sending ARP replies to other devices — even when no ARP requests were made. The replies are claiming that the default gateway\'s IP address (192.168.1.1) belongs to the workstation\'s MAC address.',
+    task:'What type of attack is occurring, and what is the IMMEDIATE security risk?',
+    opts:[
+      {t:'ARP Poisoning — the attacker is redirecting all network traffic through their machine to intercept communications (Man-in-the-Middle attack)', correct:true, why:'Correct! ARP Poisoning (also called ARP Spoofing) works by sending unsolicited ARP replies that corrupt other devices\' ARP caches. When devices believe the attacker\'s MAC is the gateway, they send all their traffic to the attacker — who can intercept, read, and modify it before forwarding to the real gateway. This is a classic MITM setup.'},
+      {t:'MAC Flooding — the attacker is overwhelming the switch with fake MAC addresses', correct:false, why:'MAC Flooding targets the switch\'s MAC address table by filling it with fake addresses, causing the switch to broadcast all traffic. The scenario describes fabricated ARP replies claiming to be the gateway — that is ARP Poisoning, not MAC Flooding.'},
+      {t:'DHCP Spoofing — the attacker is assigning fake IP addresses to network clients', correct:false, why:'DHCP Spoofing involves a rogue DHCP server handing out false IP configurations. The scenario describes ARP replies — not DHCP responses — so this is ARP Poisoning.'},
+      {t:'A Denial of Service attack — the attacker is flooding the network with traffic', correct:false, why:'While ARP Poisoning can cause disruption, the primary goal of this attack is traffic interception (Man-in-the-Middle), not simply flooding. The specific technique — unsolicited ARP replies claiming to be the gateway — identifies this as ARP Poisoning.'}
+    ]
+  }
+];
+
+const p4Questions = [
+  {
+    type:'Find the Mistake',
+    text:'A network technician wrote the following notes about the OSI model. Find the ONE error:',
+    details:'"Layer 1 = Physical (cables, signals). Layer 2 = Data Link (MAC addresses, frames). Layer 3 = Network (IP addresses, packets). Layer 4 = Session (TCP/UDP, segments). Layer 5 = Transport (sessions between applications). Layer 6 = Presentation (encryption, encoding). Layer 7 = Application (HTTP, DNS, FTP)."',
+    opts:[
+      {t:'Layer 4 and Layer 5 are swapped — Transport is Layer 4 (TCP/UDP/segments); Session is Layer 5', correct:true, why:'Correct! The error is the layer label swap. TCP/UDP and segments belong to the Transport layer (Layer 4). The Session layer (Layer 5) manages sessions between applications. The technician\'s notes have these two switched.'},
+      {t:'Layer 7 is wrong — the Application layer uses SMTP and SNMP, not HTTP and DNS', correct:false, why:'HTTP and DNS are valid Application layer protocols. SMTP and SNMP are also Application layer, but the statement is not wrong — it just listed some examples. The actual error is in Layers 4 and 5.'},
+      {t:'Layer 3 is wrong — packets are not used at the Network layer', correct:false, why:'Layer 3 (Network) absolutely works with packets (also called datagrams). IP addresses, routing, and packet forwarding are all Layer 3 concepts. This statement is correct.'},
+      {t:'Layer 1 is wrong — signals are not physical layer', correct:false, why:'Layer 1 (Physical) is exactly about physical signals — electrical, optical, or wireless signals transmitted through physical media. This description is correct.'}
+    ]
+  },
+  {
+    type:'Advanced Concept',
+    text:'A device has IP address 172.16.50.100/20. What is the valid host range for this subnet?',
+    opts:[
+      {t:'172.16.48.1 to 172.16.63.254', correct:true, why:'Correct! /20 means 20 network bits and 12 host bits. The subnet increment in the third octet is 16 (256 - 240 = 16). Starting from 172.16.0.0, subnets are: 0.0, 16.0, 32.0, 48.0, 64.0... Since 50 falls in the 48–63 range, the network is 172.16.48.0/20. Network: 172.16.48.0, Broadcast: 172.16.63.255. Valid hosts: 172.16.48.1–172.16.63.254.'},
+      {t:'172.16.50.1 to 172.16.50.254', correct:false, why:'This would be a /24 subnet (255.255.255.0). With /20, the subnet covers a much larger range — 12 host bits allow 4094 hosts, not just 254.'},
+      {t:'172.16.32.1 to 172.16.47.254', correct:false, why:'This is the range for the 172.16.32.0/20 subnet. The address 172.16.50.100 falls in the next block — 172.16.48.0/20, which covers 172.16.48.0 to 172.16.63.255.'},
+      {t:'172.16.0.1 to 172.16.255.254', correct:false, why:'This would be the range for the entire 172.16.0.0/16 network. With a /20 mask, only a portion of this space is the specific subnet containing 172.16.50.100.'}
+    ]
+  },
+  {
+    type:'Find the Mistake',
+    text:'A student wrote: "TCP uses a 2-way handshake to establish a connection. First, the client sends a SYN. Second, the server sends SYN-ACK. The connection is now established and data transfer begins." What is the error?',
+    opts:[
+      {t:'TCP uses a 3-way handshake — the student missed the third step where the client sends an ACK back to the server', correct:true, why:'Correct! The TCP connection setup is a THREE-way handshake (SYN → SYN-ACK → ACK). The student described only two steps and missed the critical third step: the client must acknowledge the server\'s SYN-ACK before data transfer begins. Without that final ACK, the connection is not fully established.'},
+      {t:'The client should send ACK first, not SYN', correct:false, why:'The client always initiates with a SYN (synchronize) packet. An ACK is sent in response to received data or control messages — you cannot send an ACK before a connection exists.'},
+      {t:'The server should send SYN first, not the client', correct:false, why:'In a standard TCP connection, the client is the initiator and sends SYN first. The server is passive — it listens for incoming SYN packets and responds with SYN-ACK.'},
+      {t:'There is no error — TCP does use a 2-way handshake', correct:false, why:'TCP definitively uses a 3-way handshake (SYN, SYN-ACK, ACK). This is fundamental to how TCP establishes reliable, full-duplex connections. There is absolutely an error in the student\'s description.'}
+    ]
+  },
+  {
+    type:'Bonus Challenge',
+    text:'Which IPv6 address type is equivalent to the IPv4 private address ranges (10.x.x.x, 172.16.x.x, 192.168.x.x)?',
+    opts:[
+      {t:'Unique Local Addresses (ULA) — prefix FC00::/7', correct:true, why:'Correct! IPv6 Unique Local Addresses (ULA) serve the same function as IPv4 private addresses — they are routable within an organization but not on the public internet. They use the FC00::/7 prefix (commonly written as FD00::/8 when locally assigned).'},
+      {t:'Link-Local Addresses — prefix FE80::/10', correct:false, why:'Link-Local addresses (FE80::/10) are the IPv6 equivalent of IPv4 APIPA addresses (169.254.x.x). They are only valid on a single network segment and are not routable between networks — not equivalent to private addresses.'},
+      {t:'Global Unicast Addresses — prefix 2000::/3', correct:false, why:'Global Unicast Addresses are the IPv6 equivalent of public IPv4 addresses — routable on the public internet. They are the opposite of private addresses.'},
+      {t:'Multicast Addresses — prefix FF00::/8', correct:false, why:'Multicast addresses are used for one-to-many communication (equivalent to IPv4 Class D addresses 224.0.0.0/4). They serve a completely different purpose than private addressing.'}
+    ]
+  },
+  {
+    type:'Advanced Concept',
+    text:'A switch port is in "blocking" state. What does this mean, and which protocol causes this?',
+    opts:[
+      {t:'The port is not forwarding traffic — Spanning Tree Protocol (STP) placed it in blocking state to prevent a network loop', correct:true, why:'Correct! STP (Spanning Tree Protocol — IEEE 802.1D) prevents Layer 2 loops by putting redundant ports into a blocking state. A blocked port still receives BPDU (Bridge Protocol Data Units) to detect topology changes but does not forward data frames. This prevents broadcast storms from destroying the network.'},
+      {t:'The port was disabled by the administrator using the "shutdown" command', correct:false, why:'An administratively shut-down port would show as "administratively down" — a different state. A "blocking" state specifically indicates STP activity, not manual shutdown.'},
+      {t:'The port is blocked by a firewall ACL denying traffic on that interface', correct:false, why:'ACLs (Access Control Lists) are applied at Layer 3 on routers, not switch ports at Layer 2. A blocked switch port is a Spanning Tree Protocol state, not a firewall action.'},
+      {t:'The MAC address table is full, so the port cannot forward any more frames', correct:false, why:'When the MAC table is full, a switch floods all frames — it does not enter a blocking state. Blocking is exclusively a Spanning Tree Protocol mechanism for loop prevention.'}
+    ]
+  },
+  {
+    type:'Find the Mistake',
+    text:'A student listed these well-known port numbers for a study guide. Find the ONE incorrect entry: "HTTP=80, HTTPS=443, FTP=21, SSH=22, DNS=53, Telnet=23, SMTP=25, RDP=3390"',
+    opts:[
+      {t:'RDP should be port 3389, not 3390', correct:true, why:'Correct! RDP (Remote Desktop Protocol) uses TCP port 3389 — not 3390. This is a common trick question. All other entries are correct: HTTP=80, HTTPS=443, FTP=21 (control), SSH=22, DNS=53, Telnet=23, SMTP=25.'},
+      {t:'FTP should be port 20, not 21', correct:false, why:'FTP actually uses TWO ports: port 21 for control (commands) and port 20 for data transfer. Port 21 is correct for FTP control. The student correctly listed 21 for FTP.'},
+      {t:'DNS should be port 54, not 53', correct:false, why:'DNS uses port 53 for both UDP (standard queries) and TCP (zone transfers and large responses). Port 53 is correct — not 54.'},
+      {t:'SMTP should be port 465, not 25', correct:false, why:'SMTP uses port 25 for server-to-server email relay (correct as listed). Port 465 is used for SMTP over SSL (SMTPS), which is a different configuration. The port 25 listing for SMTP is correct.'}
+    ]
+  },
+  {
+    type:'Bonus Challenge',
+    text:'What happens when a PC sends a packet to an IP address on a DIFFERENT network, but the default gateway is not configured?',
+    opts:[
+      {t:'The packet is dropped — without a default gateway, the device has no path to send packets outside its local subnet', correct:true, why:'Correct! The default gateway is the device\'s "exit door" for traffic destined for external networks. Without it, when a device determines the destination IP is on a different subnet, it does not know where to send the packet. The packet is discarded locally — it never even leaves the device.'},
+      {t:'The device automatically discovers the nearest router using ARP', correct:false, why:'ARP only resolves IP addresses to MAC addresses on the local network. There is no automatic gateway discovery mechanism in standard IPv4 — the default gateway must be manually configured or assigned via DHCP.'},
+      {t:'The packet is sent to all devices on the network via broadcast until the router responds', correct:false, why:'Routing is not handled by broadcast. Without a configured default gateway, the sending device simply cannot forward the packet — it drops it. No broadcast discovery of routers occurs in this scenario.'},
+      {t:'The packet is sent directly to the destination using DNS resolution', correct:false, why:'DNS resolves domain names to IP addresses — it does not route packets. Routing requires a configured gateway. DNS and routing are separate functions at different layers.'}
+    ]
+  },
+  {
+    type:'Advanced Concept',
+    text:'In which scenario would you use a STATIC IP address rather than DHCP?',
+    opts:[
+      {t:'For a server, network printer, or router interface that must always have the same IP address so clients can reliably reach it', correct:true, why:'Correct! Static IPs are used for infrastructure devices that need consistent, known addresses. Servers (web, file, DNS, DHCP), printers, routers, and switches need stable addresses so clients always know where to find them. DHCP is for end-user devices where the IP does not need to be remembered.'},
+      {t:'For a laptop used by an employee who travels between offices frequently', correct:false, why:'A traveling employee\'s laptop is a perfect DHCP candidate — it needs to automatically get a working IP address at every different office location without manual configuration. Static IPs would create conflicts as the device moves between different subnets.'},
+      {t:'For all devices on the network to reduce DHCP server load', correct:false, why:'Manual static configuration for all devices creates an enormous management burden — tracking which IPs are used, avoiding conflicts, and updating records when devices move. DHCP exists specifically to automate this at scale.'},
+      {t:'For wireless devices because DHCP does not work over Wi-Fi', correct:false, why:'DHCP works perfectly over Wi-Fi. Your phone, laptop, and every wireless device you use gets its IP address via DHCP over the wireless connection. The protocol does not distinguish between wired and wireless.'}
+    ]
+  }
+];
+
+const confidenceTopics = [
+  'OSI Model (7 layers and their functions)',
+  'TCP/IP Model (4 layers)',
+  'IPv4 Addressing and Subnet Masks',
+  'IPv6 Addressing and Notation',
+  'TCP vs UDP (Transport Layer)',
+  'DHCP — How IP Assignment Works',
+  'DNS — Domain Name Resolution',
+  'ARP — IP to MAC Resolution',
+  'Routing — How Routers Forward Packets',
+  'Switching — MAC Tables and Flooding',
+  'Network Security Concepts (ARP Poisoning, DHCP Spoofing)',
+  'Network Troubleshooting (ping, ipconfig)'
+];
+
+// ═══════════════════════════════════════════════════════
+//  SCORING STATE
+// ═══════════════════════════════════════════════════════
+let p1Score = 0, p1Correct = 0, p1Wrong = 0;
+let p2Score = 0, p2Correct = 0;
+let p3Score = 0;
+let p4Score = 0, p4Correct = 0, p4Wrong = 0;
+let thinkingAwarded = [false, false, false];
+let totalScore = 0;
+
+function updateTotalScore() {
+  totalScore = p1Score + p2Score + p3Score + p4Score;
+  document.getElementById('totalScoreDisplay').textContent = totalScore;
+  // Progress: max 250 pts
+  const pct = Math.min((totalScore / 250) * 100, 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ═══════════════════════════════════════════════════════
+//  UTILITY
+// ═══════════════════════════════════════════════════════
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const letters = ['A','B','C','D'];
+
+// ═══════════════════════════════════════════════════════
+//  PART NAVIGATION
+// ═══════════════════════════════════════════════════════
+function showPart(n, btn) {
+  document.querySelectorAll('.part').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.mission-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('part' + n).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER QUIZ
+// ═══════════════════════════════════════════════════════
+function renderQuiz(questions, containerId, pts, scoreId, correctId, wrongId, remainId, partKey, multiplier) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+
+  questions.forEach((q, qi) => {
+    const shuffled = shuffle(q.opts.map((o, oi) => ({ ...o, origIdx: oi })));
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = `${containerId}_q${qi}`;
+
+    let scenarioHTML = '';
+    if (q.situation) {
+      scenarioHTML = `<div class="q-scenario"><strong>📋 Situation:</strong><br>${q.situation}</div>`;
+    }
+    if (q.details) {
+      scenarioHTML = `<div class="q-scenario" style="font-family:'Source Code Pro',monospace;font-size:13px">${q.details}</div>`;
+    }
+
+    let titleHTML = '';
+    if (q.title) titleHTML = `<div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px">📌 ${q.title}</div>`;
+    if (q.type) titleHTML = `<div class="c-type">${q.type === 'Find the Mistake' ? '🔍 ' : '⭐ '} ${q.type}</div>`;
+
+    const optsHTML = shuffled.map((o, si) => `
+      <button class="opt" onclick="handleAnswer(this,'${containerId}_q${qi}',${o.correct},${pts},'${containerId}','${partKey}')" id="${containerId}_q${qi}_opt${si}">
+        <span class="opt-letter">${letters[si]}</span>
+        <span>${o.t}</span>
+      </button>
+    `).join('');
+
+    const correctOpt = shuffled.find(o => o.correct);
+    const fbHTML = `
+      <div class="feedback" id="${containerId}_q${qi}_fb">
+        <div class="fb-correct">
+          <div class="fb-header">✅ ${correctOpt ? correctOpt.t : ''} — that is correct!</div>
+          <div class="fb-body" id="${containerId}_q${qi}_fbtext"></div>
+        </div>
+      </div>
+    `;
+
+    card.innerHTML = `
+      <div class="q-meta">
+        <div class="q-num">${qi + 1}</div>
+        ${q.topic ? `<span class="q-topic">${q.topic}</span>` : ''}
+        <span class="q-points">⭐ ${pts} pts</span>
+      </div>
+      ${titleHTML}
+      ${scenarioHTML}
+      ${q.task ? `<div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:12px;background:var(--gold-pale);padding:10px 14px;border-radius:8px;border-left:3px solid var(--gold)">🎯 Your Task: ${q.task}</div>` : ''}
+      <div class="q-text">${q.text}</div>
+      <div class="opts" id="${containerId}_q${qi}_opts">${optsHTML}</div>
+      ${fbHTML}
+    `;
+
+    // Store shuffled for answer key
+    card.dataset.shuffled = JSON.stringify(shuffled.map((o,si) => ({letter: letters[si], correct: o.correct, text: o.t})));
+    container.appendChild(card);
+  });
+}
+
+function handleAnswer(btn, cardId, isCorrect, pts, containerId, partKey) {
+  const card = document.getElementById(cardId);
+  const opts = card.querySelectorAll('.opt');
+  opts.forEach(o => { o.classList.add('locked'); o.onclick = null; });
+
+  const fb = document.getElementById(cardId + '_fb');
+  const fbText = document.getElementById(cardId + '_fbtext');
+
+  // Find feedback text
+  const qIdx = parseInt(cardId.split('_q')[1]);
+  let questions;
+  if (partKey === 'p1') questions = p1Questions;
+  else if (partKey === 'p2') questions = p2Questions;
+  else questions = p4Questions;
+
+  const q = questions[qIdx];
+  const shuffledData = JSON.parse(card.dataset.shuffled);
+  const clickedText = btn.querySelector('span:last-child').textContent;
+  const clickedOpt = q.opts.find(o => o.t === clickedText);
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    fb.innerHTML = `
+      <div class="fb-correct">
+        <div class="fb-header">✅ Correct! Well done.</div>
+        <div class="fb-body">${clickedOpt ? clickedOpt.why : ''}</div>
+      </div>
+    `;
+    fb.classList.add('show');
+
+    if (partKey === 'p1') {
+      p1Score += pts; p1Correct++;
+      document.getElementById('p1score').textContent = p1Score;
+      document.getElementById('p1correct').textContent = p1Correct;
+      document.getElementById('p1remain').textContent = 20 - p1Correct - p1Wrong;
+    } else if (partKey === 'p2') {
+      p2Score += pts; p2Correct++;
+    } else if (partKey === 'p4') {
+      p4Score += pts; p4Correct++;
+      document.getElementById('p4score').textContent = p4Score;
+      document.getElementById('p4correct').textContent = p4Correct;
+    }
+  } else {
+    btn.classList.add('wrong');
+    const correctBtn = Array.from(opts).find(o => {
+      const oText = o.querySelector('span:last-child').textContent;
+      const oOpt = q.opts.find(op => op.t === oText);
+      return oOpt && oOpt.correct;
+    });
+    if (correctBtn) correctBtn.classList.add('correct');
+
+    const correctOptData = q.opts.find(o => o.correct);
+    fb.innerHTML = `
+      <div class="fb-wrong">
+        <div class="fb-header">❌ Not quite. Let's understand why.</div>
+        <div class="fb-body">
+          <strong>Why your choice was incorrect:</strong><br>${clickedOpt ? clickedOpt.why : ''}<br><br>
+          <strong>Why the correct answer is right:</strong><br>${correctOptData ? correctOptData.why : ''}
+        </div>
+      </div>
+    `;
+    fb.classList.add('show');
+
+    if (partKey === 'p1') {
+      p1Wrong++;
+      document.getElementById('p1wrong').textContent = p1Wrong;
+      document.getElementById('p1remain').textContent = 20 - p1Correct - p1Wrong;
+    } else if (partKey === 'p4') {
+      p4Wrong++;
+      document.getElementById('p4wrong').textContent = p4Wrong;
+    }
+  }
+
+  updateTotalScore();
+}
+
+// ═══════════════════════════════════════════════════════
+//  THINKING EXERCISES
+// ═══════════════════════════════════════════════════════
+let selectedProtocol = null;
+const correctMatches = {
+  'DHCP': 'Automatically assigns IP addresses to devices on a network',
+  'DNS': 'Translates human-readable domain names to IP addresses',
+  'ARP': 'Resolves IP addresses to MAC addresses on a local network',
+  'ICMP': 'Sends error messages and operational information about network conditions',
+  'TCP': 'Provides reliable, connection-oriented, ordered data delivery',
+  'UDP': 'Fast, connectionless delivery — no guarantee of arrival or order'
+};
+let protocolMatches = {};
+
+function selectProtocol(name, el) {
+  document.querySelectorAll('#te1 .match-col:first-child .match-item').forEach(m => m.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedProtocol = name;
+}
+
+function matchDesc(desc, el) {
+  if (!selectedProtocol) { alert('Select a protocol first!'); return; }
+  protocolMatches[selectedProtocol] = desc;
+  el.style.background = '#fef3e2';
+  el.style.borderColor = 'var(--gold)';
+  el.textContent = `${selectedProtocol}: ${desc.substring(0, 40)}...`;
+  document.getElementById('pm-' + selectedProtocol.toLowerCase()).style.background = '#fef3e2';
+  document.getElementById('pm-' + selectedProtocol.toLowerCase()).style.borderColor = 'var(--gold)';
+  selectedProtocol = null;
+  document.querySelectorAll('#te1 .match-col:first-child .match-item').forEach(m => m.classList.remove('selected'));
+}
+
+function revealMatching() {
+  const fb = document.getElementById('te1-feedback');
+  let html = '<div style="background:var(--navy);color:#fff;border-radius:10px;padding:16px 20px;font-size:14px"><strong style="color:var(--gold-light)">✅ Correct Matches:</strong><ul style="margin-top:8px;padding-left:18px;line-height:2">';
+  for (const [proto, desc] of Object.entries(correctMatches)) {
+    html += `<li><strong>${proto}</strong> — ${desc}</li>`;
+  }
+  html += '</ul></div>';
+  fb.innerHTML = html;
+  fb.style.display = 'block';
+}
+
+function revealClues() {
+  ['clue1-ans','clue2-ans','clue3-ans','clue4-ans','clue5-ans'].forEach(id => {
+    document.getElementById(id).classList.remove('hidden');
+  });
+}
+
+function awardThinking(num, cardId) {
+  if (thinkingAwarded[num - 1]) { alert('Already marked complete!'); return; }
+  thinkingAwarded[num - 1] = true;
+  p3Score += 10;
+  updateTotalScore();
+  const card = document.getElementById(cardId);
+  const badge = card.querySelector('.think-badge');
+  badge.style.background = 'var(--green)';
+  badge.style.color = '#fff';
+  badge.textContent = '✅ Exercise ' + num + ' — Complete (+10 pts)';
+}
+
+// ═══════════════════════════════════════════════════════
+//  CONFIDENCE SLIDERS
+// ═══════════════════════════════════════════════════════
+function buildSliders() {
+  const c = document.getElementById('sliders-container');
+  c.innerHTML = confidenceTopics.map((topic, i) => `
+    <div class="confidence-item">
+      <div class="conf-label">
+        <span class="conf-topic">${topic}</span>
+        <span class="conf-val" id="sv${i}">5 / 10</span>
+      </div>
+      <input type="range" class="conf-slider" min="1" max="10" value="5" oninput="document.getElementById('sv${i}').textContent=this.value+' / 10'">
+      <div class="conf-scale"><span>1 — Need review</span><span>10 — I've got it</span></div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+//  FINAL RESULTS
+// ═══════════════════════════════════════════════════════
+function showFinalResults() {
+  const maxPts = 250;
+  const pct = Math.round((totalScore / maxPts) * 100);
+
+  document.getElementById('finalScoreBig').textContent = pct + '%';
+
+  let grade = '';
+  if (pct >= 90) grade = '🏆 Exceeds Expectations — Outstanding Work!';
+  else if (pct >= 75) grade = '✅ Meets Expectations — Well Done!';
+  else if (pct >= 60) grade = '📘 Approaching Expectations — Keep Studying!';
+  else grade = '🔄 Needs Review — See Your Instructor';
+  document.getElementById('finalGrade').textContent = grade;
+
+  const topicData = [
+    { name: 'Part 1 Core Quiz', score: p1Score, max: 100 },
+    { name: 'Part 2 Scenarios', score: p2Score, max: 40 },
+    { name: 'Part 3 Exercises', score: p3Score, max: 30 },
+    { name: 'Part 4 Challenge', score: p4Score, max: 80 }
+  ];
+
+  document.getElementById('topicResults').innerHTML = topicData.map(t => `
+    <div class="topic-result">
+      <div class="tr-name">${t.name}</div>
+      <div class="tr-bar-bg"><div class="tr-bar-fill" style="width:${Math.round((t.score/t.max)*100)}%"></div></div>
+      <div class="tr-score">${t.score} / ${t.max} pts (${Math.round((t.score/t.max)*100)}%)</div>
+    </div>
+  `).join('');
+
+  document.getElementById('finalResults').classList.add('show');
+  document.getElementById('finalResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ═══════════════════════════════════════════════════════
+//  ANSWER KEYS FOR INSTRUCTOR
+// ═══════════════════════════════════════════════════════
+function buildAnswerKeys() {
+  const buildKey = (questions, containerId) => {
+    const c = document.getElementById(containerId);
+    c.innerHTML = questions.map((q, i) => {
+      const correct = q.opts.find(o => o.correct);
+      const label = q.title || q.text.substring(0, 40) + '...';
+      return `<div class="ik-answer"><span style="color:rgba(255,255,255,.65);font-size:12px">Q${i+1}: ${label.substring(0,35)}...</span><span class="ans-correct">${correct ? correct.t.substring(0,30)+'...' : ''}</span></div>`;
+    }).join('');
+  };
+  buildKey(p1Questions, 'p1answerKey');
+  buildKey(p2Questions, 'p2answerKey');
+  buildKey(p4Questions, 'p4answerKey');
+}
+
+function resetPart1() {
+  p1Score = 0; p1Correct = 0; p1Wrong = 0;
+  document.getElementById('p1score').textContent = '0';
+  document.getElementById('p1correct').textContent = '0';
+  document.getElementById('p1wrong').textContent = '0';
+  document.getElementById('p1remain').textContent = '20';
+  renderQuiz(p1Questions,'p1quiz',5,'p1score','p1correct','p1wrong','p1remain','p1',5);
+  updateTotalScore();
+}
+
+// ═══════════════════════════════════════════════════════
+//  INSTRUCTOR KEY LOCK / UNLOCK
+// ═══════════════════════════════════════════════════════
+const INSTRUCTOR_CODE = 'PerScholas2026';
+
+function unlockInstructorKey() {
+  const input = document.getElementById('ik-password-input');
+  const error = document.getElementById('ik-error');
+  if (input.value === INSTRUCTOR_CODE) {
+    document.getElementById('ik-locked').style.display = 'none';
+    document.getElementById('ik-unlocked').style.display = 'block';
+    error.style.display = 'none';
+    input.value = '';
+    document.getElementById('ik-unlocked').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    error.style.display = 'block';
+    input.value = '';
+    input.focus();
+    input.style.borderColor = 'rgba(248,113,113,0.7)';
+    setTimeout(() => { input.style.borderColor = 'rgba(255,255,255,0.18)'; }, 1500);
+  }
+}
+
+function lockInstructorKey() {
+  document.getElementById('ik-locked').style.display = 'block';
+  document.getElementById('ik-unlocked').style.display = 'none';
+  document.getElementById('ik-locked').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  renderQuiz(p1Questions, 'p1quiz', 5, 'p1score','p1correct','p1wrong','p1remain','p1', 5);
+  renderQuiz(p2Questions, 'p2quiz', 8, null, null, null, null, 'p2', 8);
+  renderQuiz(p4Questions, 'p4quiz', 10, 'p4score','p4correct','p4wrong',null,'p4', 10);
+  buildSliders();
+  buildAnswerKeys();
+});
+</script>
+</body>
+</html>

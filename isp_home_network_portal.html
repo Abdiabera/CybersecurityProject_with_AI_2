@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Network & ISP Connection — Module 123 | Per Scholas Greater Boston</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal-dark: #0e3d3a;
+  --teal-mid:  #155f5a;
+  --teal-accent: #1e8077;
+  --teal-light: #d4eeeb;
+  --teal-pale:  #eaf5f4;
+  --gold: #c9a84c;
+  --gold-light: #f5ecd2;
+  --text: #1a2e2d;
+  --text-sec: #4a6360;
+  --border: #c8dedd;
+  --white: #ffffff;
+  --card-bg: #f4fafa;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: #f0f5f5; color: var(--text); font-size: 15px; line-height: 1.6; }
+
+.site-header { background: var(--teal-dark); color: #fff; padding: 28px 40px 24px; position: relative; overflow: hidden; }
+.site-header::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,.015) 40px, rgba(255,255,255,.015) 80px); }
+.header-eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.55); margin-bottom: 10px; position: relative; }
+.header-eyebrow span { color: var(--gold); }
+.site-header h1 { font-family: 'Source Serif 4', serif; font-size: clamp(22px, 4vw, 34px); font-weight: 600; color: #fff; line-height: 1.25; margin-bottom: 10px; position: relative; }
+.header-meta { font-size: 13px; color: rgba(255,255,255,.6); position: relative; display: flex; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 16px; }
+.header-meta span::before { content: '·'; margin-right: 18px; opacity: .4; }
+.header-meta span:first-child::before { display: none; }
+.header-authors { font-size: 12px; color: rgba(255,255,255,.45); border-top: 1px solid rgba(255,255,255,.1); padding-top: 14px; position: relative; }
+
+.stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); background: var(--teal-mid); }
+.stat { padding: 18px 24px; border-right: 1px solid rgba(255,255,255,.1); color: #fff; }
+.stat:last-child { border-right: none; }
+.stat-num { font-size: 28px; font-weight: 600; line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 11px; color: rgba(255,255,255,.55); text-transform: uppercase; letter-spacing: .08em; }
+
+.tabs-wrap { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 40px; position: sticky; top: 0; z-index: 100; }
+.tabs { display: flex; gap: 0; overflow-x: auto; }
+.tab-btn { padding: 14px 20px; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-sec); cursor: pointer; white-space: nowrap; transition: all .15s; }
+.tab-btn:hover { color: var(--teal-accent); }
+.tab-btn.active { color: var(--teal-dark); border-bottom-color: var(--teal-accent); }
+
+.content { max-width: 960px; margin: 0 auto; padding: 32px 24px 60px; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+.section-label { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal-accent); font-weight: 600; margin-bottom: 6px; }
+.section-title { font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 600; color: var(--teal-dark); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+
+.goal-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 28px; }
+.goal-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 16px; border-left: 3px solid var(--teal-accent); }
+.goal-card:nth-child(2) { border-left-color: var(--gold); }
+.goal-card:nth-child(3) { border-left-color: #2da899; }
+.goal-tag { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--text-sec); margin-bottom: 6px; }
+.goal-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+
+.outcomes { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin-bottom: 28px; }
+.outcomes ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.outcomes li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; }
+.outcomes li::before { content: ''; flex-shrink: 0; width: 18px; height: 18px; margin-top: 2px; background: var(--teal-accent); border-radius: 50%; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8l3.5 3.5L13 5' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-size: 12px; background-repeat: no-repeat; background-position: center; }
+
+.concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+.concept-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+.concept-card-title { font-size: 14px; font-weight: 600; color: var(--teal-dark); margin-bottom: 6px; }
+.concept-card-body { font-size: 13px; color: var(--text-sec); line-height: 1.65; }
+
+.topo-box { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 28px; text-align: center; }
+
+.step-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+.step-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.step-head { display: flex; align-items: center; gap: 14px; padding: 14px 18px; cursor: pointer; user-select: none; }
+.step-head:hover { background: var(--teal-pale); }
+.step-num-badge { width: 28px; height: 28px; border-radius: 50%; background: var(--teal-accent); color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.step-title { font-size: 14px; font-weight: 500; flex: 1; }
+.step-chevron { font-size: 11px; color: var(--text-sec); transition: transform .2s; }
+.step-body { display: none; padding: 16px 18px 18px; border-top: 1px solid var(--border); background: var(--teal-pale); font-size: 13px; line-height: 1.75; color: var(--text); }
+.step-card.open .step-body { display: block; }
+.step-card.open .step-chevron { transform: rotate(90deg); }
+.cmd { font-family: 'Courier New', monospace; font-size: 12px; background: var(--teal-dark); color: #a8f0e8; padding: 10px 14px; border-radius: 6px; margin: 10px 0; display: block; white-space: pre; overflow-x: auto; }
+.note-box { font-size: 12px; background: var(--gold-light); border-left: 3px solid var(--gold); padding: 8px 12px; border-radius: 0 6px 6px 0; margin-top: 10px; color: #5a4010; }
+.tip-box { font-size: 12px; background: var(--teal-light); border-left: 3px solid var(--teal-accent); padding: 8px 12px; border-radius: 0 6px 6px 0; margin-top: 10px; color: var(--teal-dark); }
+
+.cmp-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 28px; }
+.cmp-table th { background: var(--teal-dark); color: #fff; padding: 10px 16px; text-align: left; font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .07em; }
+.cmp-table th:first-child { border-radius: 8px 0 0 0; }
+.cmp-table th:last-child { border-radius: 0 8px 0 0; }
+.cmp-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--white); }
+.cmp-table tr:last-child td { border-bottom: none; }
+.cmp-table tr:last-child td:first-child { border-radius: 0 0 0 8px; }
+.cmp-table tr:last-child td:last-child { border-radius: 0 0 8px 0; }
+.cmp-table td:first-child { font-weight: 500; color: var(--teal-dark); }
+.tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+.tag-yes { background: #d4f0e8; color: #0a5e3e; }
+.tag-no  { background: #fde8e8; color: #7a1515; }
+.tag-partial { background: var(--gold-light); color: #7a4f0a; }
+
+.quiz-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin-bottom: 14px; }
+.quiz-q { font-size: 14px; font-weight: 500; margin-bottom: 14px; }
+.quiz-options { display: flex; flex-direction: column; gap: 8px; }
+.quiz-opt { padding: 9px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; transition: all .15s; background: var(--card-bg); }
+.quiz-opt:hover { background: var(--teal-pale); border-color: var(--teal-accent); }
+.quiz-opt.correct { background: #d4f0e8; border-color: #1e8055; color: #0a5e3e; font-weight: 500; }
+.quiz-opt.wrong   { background: #fde8e8; border-color: #c0392b; color: #7a1515; }
+.quiz-feedback { font-size: 12px; margin-top: 10px; padding: 8px 12px; border-radius: 6px; display: none; }
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok  { background: #d4f0e8; color: #0a5e3e; }
+.quiz-feedback.fail { background: #fde8e8; color: #7a1515; }
+.quiz-score-bar { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 16px 24px; margin-bottom: 28px; display: flex; align-items: center; gap: 16px; }
+.score-num { font-size: 28px; font-weight: 600; color: var(--teal-accent); }
+.score-label { font-size: 13px; color: var(--text-sec); }
+.progress-bar { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--teal-accent); border-radius: 4px; transition: width .4s; }
+
+.part-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--white); background: var(--teal-accent); padding: 4px 12px; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
+
+.footer { background: var(--teal-dark); color: rgba(255,255,255,.45); font-size: 12px; text-align: center; padding: 18px 24px; }
+.footer strong { color: rgba(255,255,255,.75); }
+
+@media(max-width:640px){
+  .goal-row { grid-template-columns: 1fr; }
+  .concept-grid { grid-template-columns: 1fr; }
+  .site-header { padding: 20px; }
+  .tabs-wrap { padding: 0 12px; }
+  .content { padding: 20px 14px 40px; }
+  .stats-bar { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-eyebrow">
+    <span>Per Scholas Greater Boston</span> &nbsp;|&nbsp; Cisco NetAcad &nbsp;|&nbsp; Cohort 2026-BOS-02
+  </div>
+  <h1>Module 123 — Home Network &amp; ISP Connection</h1>
+  <div class="header-meta">
+    <span>Cisco Networking Basics</span>
+    <span>Packet Tracer Lab</span>
+    <span>Instructional Day 2 of 5</span>
+  </div>
+  <div class="header-authors">Prepared by: <strong style="color:rgba(255,255,255,.7)">Dr. Solomon Seifu</strong> (Lead Instructor) &nbsp;&amp;&nbsp; <strong style="color:rgba(255,255,255,.7)">Naly Rosario</strong></div>
+</header>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">6</div><div class="stat-label">Devices in lab</div></div>
+  <div class="stat"><div class="stat-num">2</div><div class="stat-label">DSL Modems</div></div>
+  <div class="stat"><div class="stat-num">1</div><div class="stat-label">ISP Cloud</div></div>
+  <div class="stat"><div class="stat-num">7</div><div class="stat-label">Setup steps</div></div>
+  <div class="stat"><div class="stat-num">5</div><div class="stat-label">Quiz questions</div></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('overview',this)">Overview</button>
+    <button class="tab-btn" onclick="showTab('topology',this)">Network Topology</button>
+    <button class="tab-btn" onclick="showTab('lab',this)">Lab Steps</button>
+    <button class="tab-btn" onclick="showTab('concepts',this)">Key Concepts</button>
+    <button class="tab-btn" onclick="showTab('addressing',this)">IP Addressing</button>
+    <button class="tab-btn" onclick="showTab('quiz',this)">Check Your Understanding</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- OVERVIEW -->
+  <div id="overview" class="panel active">
+    <div class="section-label">Why this lesson matters</div>
+    <div class="section-title">What you will learn today</div>
+
+    <div class="goal-row">
+      <div class="goal-card">
+        <div class="goal-tag">Ultimate goal</div>
+        <div class="goal-text">Secure employment in the cybersecurity field</div>
+      </div>
+      <div class="goal-card">
+        <div class="goal-tag">Module goal</div>
+        <div class="goal-text">Pass the CompTIA Security+ certification exam</div>
+      </div>
+      <div class="goal-card">
+        <div class="goal-tag">Today's focus</div>
+        <div class="goal-text">Build a home network topology with DSL modems and an ISP cloud in Packet Tracer</div>
+      </div>
+    </div>
+
+    <div class="section-label">By the end of this lesson you will be able to</div>
+    <div class="outcomes">
+      <ul>
+        <li>Explain the role of a DSL modem in connecting a home network to the internet</li>
+        <li>Identify the difference between a single direct PC connection and a LAN connection through a router</li>
+        <li>Configure the Cloud-PT device in Packet Tracer to represent an ISP</li>
+        <li>Connect DSL modems to the Cloud-PT using the correct port (Modem4 / Modem5)</li>
+        <li>Assign static IP addresses correctly to all devices in both network paths</li>
+        <li>Use ping to verify connectivity between devices on the LAN</li>
+        <li>Explain why the router-protected path is more secure than a direct modem connection</li>
+      </ul>
+    </div>
+
+    <div class="section-label">Before you begin</div>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="concept-card-title">Software needed</div>
+        <div class="concept-card-body">Cisco Packet Tracer (version 7.x or 8.x). Log in with your Cisco NetAcad account at netacad.com before starting.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">Prior knowledge required</div>
+        <div class="concept-card-body">You must have completed the Peer-to-Peer lab. You should already know how to assign static IP addresses and run a ping test.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">Important Packet Tracer note</div>
+        <div class="concept-card-body">The Cloud-PT device requires you to configure its DSL ports <strong>before</strong> connecting any cable to it. Skipping this step will cause a "cable cannot connect" error.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">Time needed</div>
+        <div class="concept-card-body">Approximately 40–55 minutes to complete the full topology, IP addressing, and verification steps.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPOLOGY -->
+  <div id="topology" class="panel">
+    <div class="section-label">Network diagram</div>
+    <div class="section-title">Your Packet Tracer topology</div>
+
+    <div class="topo-box">
+      <svg width="100%" viewBox="0 0 680 320" role="img">
+        <title>Home network topology with two paths to ISP</title>
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#1e8077" stroke-width="1.5" stroke-linecap="round"/>
+          </marker>
+        </defs>
+
+        <!-- PATH A LABEL -->
+        <rect x="20" y="18" width="160" height="22" rx="4" fill="#eaf5f4" stroke="#1e8077" stroke-width="0.5"/>
+        <text x="100" y="33" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="11" font-weight="600" fill="#0e3d3a">Part A — Direct connection</text>
+
+        <!-- PC3 -->
+        <rect x="20" y="50" width="80" height="52" rx="6" fill="#eaf5f4" stroke="#1e8077" stroke-width="0.8"/>
+        <rect x="32" y="58" width="56" height="32" rx="3" fill="#0e3d3a"/>
+        <rect x="36" y="62" width="48" height="24" rx="2" fill="#1e8077" opacity=".8"/>
+        <text x="60" y="104" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="11" font-weight="600" fill="#0e3d3a">PC3</text>
+
+        <!-- Cable PC3 to Modem1 -->
+        <line x1="100" y1="76" x2="220" y2="76" stroke="#1e8077" stroke-width="1.5" stroke-linecap="round"/>
+        <text x="160" y="70" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9" fill="#4a6360">Straight-Through</text>
+
+        <!-- DSL Modem1 -->
+        <rect x="220" y="58" width="90" height="36" rx="5" fill="#f5ecd2" stroke="#c9a84c" stroke-width="0.8"/>
+        <text x="265" y="72" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" font-weight="600" fill="#7a4f0a">DSL Modem1</text>
+        <text x="265" y="86" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9" fill="#7a4f0a">pass-through</text>
+
+        <!-- Cable Modem1 to Cloud -->
+        <line x1="310" y1="76" x2="490" y2="100" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="6 3" stroke-linecap="round"/>
+        <text x="400" y="80" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9" fill="#7a4f0a">Phone cable → Modem4</text>
+
+        <!-- PATH B LABEL -->
+        <rect x="20" y="148" width="160" height="22" rx="4" fill="#eaf5f4" stroke="#1e8077" stroke-width="0.5"/>
+        <text x="100" y="163" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="11" font-weight="600" fill="#0e3d3a">Part B — LAN via router</text>
+
+        <!-- PC4 -->
+        <rect x="20" y="178" width="70" height="44" rx="5" fill="#eaf5f4" stroke="#1e8077" stroke-width="0.8"/>
+        <rect x="28" y="184" width="54" height="26" rx="2" fill="#155f5a" opacity=".8"/>
+        <text x="55" y="232" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" font-weight="600" fill="#0e3d3a">PC4</text>
+
+        <!-- PC5 -->
+        <rect x="20" y="238" width="70" height="44" rx="5" fill="#eaf5f4" stroke="#1e8077" stroke-width="0.8"/>
+        <rect x="28" y="244" width="54" height="26" rx="2" fill="#155f5a" opacity=".8"/>
+        <text x="55" y="292" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" font-weight="600" fill="#0e3d3a">PC5</text>
+
+        <!-- PC6 -->
+        <rect x="20" y="298" width="70" height="44" rx="5" fill="#eaf5f4" stroke="#1e8077" stroke-width="0.8"/>
+        <rect x="28" y="304" width="54" height="26" rx="2" fill="#155f5a" opacity=".8"/>
+        <text x="55" y="352" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" font-weight="600" fill="#0e3d3a">PC6</text>
+
+        <!-- Lines from PCs to Router -->
+        <line x1="90" y1="200" x2="200" y2="232" stroke="#1e8077" stroke-width="1.2"/>
+        <line x1="90" y1="260" x2="200" y2="240" stroke="#1e8077" stroke-width="1.2"/>
+        <line x1="90" y1="320" x2="200" y2="248" stroke="#1e8077" stroke-width="1.2"/>
+
+        <!-- Wireless Router -->
+        <rect x="195" y="218" width="90" height="52" rx="6" fill="#eaf5f4" stroke="#1e8077" stroke-width="1"/>
+        <circle cx="240" cy="230" r="8" fill="none" stroke="#1e8077" stroke-width="1" opacity=".5"/>
+        <circle cx="240" cy="230" r="4" fill="#1e8077" opacity=".6"/>
+        <text x="240" y="256" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" font-weight="600" fill="#0e3d3a">Wireless</text>
+        <text x="240" y="268" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" fill="#4a6360">Router0</text>
+
+        <!-- Cable Router to Modem0 -->
+        <line x1="285" y1="244" x2="370" y2="244" stroke="#1e8077" stroke-width="1.5" stroke-linecap="round"/>
+        <text x="328" y="238" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9" fill="#4a6360">Straight-Through</text>
+
+        <!-- DSL Modem0 -->
+        <rect x="370" y="226" width="90" height="36" rx="5" fill="#f5ecd2" stroke="#c9a84c" stroke-width="0.8"/>
+        <text x="415" y="240" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" font-weight="600" fill="#7a4f0a">DSL Modem0</text>
+        <text x="415" y="254" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9" fill="#7a4f0a">pass-through</text>
+
+        <!-- Cable Modem0 to Cloud -->
+        <line x1="460" y1="244" x2="490" y2="170" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="6 3" stroke-linecap="round"/>
+        <text x="490" y="210" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9" fill="#7a4f0a">Phone → Modem5</text>
+
+        <!-- ISP Cloud -->
+        <ellipse cx="550" cy="135" rx="60" ry="40" fill="#e6f1fb" stroke="#185FA5" stroke-width="1"/>
+        <ellipse cx="530" cy="120" rx="30" ry="22" fill="#e6f1fb" stroke="#185FA5" stroke-width="0.5"/>
+        <ellipse cx="570" cy="115" rx="28" ry="20" fill="#e6f1fb" stroke="#185FA5" stroke-width="0.5"/>
+        <text x="550" y="138" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12" font-weight="600" fill="#0C447C">ISP</text>
+        <text x="550" y="152" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" fill="#185FA5">Cloud0</text>
+      </svg>
+    </div>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="concept-card-title">Part A — Single PC, direct path</div>
+        <div class="concept-card-body">PC3 connects directly to DSL Modem1, which connects to the ISP Cloud. There is no router in between. PC3 gets a public IP and is fully exposed to the internet.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">Part B — Multiple PCs via router</div>
+        <div class="concept-card-body">PC4, PC5, and PC6 connect to Wireless Router0, which connects to DSL Modem0, then to the ISP Cloud. The router provides NAT, DHCP, and a firewall for the LAN devices.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">Why two modems?</div>
+        <div class="concept-card-body">Each path to the ISP is independent. This is a classroom simulation showing two different types of home setups connecting to the same ISP — not one home with two modems.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">Cloud0 = the ISP</div>
+        <div class="concept-card-body">The Cloud-PT device in Packet Tracer represents the ISP infrastructure — all the Tier 1/2/3 backbone you cannot see. Both modems connect into it using Phone cables on Modem4 and Modem5 ports.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAB STEPS -->
+  <div id="lab" class="panel">
+    <div class="section-label">Packet Tracer activity</div>
+    <div class="section-title">Step-by-step lab guide</div>
+    <div class="step-list" id="stepList"></div>
+  </div>
+
+  <!-- KEY CONCEPTS -->
+  <div id="concepts" class="panel">
+    <div class="section-label">Core vocabulary</div>
+    <div class="section-title">Key concepts to know</div>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="concept-card-title">DSL Modem</div>
+        <div class="concept-card-body">Modulator/Demodulator. Converts digital signals from your PC or router into analog signals the ISP telephone line can carry, and back again. It is the boundary between your home and the ISP.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">Wireless Router (Home Router)</div>
+        <div class="concept-card-body">Connects multiple home devices to one internet connection. It provides NAT (hides private IPs), DHCP (assigns IPs automatically), and a basic firewall. It has a LAN side and a WAN side.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">NAT — Network Address Translation</div>
+        <div class="concept-card-body">The router translates many private IPs (192.168.1.x) into one public IP before sending traffic to the internet. This hides your internal devices from outside attackers.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">Public IP vs Private IP</div>
+        <div class="concept-card-body">Public IPs are routable on the internet (e.g. 203.0.113.1). Private IPs are only used inside your home network (e.g. 192.168.1.x). The router bridges these two worlds.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">Phone cable in Packet Tracer</div>
+        <div class="concept-card-body">Used to connect DSL modems to the Cloud-PT device. It simulates the telephone line between your home and the ISP central office. Do not use a straight-through or crossover cable here.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">Cloud-PT ports</div>
+        <div class="concept-card-body">Before connecting, you must add ports manually in Cloud0 → Config → DSL. Select Modem4 and click Add for the first modem. Select Modem5 and click Add for the second modem.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">Default Gateway</div>
+        <div class="concept-card-body">The IP address of the device your PC sends traffic to when the destination is outside its own network. For LAN PCs, this is the router's LAN IP (192.168.1.1). For PC3 (direct), it is the modem-side IP.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">Security posture</div>
+        <div class="concept-card-body">PC3 (Part A) has no router — it is directly exposed to the internet with a public IP. PC4–6 (Part B) sit behind a router. Same ISP, completely different attack surface. This is a key Security+ concept.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IP ADDRESSING -->
+  <div id="addressing" class="panel">
+    <div class="section-label">IP addressing scheme</div>
+    <div class="section-title">All device addresses at a glance</div>
+
+    <div class="part-label">Part A — Single PC direct connection</div>
+    <table class="cmp-table" style="margin-bottom:20px">
+      <thead>
+        <tr><th>Device</th><th>Interface</th><th>IP Address</th><th>Subnet Mask</th><th>Default Gateway</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>PC3</td><td>FastEthernet0</td><td>203.0.113.1</td><td>255.255.255.0</td><td>203.0.113.2</td></tr>
+        <tr><td>DSL Modem1</td><td>—</td><td colspan="3">No IP needed — pass-through device</td></tr>
+        <tr><td>Cloud0 (ISP)</td><td>Modem4 port</td><td colspan="3">No IP needed — WAN emulator</td></tr>
+      </tbody>
+    </table>
+
+    <div class="part-label">Part B — Multiple PCs via Wireless Router</div>
+    <table class="cmp-table">
+      <thead>
+        <tr><th>Device</th><th>Interface</th><th>IP Address</th><th>Subnet Mask</th><th>Default Gateway</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>PC4</td><td>FastEthernet0</td><td>192.168.1.2</td><td>255.255.255.0</td><td>192.168.1.1</td></tr>
+        <tr><td>PC5</td><td>FastEthernet0</td><td>192.168.1.3</td><td>255.255.255.0</td><td>192.168.1.1</td></tr>
+        <tr><td>PC6</td><td>FastEthernet0</td><td>192.168.1.4</td><td>255.255.255.0</td><td>192.168.1.1</td></tr>
+        <tr><td>Wireless Router0</td><td>LAN (Gig0/1)</td><td>192.168.1.1</td><td>255.255.255.0</td><td>—</td></tr>
+        <tr><td>Wireless Router0</td><td>WAN / Internet</td><td>198.51.100.1</td><td>255.255.255.0</td><td>—</td></tr>
+        <tr><td>DSL Modem0</td><td>—</td><td colspan="3">No IP needed — pass-through device</td></tr>
+        <tr><td>Cloud0 (ISP)</td><td>Modem5 port</td><td colspan="3">No IP needed — WAN emulator</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip-box" style="font-size:13px;margin-top:4px">
+      <strong>Remember:</strong> 203.0.113.x and 198.51.100.x are documentation-reserved public IP ranges (RFC 5737) — safe to use in classroom labs without conflicting with real internet addresses.
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="panel">
+    <div class="section-label">Self-assessment</div>
+    <div class="section-title">Check your understanding</div>
+    <div class="quiz-score-bar">
+      <div>
+        <div class="score-num" id="scoreNum">0 / 5</div>
+        <div class="score-label">questions correct</div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <button onclick="resetQuiz()" style="font-size:12px;padding:6px 14px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:var(--white)">Reset quiz</button>
+    </div>
+    <div id="quizContainer"></div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <strong>Per Scholas Greater Boston</strong> &nbsp;·&nbsp; Cohort 2026-BOS-02 &nbsp;·&nbsp; Module 123: Cisco Networking Basics &nbsp;·&nbsp; Home Network &amp; ISP Connection Lab<br>
+  Prepared by Dr. Solomon Seifu (Lead Instructor) &amp; Naly Rosario
+</footer>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+const steps = [
+  {
+    title: "Place all devices on the workspace",
+    part: "Setup",
+    body: `Open Packet Tracer and place the following devices:<br><br>
+<strong>End Devices panel:</strong><br>
+— Drag 1 <strong>PC</strong> → rename to <strong>PC3</strong><br>
+— Drag 3 <strong>PCs</strong> → rename to <strong>PC4</strong>, <strong>PC5</strong>, <strong>PC6</strong><br><br>
+<strong>Network Devices → WAN Emulation:</strong><br>
+— Drag 2 <strong>DSL-Modem-PT</strong> → rename to <strong>DSL Modem1</strong> and <strong>DSL Modem0</strong><br>
+— Drag 1 <strong>Cloud-PT</strong> → rename to <strong>ISP</strong><br><br>
+<strong>Network Devices → Routers (or Wireless Routers):</strong><br>
+— Drag 1 <strong>HomeRouter-PT-AC</strong> → rename to <strong>Wireless Router0</strong><br><br>
+<div class="tip-box">Arrange them to match the diagram in the Topology tab — PC3 and DSL Modem1 on top (Part A), and PC4/PC5/PC6 + Wireless Router0 + DSL Modem0 on the bottom (Part B), with the ISP Cloud on the right.</div>`
+  },
+  {
+    title: "Configure Cloud0 (ISP) — add DSL ports first",
+    part: "Critical step",
+    body: `<strong>Do this before connecting any cable to Cloud0, otherwise you will get a connection error.</strong><br><br>
+1. Double-click <strong>ISP (Cloud0)</strong><br>
+2. Click the <strong>Config</strong> tab<br>
+3. On the left panel click <strong>DSL</strong><br>
+4. In the dropdown select <strong>Modem4</strong> → click <strong>Add</strong><br>
+5. In the dropdown select <strong>Modem5</strong> → click <strong>Add</strong><br><br>
+You should now see both Modem4 and Modem5 listed as available ports on Cloud0.<br><br>
+<div class="note-box">Modem4 will connect to DSL Modem1 (Part A). Modem5 will connect to DSL Modem0 (Part B). Serial0–3 are for router WAN links — do not use those here.</div>`
+  },
+  {
+    title: "Cable Part A — PC3 to ISP via DSL Modem1",
+    part: "Part A",
+    body: `<strong>Connection 1 — PC3 to DSL Modem1</strong><br>
+Go to <strong>Connections</strong> → select <strong>Copper Straight-Through</strong> cable:<br>
+— Click <strong>PC3</strong> → select <strong>FastEthernet0</strong><br>
+— Click <strong>DSL Modem1</strong> → select <strong>Ethernet</strong> port (left side of modem)<br><br>
+<strong>Connection 2 — DSL Modem1 to Cloud0</strong><br>
+Go to <strong>Connections</strong> → select <strong>Phone</strong> cable (thin solid line):<br>
+— Click <strong>DSL Modem1</strong> → select the <strong>DSL/Coaxial</strong> port (right side of modem)<br>
+— Click <strong>ISP (Cloud0)</strong> → select <strong>Modem4</strong><br><br>
+<div class="tip-box">Check that the link dots turn green between PC3 and DSL Modem1. The connection to Cloud0 may show as a dashed line — this is normal for WAN emulation links.</div>`
+  },
+  {
+    title: "Cable Part B — PC4, PC5, PC6 to Wireless Router0",
+    part: "Part B",
+    body: `Use <strong>Copper Straight-Through</strong> cable for all three connections:<br><br>
+— Click <strong>PC4</strong> → FastEthernet0 &nbsp;→&nbsp; <strong>Wireless Router0</strong> → any LAN port (Ethernet 1, 2, or 3)<br>
+— Click <strong>PC5</strong> → FastEthernet0 &nbsp;→&nbsp; <strong>Wireless Router0</strong> → next LAN port<br>
+— Click <strong>PC6</strong> → FastEthernet0 &nbsp;→&nbsp; <strong>Wireless Router0</strong> → next LAN port<br><br>
+<div class="tip-box">All three PCs connect to the LAN side of the router — not the WAN/Internet port. The WAN port faces outward toward the modem.</div>`
+  },
+  {
+    title: "Cable Part B — Wireless Router0 to ISP via DSL Modem0",
+    part: "Part B",
+    body: `<strong>Connection 1 — Wireless Router0 to DSL Modem0</strong><br>
+Use <strong>Copper Straight-Through</strong> cable:<br>
+— Click <strong>Wireless Router0</strong> → select the <strong>Internet</strong> port (WAN side)<br>
+— Click <strong>DSL Modem0</strong> → select <strong>Ethernet</strong> port (left side)<br><br>
+<strong>Connection 2 — DSL Modem0 to Cloud0</strong><br>
+Use <strong>Phone</strong> cable:<br>
+— Click <strong>DSL Modem0</strong> → select <strong>DSL/Coaxial</strong> port (right side)<br>
+— Click <strong>ISP (Cloud0)</strong> → select <strong>Modem5</strong><br><br>
+<div class="note-box">At this point your full topology should be physically connected. All green dots confirm physical layer connectivity is working.</div>`
+  },
+  {
+    title: "Assign IP addresses to all devices",
+    part: "IP Configuration",
+    body: `<strong>PC3</strong> → Desktop → IP Configuration → Static:
+<span class="cmd">IP Address      : 203.0.113.1
+Subnet Mask     : 255.255.255.0
+Default Gateway : 203.0.113.2</span>
+
+<strong>Wireless Router0</strong> → double-click → GUI tab:<br>
+LAN settings:
+<span class="cmd">LAN IP Address  : 192.168.1.1
+Subnet Mask     : 255.255.255.0</span>
+Internet (WAN) settings:
+<span class="cmd">WAN IP Address  : 198.51.100.1
+Subnet Mask     : 255.255.255.0</span>
+
+<strong>PC4</strong> → Desktop → IP Configuration → Static:
+<span class="cmd">IP Address      : 192.168.1.2
+Subnet Mask     : 255.255.255.0
+Default Gateway : 192.168.1.1</span>
+
+<strong>PC5</strong>:
+<span class="cmd">IP Address      : 192.168.1.3
+Subnet Mask     : 255.255.255.0
+Default Gateway : 192.168.1.1</span>
+
+<strong>PC6</strong>:
+<span class="cmd">IP Address      : 192.168.1.4
+Subnet Mask     : 255.255.255.0
+Default Gateway : 192.168.1.1</span>
+
+<div class="tip-box">DSL Modem1, DSL Modem0, and Cloud0 do not need IP addresses — they are pass-through or WAN emulation devices in Packet Tracer.</div>`
+  },
+  {
+    title: "Verify connectivity — ping tests",
+    part: "Verification",
+    body: `<strong>Test 1 — PC4 pings the router gateway</strong><br>
+PC4 → Desktop → Command Prompt:
+<span class="cmd">ping 192.168.1.1</span>
+Expected: 4 replies from 192.168.1.1<br><br>
+
+<strong>Test 2 — PC4 pings PC5 (LAN to LAN)</strong>
+<span class="cmd">ping 192.168.1.3</span>
+Expected: 4 replies from 192.168.1.3<br><br>
+
+<strong>Test 3 — PC4 pings PC6</strong>
+<span class="cmd">ping 192.168.1.4</span>
+Expected: 4 replies from 192.168.1.4<br><br>
+
+<div class="note-box"><strong>Note on PC3:</strong> Pinging beyond the modem will time out because Cloud0 has no IP address to respond. Verify PC3 using the green link dots instead — if the dots between PC3, DSL Modem1, and Cloud0 are all green, the physical connection is confirmed.</div><br>
+
+<strong>What to tell your instructor when done:</strong><br>
+"PC4, PC5, and PC6 can ping each other through the router. PC3 is physically connected to the ISP via DSL Modem1. All link lights are green."<br><br>
+<div class="tip-box"><strong>Security+ connection:</strong> PC3 has no router — it receives a public IP and is directly reachable from the internet. PC4–6 sit behind NAT and are invisible to outside attackers. This is the core difference between an exposed and a protected network path.</div>`
+  }
+];
+
+function renderSteps() {
+  const list = document.getElementById('stepList');
+  list.innerHTML = '';
+  steps.forEach((s, i) => {
+    const el = document.createElement('div');
+    el.className = 'step-card';
+    el.innerHTML = `<div class="step-head" onclick="toggleStep(${i})">
+      <div class="step-num-badge">${i+1}</div>
+      <div class="step-title">${s.title} <span style="font-size:11px;color:var(--teal-accent);margin-left:6px">${s.part}</span></div>
+      <span class="step-chevron">▶</span>
+    </div>
+    <div class="step-body">${s.body}</div>`;
+    list.appendChild(el);
+  });
+}
+
+function toggleStep(i) {
+  const cards = document.querySelectorAll('.step-card');
+  const el = cards[i];
+  const isOpen = el.classList.contains('open');
+  cards.forEach(c => c.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+const questions = [
+  {
+    q: "In Packet Tracer, what must you do BEFORE connecting a Phone cable to the Cloud-PT device?",
+    opts: ["Assign it an IP address", "Add DSL ports (Modem4 / Modem5) in its Config → DSL settings", "Restart Packet Tracer", "Connect it to a router first"],
+    correct: 1,
+    feedback: "Correct! The Cloud-PT has no ports by default. You must go to Config → DSL and click Add for Modem4 and Modem5 before any cable can connect to it."
+  },
+  {
+    q: "Which cable type connects a DSL Modem to the Cloud-PT (ISP) device in Packet Tracer?",
+    opts: ["Copper Straight-Through", "Copper Cross-Over", "Phone cable", "Coaxial cable"],
+    correct: 2,
+    feedback: "Correct! The Phone cable is used between the DSL modem's DSL port and the Cloud-PT's Modem4 or Modem5 port. It simulates the telephone line to the ISP."
+  },
+  {
+    q: "PC3 is connected directly through DSL Modem1 to the ISP with no router. What is the main security risk?",
+    opts: ["PC3 cannot get an IP address", "PC3 receives a public IP and is directly exposed to the internet with no NAT or firewall", "PC3 cannot ping other devices", "PC3 shares its connection with PC4"],
+    correct: 1,
+    feedback: "Correct! Without a router, there is no NAT or firewall. PC3 gets a public IP and any internet scanner or attacker can reach it directly — unlike PC4–6 which are hidden behind the router."
+  },
+  {
+    q: "PC4 has IP 192.168.1.2 and wants to communicate with PC6 at 192.168.1.4. What device forwards their traffic?",
+    opts: ["DSL Modem0", "The ISP Cloud", "Wireless Router0", "PC3"],
+    correct: 2,
+    feedback: "Correct! All LAN traffic between PC4, PC5, and PC6 is forwarded by Wireless Router0, which acts as the default gateway for the 192.168.1.0/24 network."
+  },
+  {
+    q: "Why does pinging Cloud0 from PC3 result in 'Request timed out' in Packet Tracer?",
+    opts: ["The Phone cable is wrong", "Cloud0 is not turned on", "Cloud0 is a WAN emulator and has no IP address to respond to ping", "PC3's subnet mask is incorrect"],
+    correct: 2,
+    feedback: "Correct! Cloud-PT is a WAN emulation device, not a real host. It has no IP address configured to receive and reply to ICMP ping requests. Connectivity is confirmed by checking green link lights instead."
+  }
+];
+
+let scores = new Array(questions.length).fill(null);
+
+function renderQuiz() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+  questions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.innerHTML = `<div class="quiz-q">Q${qi+1}. ${q.q}</div>
+      <div class="quiz-options">
+        ${q.opts.map((o,oi) => `<div class="quiz-opt" id="opt-${qi}-${oi}" onclick="answer(${qi},${oi})">${String.fromCharCode(65+oi)}. ${o}</div>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="fb-${qi}"></div>`;
+    container.appendChild(card);
+  });
+  updateScore();
+}
+
+function answer(qi, oi) {
+  if (scores[qi] !== null) return;
+  const correct = questions[qi].correct;
+  scores[qi] = (oi === correct) ? 1 : 0;
+  document.querySelectorAll(`[id^="opt-${qi}-"]`).forEach(el => {
+    const idx = parseInt(el.id.split('-')[2]);
+    if (idx === correct) el.classList.add('correct');
+    else if (idx === oi) el.classList.add('wrong');
+  });
+  const fb = document.getElementById(`fb-${qi}`);
+  fb.textContent = scores[qi] ? '✓ ' + questions[qi].feedback : '✗ Not quite. ' + questions[qi].feedback;
+  fb.className = 'quiz-feedback show ' + (scores[qi] ? 'ok' : 'fail');
+  updateScore();
+}
+
+function updateScore() {
+  const total = scores.filter(s => s === 1).length;
+  document.getElementById('scoreNum').textContent = total + ' / ' + questions.length;
+  document.getElementById('progressFill').style.width = (total / questions.length * 100) + '%';
+}
+
+function resetQuiz() {
+  scores = new Array(questions.length).fill(null);
+  renderQuiz();
+}
+
+renderSteps();
+renderQuiz();
+</script>
+</body>
+</html>

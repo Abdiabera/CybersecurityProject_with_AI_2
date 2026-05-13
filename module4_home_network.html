@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 4: Build a Home Network | Per Scholas Greater Boston</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --burgundy:     #6b1f3a;
+  --burgundy-mid: #8b2a4f;
+  --burgundy-soft:#a33560;
+  --blush:        #f7e8ee;
+  --blush-pale:   #fdf4f7;
+  --steel:        #2e4a6b;
+  --steel-light:  #dce8f5;
+  --steel-pale:   #f0f5fb;
+  --gold:         #c89a2e;
+  --gold-pale:    #fdf6e3;
+  --mint:         #1e8c6e;
+  --mint-pale:    #e3f5ef;
+  --text:         #1a1a2e;
+  --text-sec:     #4a4a6a;
+  --border:       #ddd8e8;
+  --white:        #ffffff;
+  --bg:           #f4f2f8;
+  --success-bg:   #e3f5ef;
+  --success-tx:   #0f4d34;
+  --danger-bg:    #fde8ee;
+  --danger-tx:    #6b1f3a;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+
+/* HEADER */
+.site-header{background:var(--burgundy);color:#fff;padding:30px 40px 26px;position:relative;overflow:hidden}
+.site-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 88% 25%,rgba(200,154,46,.15) 0%,transparent 55%),radial-gradient(ellipse at 8% 85%,rgba(30,140,110,.12) 0%,transparent 50%)}
+.site-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--mint) 60%,transparent)}
+.header-eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:12px;position:relative}
+.header-eyebrow span{color:var(--gold);font-weight:600}
+.site-header h1{font-family:'Libre Baskerville',serif;font-size:clamp(20px,4vw,34px);font-weight:700;color:#fff;line-height:1.2;margin-bottom:8px;position:relative}
+.site-header h1 em{color:var(--gold);font-style:normal}
+.header-meta{font-size:13px;color:rgba(255,255,255,.5);position:relative;display:flex;flex-wrap:wrap;gap:6px 20px;margin-bottom:16px}
+.header-meta span::before{content:'·';margin-right:20px;opacity:.35}
+.header-meta span:first-child::before{display:none}
+.instructor-note{position:relative;background:rgba(200,154,46,.12);border:1px solid rgba(200,154,46,.28);border-radius:8px;padding:11px 16px;font-size:13px;color:rgba(255,255,255,.72);line-height:1.6}
+.instructor-note strong{color:var(--gold)}
+.header-authors{font-size:12px;color:rgba(255,255,255,.35);border-top:1px solid rgba(255,255,255,.08);padding-top:14px;margin-top:16px;position:relative}
+
+/* STATS */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));background:var(--burgundy-mid)}
+.stat{padding:16px 20px;border-right:1px solid rgba(255,255,255,.08);color:#fff}
+.stat:last-child{border-right:none}
+.stat-num{font-size:24px;font-weight:700;color:var(--gold);line-height:1;margin-bottom:4px}
+.stat-label{font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.09em}
+
+/* TABS */
+.tabs-wrap{background:var(--white);border-bottom:1px solid var(--border);padding:0 40px;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.tabs{display:flex;gap:0;overflow-x:auto}
+.tab-btn{padding:13px 17px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;background:none;border:none;border-bottom:2px solid transparent;color:var(--text-sec);cursor:pointer;white-space:nowrap;transition:all .15s}
+.tab-btn:hover{color:var(--burgundy)}
+.tab-btn.active{color:var(--burgundy);border-bottom-color:var(--gold)}
+
+/* CONTENT */
+.content{max-width:960px;margin:0 auto;padding:32px 24px 60px}
+.panel{display:none}
+.panel.active{display:block}
+
+.section-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--burgundy);font-weight:700;margin-bottom:6px}
+.section-title{font-family:'Libre Baskerville',serif;font-size:20px;font-weight:700;color:var(--burgundy);margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+
+/* Concept cards */
+.concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.concept-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.concept-head{padding:12px 16px;display:flex;align-items:center;gap:10px}
+.concept-head.b{background:var(--burgundy)}
+.concept-head.s{background:var(--steel)}
+.concept-head.m{background:var(--mint)}
+.concept-head.g{background:#b8860b}
+.concept-icon{font-size:18px;flex-shrink:0}
+.concept-head-title{font-size:13px;font-weight:600;color:#fff}
+.concept-head-sub{font-size:10px;color:rgba(255,255,255,.6)}
+.concept-body{padding:13px 16px;font-size:13px;color:var(--text-sec);line-height:1.7}
+.concept-body strong{color:var(--text)}
+
+/* Key list */
+.key-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.key-item{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;font-size:13px;line-height:1.65}
+.key-dot{width:24px;height:24px;border-radius:50%;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.key-dot.b{background:var(--burgundy)}
+.key-dot.s{background:var(--steel)}
+.key-dot.m{background:var(--mint)}
+.key-dot.g{background:var(--gold)}
+
+/* Tables */
+.ref-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px}
+.ref-table th{background:var(--burgundy);color:#fff;padding:10px 14px;text-align:left;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+.ref-table th:first-child{border-radius:8px 0 0 0}
+.ref-table th:last-child{border-radius:0 8px 0 0}
+.ref-table td{padding:10px 14px;border-bottom:1px solid var(--border);background:var(--white);vertical-align:top;font-size:13px}
+.ref-table tr:last-child td{border-bottom:none}
+.ref-table tr:last-child td:first-child{border-radius:0 0 0 8px}
+.ref-table tr:last-child td:last-child{border-radius:0 0 8px 0}
+.ref-table td:first-child{font-weight:600;color:var(--burgundy)}
+
+/* Tip / note boxes */
+.tip-box{font-size:12px;background:var(--steel-pale);border-left:3px solid var(--steel);padding:9px 13px;border-radius:0 6px 6px 0;margin-top:10px;color:var(--steel);line-height:1.6}
+.note-box{font-size:12px;background:var(--gold-pale);border-left:3px solid var(--gold);padding:9px 13px;border-radius:0 6px 6px 0;margin-top:10px;color:#6b4a10;line-height:1.6}
+.warn-box{font-size:12px;background:var(--blush);border-left:3px solid var(--burgundy);padding:9px 13px;border-radius:0 6px 6px 0;margin-top:10px;color:var(--burgundy);line-height:1.6}
+
+/* Comparison grid */
+.compare-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.compare-col{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.compare-head{padding:12px 16px;font-size:13px;font-weight:600;color:#fff}
+.compare-head.b{background:var(--burgundy)}
+.compare-head.s{background:var(--steel)}
+.compare-row{padding:9px 16px;border-bottom:1px solid var(--border);font-size:12px;line-height:1.6}
+.compare-row:last-child{border-bottom:none}
+
+/* Badge */
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;margin-right:4px}
+.badge-b{background:var(--blush);color:var(--burgundy)}
+.badge-s{background:var(--steel-light);color:var(--steel)}
+.badge-m{background:var(--mint-pale);color:var(--mint)}
+.badge-g{background:var(--gold-pale);color:#6b4a10}
+
+/* QUIZ */
+.quiz-score-bar{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;gap:16px}
+.score-num{font-size:30px;font-weight:700;color:var(--burgundy)}
+.score-label{font-size:13px;color:var(--text-sec)}
+.progress-bar{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:var(--burgundy);border-radius:4px;transition:width .4s}
+.quiz-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--burgundy);background:var(--blush);padding:6px 14px;border-radius:6px;display:inline-block;margin-bottom:12px}
+.quiz-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:12px}
+.quiz-q{font-size:14px;font-weight:500;margin-bottom:12px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:7px}
+.quiz-opt{padding:9px 14px;border:1px solid var(--border);border-radius:6px;font-size:13px;cursor:pointer;transition:all .15s;background:var(--bg)}
+.quiz-opt:hover{background:var(--blush);border-color:var(--burgundy)}
+.quiz-opt.correct{background:var(--success-bg);border-color:#16a34a;color:var(--success-tx);font-weight:500}
+.quiz-opt.wrong{background:var(--danger-bg);border-color:var(--burgundy);color:var(--danger-tx)}
+.quiz-fb{font-size:12px;margin-top:8px;padding:8px 12px;border-radius:6px;display:none;line-height:1.5}
+.quiz-fb.show{display:block}
+.quiz-fb.ok{background:var(--success-bg);color:var(--success-tx)}
+.quiz-fb.fail{background:var(--danger-bg);color:var(--danger-tx)}
+
+.footer{background:var(--burgundy);color:rgba(255,255,255,.38);font-size:12px;text-align:center;padding:18px 24px}
+.footer strong{color:rgba(255,255,255,.72)}
+
+@media(max-width:640px){
+  .concept-grid,.compare-wrap{grid-template-columns:1fr}
+  .site-header{padding:20px}
+  .tabs-wrap{padding:0 12px}
+  .content{padding:20px 14px 40px}
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-eyebrow"><span>Per Scholas Greater Boston</span> &nbsp;|&nbsp; Cybersecurity Program &nbsp;|&nbsp; Cohort 2026-BOS-02</div>
+  <h1>Module 4 — <em>Build a Home Network</em></h1>
+  <div class="header-meta">
+    <span>Cisco Networking Basics</span>
+    <span>Session Summary & Review</span>
+    <span>End-of-Session Assessment</span>
+  </div>
+  <div class="instructor-note">
+    <strong>From Dr. Solomon Seifu —</strong> This portal summarizes everything we covered in Module 4. Review each section, connect the concepts back to what we built in Packet Tracer, and complete the quiz honestly before we move into Module 5. This module is your practical foundation — everything in Module 5 builds directly on it.
+  </div>
+  <div class="header-authors">Prepared by: <strong style="color:rgba(255,255,255,.75)">Dr. Solomon Seifu</strong> (Lead Instructor) &nbsp;&amp;&nbsp; <strong style="color:rgba(255,255,255,.75)">Naly Rosario</strong></div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">4</div><div class="stat-label">Topics covered</div></div>
+  <div class="stat"><div class="stat-num">3</div><div class="stat-label">Cable types</div></div>
+  <div class="stat"><div class="stat-num">3</div><div class="stat-label">Wi-Fi standards</div></div>
+  <div class="stat"><div class="stat-num">2</div><div class="stat-label">Frequency bands</div></div>
+  <div class="stat"><div class="stat-num">20</div><div class="stat-label">Quiz questions</div></div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('overview',this)">Overview</button>
+    <button class="tab-btn" onclick="showTab('components',this)">Network Components</button>
+    <button class="tab-btn" onclick="showTab('technologies',this)">Wired & Wireless</button>
+    <button class="tab-btn" onclick="showTab('wifi',this)">Wi-Fi Standards</button>
+    <button class="tab-btn" onclick="showTab('router',this)">Router Setup</button>
+    <button class="tab-btn" onclick="showTab('quiz',this)">Quiz</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div id="overview" class="panel active">
+  <div class="section-label">Module 4 at a glance</div>
+  <div class="section-title">What we covered today</div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-head b"><div class="concept-icon">🏠</div><div><div class="concept-head-title">Home Network Basics</div><div class="concept-head-sub">Components and devices</div></div></div>
+      <div class="concept-body">A home network connects many device types — laptops, phones, smart TVs, printers, security cameras — all sharing one connection for <strong>data exchange, control, and communication</strong>.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-head s"><div class="concept-icon">🔌</div><div><div class="concept-head-title">Network Technologies</div><div class="concept-head-sub">Wired and wireless</div></div></div>
+      <div class="concept-body">Home networks use both <strong>Ethernet (wired)</strong> and <strong>Wi-Fi (wireless)</strong>. Wired offers speed and stability. Wireless offers flexibility and convenience. The best networks use both.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-head m"><div class="concept-icon">📶</div><div><div class="concept-head-title">Wireless Standards</div><div class="concept-head-sub">IEEE 802.11 family</div></div></div>
+      <div class="concept-body">Wi-Fi is governed by IEEE 802.11 standards — each generation improving <strong>speed, range, and efficiency</strong>. Devices must support compatible standards to connect to the same network.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-head g"><div class="concept-icon">⚙️</div><div><div class="concept-head-title">Router Setup</div><div class="concept-head-sub">Configure and secure</div></div></div>
+      <div class="concept-body">Setting up a home router involves configuring the <strong>SSID, network mode, channel, bandwidth, and security settings</strong> — all designed to create a stable and secure network.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Key takeaways</div>
+  <div class="key-list">
+    <div class="key-item"><div class="key-dot b">1</div><div>The modern home network has evolved into a <strong>central communication hub</strong> — connecting devices, data, and digital experiences under one roof.</div></div>
+    <div class="key-item"><div class="key-dot s">2</div><div>The router is the heart of the home network — it connects the local network to the internet through the ISP via the <strong>WAN port</strong>, while LAN ports serve internal devices.</div></div>
+    <div class="key-item"><div class="key-dot m">3</div><div>Wired Ethernet remains unmatched for <strong>speed, consistency, and security</strong> — wireless offers convenience but is affected by interference, distance, and device count.</div></div>
+    <div class="key-item"><div class="key-dot g">4</div><div>Hiding your SSID is not a security measure — <strong>WPA2 or WPA3 encryption</strong> is what actually protects a wireless network from unauthorized access.</div></div>
+    <div class="key-item"><div class="key-dot b">5</div><div>Always <strong>plan before you configure</strong> — the SSID name, network mode, channel, and security settings all affect both performance and security.</div></div>
+  </div>
+</div>
+
+<!-- COMPONENTS -->
+<div id="components" class="panel">
+  <div class="section-label">Home network basics</div>
+  <div class="section-title">Essential Components of a Home Network</div>
+
+  <table class="ref-table">
+    <thead><tr><th>Component</th><th>Role</th><th>Key detail</th></tr></thead>
+    <tbody>
+      <tr><td>Router</td><td>Connects the home network to the internet through the ISP</td><td>Has LAN ports (internal) and one WAN port (external)</td></tr>
+      <tr><td>Modem</td><td>Translates signals between the ISP line and the home network</td><td>Cable modem uses BNC/coaxial — DSL modem uses RJ-11</td></tr>
+      <tr><td>Switch</td><td>Connects multiple wired devices on the same LAN</td><td>Expands the number of available wired ports</td></tr>
+      <tr><td>Access Point</td><td>Extends Wi-Fi coverage to areas the router cannot reach</td><td>Often built into modern home routers</td></tr>
+      <tr><td>End Devices</td><td>The devices that use the network</td><td>Laptops, phones, smart TVs, printers, cameras, IoT devices</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-label" style="margin-top:16px">Router ports — know the difference</div>
+  <div class="compare-wrap">
+    <div class="compare-col">
+      <div class="compare-head b">LAN Ports — Internal</div>
+      <div class="compare-row">Connect computers, printers, and switches</div>
+      <div class="compare-row">All devices share the same local network</div>
+      <div class="compare-row">Labeled LAN 1, LAN 2, LAN 3, and so on</div>
+      <div class="compare-row">Devices can share files, printers, and resources</div>
+    </div>
+    <div class="compare-col">
+      <div class="compare-head s">WAN Port — External</div>
+      <div class="compare-row">Connects the router to the modem — and the ISP</div>
+      <div class="compare-row">Belongs to a different network from the LAN</div>
+      <div class="compare-row">Labeled WAN or Internet on most routers</div>
+      <div class="compare-row">Carries all outgoing and incoming internet traffic</div>
+    </div>
+  </div>
+
+  <div class="tip-box"><strong>Growing network:</strong> As smart technologies emerge — from lighting to appliances — more household systems depend on the network. More connected devices means a larger attack surface. Knowing every device on the network is a basic but critical security habit.</div>
+</div>
+
+<!-- TECHNOLOGIES -->
+<div id="technologies" class="panel">
+  <div class="section-label">Wired and wireless</div>
+  <div class="section-title">Network Technologies in the Home</div>
+
+  <div class="concept-grid" style="margin-bottom:20px">
+    <div class="concept-card">
+      <div class="concept-head b"><div class="concept-icon">📡</div><div><div class="concept-head-title">2.4 GHz Band</div><div class="concept-head-sub">Wider range, more interference</div></div></div>
+      <div class="concept-body">Wider coverage but more prone to interference from microwaves, cordless phones, and Bluetooth. <strong>Shared with many devices</strong> — can become congested in apartment buildings.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-head s"><div class="concept-icon">⚡</div><div><div class="concept-head-title">5 GHz Band</div><div class="concept-head-sub">Faster speeds, shorter range</div></div></div>
+      <div class="concept-body">Faster speeds with less interference — but shorter range than 2.4 GHz. <strong>Best for devices close to the router</strong> that need high performance — laptops, streaming devices.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Cable types — three to know</div>
+  <table class="ref-table">
+    <thead><tr><th>Cable type</th><th>How it transmits</th><th>Common use</th><th>Key advantage</th></tr></thead>
+    <tbody>
+      <tr><td>UTP — Cat5e</td><td>Electrical signals through twisted copper pairs</td><td>Home LAN — PC to router, switch connections</td><td>Cost-effective, up to 1 Gbps, standard for homes</td></tr>
+      <tr><td>Coaxial</td><td>Electrical signals through a shielded copper conductor</td><td>Cable internet and TV connections</td><td>Excellent interference resistance</td></tr>
+      <tr><td>Fiber-Optic</td><td>Light pulses through glass or plastic fibers</td><td>ISP backbone, FTTH connections</td><td>Highest speed, longest distance, minimal signal loss</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-label" style="margin-top:16px">Why twisted-pair cables twist</div>
+  <div class="key-list">
+    <div class="key-item"><div class="key-dot b">1</div><div>Electrical current flowing through a wire creates a <strong>small magnetic field</strong> around it</div></div>
+    <div class="key-item"><div class="key-dot s">2</div><div>When two wires carry <strong>equal and opposite currents</strong> and are twisted together, their magnetic fields cancel each other out</div></div>
+    <div class="key-item"><div class="key-dot m">3</div><div>This cancellation <strong>reduces electromagnetic interference — EMI</strong> — as the signal travels through the cable</div></div>
+  </div>
+
+  <div class="compare-wrap">
+    <div class="compare-col">
+      <div class="compare-head b">UTP — Unshielded Twisted Pair</div>
+      <div class="compare-row">Four twisted, individually insulated copper wire pairs</div>
+      <div class="compare-row">Uses RJ-45 connector — standard 8-pin Ethernet connector</div>
+      <div class="compare-row">Standard for home and office LAN connections</div>
+      <div class="compare-row">Cost-effective and supports up to 1 Gbps</div>
+    </div>
+    <div class="compare-col">
+      <div class="compare-head s">STP — Shielded Twisted Pair</div>
+      <div class="compare-row">Each wire pair individually wrapped in metallic foil</div>
+      <div class="compare-row">All four pairs covered by an overall metallic shield</div>
+      <div class="compare-row">Extra protection against EMI and RFI</div>
+      <div class="compare-row">Used in industrial settings and data centers</div>
+    </div>
+  </div>
+
+  <div class="note-box"><strong>Fiber-to-the-Home — FTTH:</strong> Fiber-optic cables running directly from the ISP into the home. Faster speeds, lower latency, and higher reliability than copper. Eliminates signal loss from long copper lines — becoming the standard for next-generation home networking.</div>
+</div>
+
+<!-- WI-FI -->
+<div id="wifi" class="panel">
+  <div class="section-label">Wireless standards</div>
+  <div class="section-title">Wi-Fi Networks — IEEE 802.11 Standards</div>
+
+  <table class="ref-table">
+    <thead><tr><th>Standard</th><th>Wi-Fi name</th><th>Frequency</th><th>Max speed</th><th>Key feature</th></tr></thead>
+    <tbody>
+      <tr><td>802.11b</td><td>—</td><td>2.4 GHz</td><td>11 Mbps</td><td>First widely adopted standard — longer range, more interference</td></tr>
+      <tr><td>802.11g</td><td>—</td><td>2.4 GHz</td><td>54 Mbps</td><td>Faster than b — backward compatible with older devices</td></tr>
+      <tr><td>802.11n</td><td>Wi-Fi 4</td><td>2.4 GHz & 5 GHz</td><td>600 Mbps</td><td>Dual-band — first to support both frequency bands</td></tr>
+      <tr><td>802.11ac</td><td>Wi-Fi 5</td><td>5 GHz</td><td>3.5 Gbps</td><td>Much faster — widely used in modern home routers</td></tr>
+      <tr><td>802.11ax</td><td>Wi-Fi 6</td><td>2.4, 5 & 6 GHz</td><td>9.6 Gbps</td><td>Handles many devices simultaneously — most efficient</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-label" style="margin-top:16px">Wireless security — WPA2 vs WPA3</div>
+  <div class="compare-wrap">
+    <div class="compare-col">
+      <div class="compare-head b">WPA2</div>
+      <div class="compare-row"><strong>Encryption:</strong> AES — Advanced Encryption Standard</div>
+      <div class="compare-row">Scrambles data into unreadable code</div>
+      <div class="compare-row">Still widely used — considered very secure</div>
+      <div class="compare-row">Use WPA2 with AES if WPA3 is not available</div>
+    </div>
+    <div class="compare-col">
+      <div class="compare-head s">WPA3</div>
+      <div class="compare-row"><strong>Encryption:</strong> SAE — Simultaneous Authentication of Equals</div>
+      <div class="compare-row">Harder for attackers to crack — even from captured traffic</div>
+      <div class="compare-row">Provides individualized encryption per device</div>
+      <div class="compare-row">Always use WPA3 if devices support it</div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:16px">SSID best practices</div>
+  <div class="key-list">
+    <div class="key-item"><div class="key-dot b">✗</div><div>Do not use your name, address, router brand, or device model in the SSID — for example, avoid <strong>LinksysHome123</strong> or <strong>SmithFamilyWiFi</strong></div></div>
+    <div class="key-item"><div class="key-dot s">✗</div><div>Do not keep the default SSID — it reveals the router brand and makes known vulnerabilities easier to find</div></div>
+    <div class="key-item"><div class="key-dot m">✓</div><div>Choose a unique, neutral name — for example, <strong>HomeNetwork_50</strong> or <strong>BlueSkyWiFi</strong> — nothing identifiable</div></div>
+    <div class="key-item"><div class="key-dot g">!</div><div>Disabling SSID broadcast hides the name — but it does <strong>not</strong> secure the network. Encryption is the real protection.</div></div>
+  </div>
+
+  <div class="tip-box"><strong>Wi-Fi Alliance:</strong> Tests and certifies wireless devices. A device displaying the Wi-Fi logo has been verified to meet the standards and will interoperate with other certified products regardless of manufacturer.</div>
+</div>
+
+<!-- ROUTER SETUP -->
+<div id="router" class="panel">
+  <div class="section-label">Router setup</div>
+  <div class="section-title">Configuring a Home Router</div>
+
+  <div class="section-label">Basic wireless settings — four to configure</div>
+  <table class="ref-table" style="margin-bottom:20px">
+    <thead><tr><th>Setting</th><th>What it controls</th><th>Best practice</th></tr></thead>
+    <tbody>
+      <tr><td>Network Mode</td><td>Which Wi-Fi standard the router supports — Legacy, Auto, N-Only, or Disabled</td><td>Use Auto or Mixed Mode to support both old and new devices</td></tr>
+      <tr><td>SSID</td><td>The visible name of the wireless network</td><td>Choose a unique, neutral name — avoid personal or brand information</td></tr>
+      <tr><td>Standard Channel</td><td>Which frequency channel the router uses within the band</td><td>Set to Auto — or manually select a less congested channel in crowded areas</td></tr>
+      <tr><td>SSID Broadcast</td><td>Whether the network name is visible to nearby devices</td><td>Enabled by default — disabling adds minor privacy but is not a security measure</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-label">First time setup — connection sequence</div>
+  <div class="key-list">
+    <div class="key-item"><div class="key-dot b">1</div><div>Plug an Ethernet patch cable from the computer's NIC into one of the router's <strong>LAN ports</strong> — not the WAN port</div></div>
+    <div class="key-item"><div class="key-dot s">2</div><div>Open a browser and type the router's default IP address — typically <strong>192.168.0.1</strong> or <strong>192.168.1.1</strong> — to access the configuration page</div></div>
+    <div class="key-item"><div class="key-dot m">3</div><div>Check the <strong>link lights on the NIC</strong> — a steady or blinking light confirms an active connection between the computer and router</div></div>
+    <div class="key-item"><div class="key-dot g">4</div><div>DHCP assigns the computer an IP address automatically — if it fails, manually set the IP, subnet mask, and default gateway</div></div>
+  </div>
+
+  <div class="section-label" style="margin-top:4px">Network mode options in Packet Tracer</div>
+  <table class="ref-table">
+    <thead><tr><th>Mode</th><th>What it does</th><th>Trade-off</th></tr></thead>
+    <tbody>
+      <tr><td>Auto</td><td>Router selects the best mode automatically based on connected devices</td><td>Most flexible — recommended for mixed environments</td></tr>
+      <tr><td>N-Only</td><td>Enables only 802.11n — faster performance</td><td>Older devices using 802.11b/g cannot connect</td></tr>
+      <tr><td>Legacy</td><td>Supports older standards — 802.11b/g</td><td>All devices connect but at lower speeds</td></tr>
+      <tr><td>Disabled</td><td>Turns off wireless functionality entirely</td><td>No wireless devices can connect</td></tr>
+    </tbody>
+  </table>
+
+  <div class="warn-box"><strong>Design before you configure:</strong> Ask three questions first — How will the network be used? How many devices will connect? What security level is needed? Rushing into configuration can leave the network vulnerable or limit its capabilities later.</div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="panel">
+  <div class="section-label">End-of-session assessment</div>
+  <div class="section-title">Check Your Understanding — Module 4</div>
+  <div class="quiz-score-bar">
+    <div><div class="score-num" id="scoreNum">0 / 20</div><div class="score-label">questions correct</div></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <button onclick="resetQuiz()" style="font-size:12px;padding:6px 14px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:var(--white)">Reset</button>
+  </div>
+  <div id="quizContainer"></div>
+</div>
+
+</div>
+
+<footer class="footer">
+  <strong>Per Scholas Greater Boston</strong> &nbsp;·&nbsp; Cybersecurity Program &nbsp;·&nbsp; Cohort 2026-BOS-02 &nbsp;·&nbsp; Module 4: Build a Home Network<br>
+  Prepared by Dr. Solomon Seifu (Lead Instructor) &amp; Naly Rosario
+</footer>
+
+<script>
+function showTab(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+const questions=[
+  // Home Network Basics
+  {s:"Home Network Basics",q:"What is the primary function of the WAN port on a home router?",opts:["Connects internal devices like computers and printers to the router","Connects the router to the modem and the ISP for internet access","Provides additional LAN ports for wired devices","Controls wireless signal transmission"],correct:1,fb:"Correct! The WAN port connects the router to the modem and ISP — it is the single gateway for all outgoing and incoming internet traffic. LAN ports handle internal device connections."},
+  {s:"Home Network Basics",q:"Which device translates signals between the ISP line and the home network?",opts:["Switch","Access point","Router","Modem"],correct:3,fb:"Correct! The modem translates signals between the ISP line and the home network. A cable modem uses a BNC/coaxial connector — a DSL modem uses an RJ-11 telephone-style connector."},
+  {s:"Home Network Basics",q:"What does a network switch do in a home network?",opts:["Connects the home network to the internet","Extends Wi-Fi coverage to distant areas","Connects multiple wired devices on the same LAN and expands available ports","Assigns IP addresses to devices automatically"],correct:2,fb:"Correct! A switch connects multiple wired devices on the same LAN and expands the number of available wired ports beyond what the router alone provides."},
+  {s:"Home Network Basics",q:"From a cybersecurity perspective, why does a growing number of IoT devices matter?",opts:["More devices improve network speed","Each additional device increases the network's attack surface","IoT devices always use stronger encryption than laptops","More devices reduce interference on the 5 GHz band"],correct:1,fb:"Correct! Every connected device is a potential entry point for an attacker. A compromised smart camera or unsecured printer can give an attacker access to the entire home network."},
+  // Wired Technologies
+  {s:"Wired Technologies",q:"Why are the wire pairs in a UTP cable twisted together?",opts:["To make the cable more flexible and easier to route","To increase the cable's maximum length","Because opposite magnetic fields from paired wires cancel each other — reducing electromagnetic interference","To prevent the RJ-45 connector from disconnecting"],correct:2,fb:"Correct! When two wires carry equal and opposite currents and are twisted together, their magnetic fields cancel each other out — reducing EMI as the signal travels through the cable."},
+  {s:"Wired Technologies",q:"Which cable type uses light signals instead of electrical signals to transmit data?",opts:["UTP — Cat5e","STP — Shielded Twisted Pair","Coaxial cable","Fiber-optic cable"],correct:3,fb:"Correct! Fiber-optic cables transmit data using light pulses through glass or plastic fibers. They offer very high speeds over long distances with minimal signal loss — used for ISP backbones and FTTH connections."},
+  {s:"Wired Technologies",q:"What connector type do UTP Ethernet cables use?",opts:["BNC connector","RJ-11 connector","RJ-45 connector","SC fiber connector"],correct:2,fb:"Correct! UTP Ethernet cables use the RJ-45 connector — an 8-pin connector that is the standard for wired LAN connections between computers, switches, and routers."},
+  {s:"Wired Technologies",q:"What is the key advantage of STP over UTP cable?",opts:["STP supports higher speeds than UTP","STP is less expensive than UTP","STP includes metallic shielding around each wire pair providing extra protection against EMI","STP uses fiber optics internally for faster transmission"],correct:2,fb:"Correct! STP wraps each wire pair in metallic foil and covers all four pairs with an overall shield — providing significantly better protection against electromagnetic and radio frequency interference."},
+  // Wireless Technologies
+  {s:"Wireless Technologies",q:"Which frequency band offers wider coverage but is more prone to interference from household devices?",opts:["5 GHz","6 GHz","2.4 GHz","900 MHz"],correct:2,fb:"Correct! The 2.4 GHz band offers wider coverage but is shared with many other devices — microwaves, cordless phones, Bluetooth — making it more susceptible to interference and congestion."},
+  {s:"Wireless Technologies",q:"What technology allows devices to connect to a local area network wirelessly using radio waves?",opts:["Bluetooth","Ethernet","Wi-Fi","Powerline adapter"],correct:2,fb:"Correct! Wi-Fi — Wireless Fidelity — allows devices to connect to a LAN wirelessly using radio waves, typically in the 2.4 GHz or 5 GHz frequency bands, following IEEE 802.11 standards."},
+  {s:"Wireless Technologies",q:"What is the key difference between Bluetooth and Wi-Fi in a home network?",opts:["Bluetooth operates at 5 GHz while Wi-Fi uses 2.4 GHz","Bluetooth is for device-to-device connections — Wi-Fi is for network-wide communication and internet access","Bluetooth is faster than Wi-Fi for file transfers","Wi-Fi has shorter range than Bluetooth"],correct:1,fb:"Correct! Bluetooth focuses on short-range, low-power device-to-device connections — keyboards, speakers, headphones. Wi-Fi provides network-wide communication and internet access at higher power and longer range."},
+  {s:"Wireless Technologies",q:"Which Wi-Fi standard was the first to support dual-band operation — both 2.4 GHz and 5 GHz?",opts:["802.11b","802.11g","802.11n","802.11ac"],correct:2,fb:"Correct! 802.11n — also known as Wi-Fi 4 — was the first standard to support both 2.4 GHz and 5 GHz bands simultaneously, allowing dual-band operation for better performance and flexibility."},
+  // Wi-Fi Standards & Security
+  {s:"Wi-Fi Standards & Security",q:"Which organization governs the IEEE 802.11 wireless LAN standards?",opts:["Wi-Fi Alliance","IETF — Internet Engineering Task Force","IEEE — Institute of Electrical and Electronics Engineers","IANA — Internet Assigned Numbers Authority"],correct:2,fb:"Correct! The IEEE — Institute of Electrical and Electronics Engineers — is responsible for creating and maintaining the 802.11 wireless LAN standards that define how Wi-Fi operates."},
+  {s:"Wi-Fi Standards & Security",q:"What encryption method does WPA3 use that makes it more secure than WPA2?",opts:["AES — Advanced Encryption Standard","PSK — Pre-Shared Key","SAE — Simultaneous Authentication of Equals","DES — Data Encryption Standard"],correct:2,fb:"Correct! WPA3 uses SAE — Simultaneous Authentication of Equals — replacing the older PSK method. SAE makes it significantly harder for attackers to crack passwords even if they capture wireless traffic."},
+  {s:"Wi-Fi Standards & Security",q:"A user disables SSID broadcast on their home router. How secure is the network now?",opts:["Fully secure — the network is invisible to all attackers","Very secure — only devices that know the SSID can detect it","The network name is hidden but it is not truly secure — encryption is still required for real protection","Moderately secure — it stops all unauthorized connections"],correct:2,fb:"Correct! Disabling SSID broadcast only hides the network name — not the network itself. A determined attacker can still detect it using the right tools. WPA2 or WPA3 encryption provides the real protection."},
+  {s:"Wi-Fi Standards & Security",q:"What does the SSID case sensitivity rule mean in practice?",opts:["SSIDs are always stored in uppercase regardless of input","HomeNetwork and homenetwork are treated as completely different SSIDs","Devices automatically correct SSID capitalization when connecting","SSIDs can only contain uppercase letters"],correct:1,fb:"Correct! The SSID is case-sensitive. HomeNetwork, HOMENETWORK, and homenetwork are all treated as completely different network names — all devices must use the exact same SSID to connect to the same network."},
+  // Router Setup
+  {s:"Router Setup",q:"During first-time router setup via a wired connection, which port should the Ethernet cable never be plugged into?",opts:["LAN 1","LAN 2","Any switch port","The WAN or Internet port"],correct:3,fb:"Correct! The WAN/Internet port is reserved for the modem connection to the ISP — not for computer setup. Always plug the setup computer into one of the LAN ports labeled LAN 1, LAN 2, and so on."},
+  {s:"Router Setup",q:"What does a router's built-in DHCP server automatically assign to connected devices?",opts:["Only an IP address","IP address, subnet mask, default gateway, and DNS server","Only the default gateway and DNS server","A MAC address and an SSID"],correct:1,fb:"Correct! The DHCP server automatically assigns four things — IP address, subnet mask, default gateway, and DNS server — so devices can communicate on the network without manual configuration."},
+  {s:"Router Setup",q:"A router is set to N-Only mode. What happens when an older 802.11g device tries to connect?",opts:["It connects but at a reduced speed","It connects but only to the 2.4 GHz band","It cannot connect at all — N-Only restricts connections to 802.11n devices only","It connects after the router automatically switches to Legacy mode"],correct:2,fb:"Correct! N-Only mode restricts connections exclusively to 802.11n devices. An 802.11g device is incompatible with this mode and cannot connect. Legacy or Auto mode must be enabled to support older devices."},
+  {s:"Router Setup",q:"What is the purpose of a Guest Network on a home router?",opts:["To provide faster internet access to the homeowner's main devices","To allow visitors internet access while keeping the main home network private and isolated","To extend Wi-Fi range to distant areas of the home","To create a backup network if the main SSID fails"],correct:1,fb:"Correct! A Guest Network creates a separate SSID for visitors — providing internet access only. Devices on the guest network cannot access the main network's devices, shared files, or printers — keeping the home network private and secure."},
+];
+
+// Shuffle answer options
+function shuffleQuestions(arr){
+  return arr.map(q=>{
+    const indexed=q.opts.map((o,i)=>({o,i}));
+    for(let j=indexed.length-1;j>0;j--){
+      const k=Math.floor(Math.random()*(j+1));
+      [indexed[j],indexed[k]]=[indexed[k],indexed[j]];
+    }
+    const newOpts=indexed.map(x=>x.o);
+    const newCorrect=indexed.findIndex(x=>x.i===q.correct);
+    return{...q,opts:newOpts,correct:newCorrect};
+  });
+}
+
+const shuffled=shuffleQuestions(questions);
+let scores=new Array(shuffled.length).fill(null);
+
+function renderQuiz(){
+  const c=document.getElementById('quizContainer');
+  c.innerHTML='';
+  let lastSection='';
+  shuffled.forEach((q,qi)=>{
+    if(q.s!==lastSection){
+      const sl=document.createElement('div');
+      sl.className='quiz-section-label';
+      sl.style.marginBottom='12px';
+      sl.style.marginTop=lastSection?'24px':'0';
+      sl.textContent=q.s;
+      c.appendChild(sl);
+      lastSection=q.s;
+    }
+    const card=document.createElement('div');
+    card.className='quiz-card';
+    card.innerHTML=`<div class="quiz-q">Q${qi+1}. ${q.q}</div>
+      <div class="quiz-opts">${q.opts.map((o,oi)=>`<div class="quiz-opt" id="qo-${qi}-${oi}" onclick="answer(${qi},${oi})">${String.fromCharCode(65+oi)}. ${o}</div>`).join('')}</div>
+      <div class="quiz-fb" id="qf-${qi}"></div>`;
+    c.appendChild(card);
+  });
+  updateScore();
+}
+
+function answer(qi,oi){
+  if(scores[qi]!==null)return;
+  const correct=shuffled[qi].correct;
+  scores[qi]=(oi===correct)?1:0;
+  document.querySelectorAll(`[id^="qo-${qi}-"]`).forEach(el=>{
+    const idx=parseInt(el.id.split('-')[2]);
+    if(idx===correct)el.classList.add('correct');
+    else if(idx===oi)el.classList.add('wrong');
+  });
+  const fb=document.getElementById(`qf-${qi}`);
+  fb.textContent=scores[qi]?'✓ '+shuffled[qi].fb:'✗ Not quite. '+shuffled[qi].fb;
+  fb.className='quiz-fb show '+(scores[qi]?'ok':'fail');
+  updateScore();
+}
+
+function updateScore(){
+  const total=scores.filter(s=>s===1).length;
+  document.getElementById('scoreNum').textContent=total+' / '+shuffled.length;
+  document.getElementById('progressFill').style.width=(total/shuffled.length*100)+'%';
+}
+
+function resetQuiz(){
+  scores=new Array(shuffled.length).fill(null);
+  renderQuiz();
+}
+
+renderQuiz();
+</script>
+</body>
+</html>

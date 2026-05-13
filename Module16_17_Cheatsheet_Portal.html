@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modules 16 & 17 — Application Layer & Network Testing | Per Scholas</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Source+Sans+3:wght@400;500;600;700&family=Source+Code+Pro:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#0a6b74;--teal-dark:#074f56;--teal-mid:#0d8a96;--teal-light:#e0f4f6;--teal-pale:#f0fafb;
+  --gold:#c4933a;--gold-light:#fdf3e0;
+  --white:#fff;--bg:#f2f7f8;--border:#c4dde0;
+  --text:#1a2e30;--text-sec:#3a5a5e;
+  --success-bg:#dcf5e4;--success-tx:#0f4d28;
+  --danger-bg:#fde8e2;--danger-tx:#7f1d1d;
+  --navy:#0b2a35;
+}
+body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);font-size:16px;line-height:1.7}
+
+/* HEADER */
+.site-header{background:linear-gradient(135deg,var(--navy) 0%,var(--teal-dark) 100%);color:#fff;padding:28px 36px 22px;position:relative;overflow:hidden}
+.site-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--teal-mid) 60%,transparent)}
+.header-eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.site-header h1{font-family:'Merriweather',serif;font-size:22px;font-weight:900;line-height:1.3;margin-bottom:6px}
+.site-header h1 em{font-style:normal;color:#a8dde2}
+.header-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:rgba(255,255,255,.6);margin-bottom:12px}
+.header-meta span::before{content:'· ';color:var(--gold)}
+.instructor-note{background:rgba(255,255,255,.07);border-left:3px solid var(--gold);padding:10px 16px;border-radius:0 6px 6px 0;font-size:13.5px;color:rgba(255,255,255,.88);margin-bottom:10px;line-height:1.6}
+.header-authors{font-size:12px;color:rgba(255,255,255,.5)}
+.header-authors strong{color:rgba(255,255,255,.8)}
+
+/* STATS BAR */
+.stats-bar{display:grid;grid-template-columns:repeat(6,1fr);background:var(--teal-dark);border-bottom:2px solid var(--teal-mid)}
+.stat{padding:14px 8px;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
+.stat:last-child{border-right:none}
+.stat-num{font-family:'Merriweather',serif;font-size:22px;font-weight:900;color:var(--gold);line-height:1}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.55);margin-top:3px}
+
+/* TABS */
+.tabs-wrap{background:var(--teal-dark);padding:0 24px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{padding:13px 18px;background:none;border:none;font-family:'Source Sans 3',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.55);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s}
+.tab-btn:hover{color:rgba(255,255,255,.85)}
+.tab-btn.active{color:#fff;border-bottom-color:var(--gold)}
+
+/* CONTENT */
+.content{max-width:1100px;margin:0 auto;padding:28px 24px 60px}
+.panel{display:none}
+.panel.active{display:block}
+
+/* SECTION COMPONENTS */
+.section-label{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-mid);margin-bottom:4px}
+.section-title{font-family:'Merriweather',serif;font-size:20px;font-weight:700;color:var(--teal-dark);margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--teal-light)}
+
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:700;color:var(--teal-dark);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.card-title .icon{width:28px;height:28px;background:var(--teal-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.card p{font-size:14.5px;color:var(--text-sec);margin-bottom:8px}
+.card p:last-child{margin-bottom:0}
+
+.concept-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:20px}
+.concept-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.concept-card .tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--teal-light);color:var(--teal-dark);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
+.concept-card h4{font-size:15px;font-weight:700;color:var(--teal-dark);margin-bottom:6px}
+.concept-card p{font-size:13.5px;color:var(--text-sec);line-height:1.6}
+
+/* NOTE BOX */
+.note-box{background:var(--gold-light);border-left:4px solid var(--gold);padding:12px 16px;border-radius:0 8px 8px 0;font-size:13.5px;color:#5a3d0a;margin:16px 0;line-height:1.6}
+.note-box strong{color:#3d2800}
+
+/* PROTOCOL TABLE */
+.proto-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14px}
+.proto-table th{background:var(--teal-dark);color:#fff;padding:11px 16px;text-align:left;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.proto-table td{padding:11px 16px;border-bottom:1px solid var(--border);vertical-align:top}
+.proto-table tr:nth-child(even) td{background:var(--teal-pale)}
+.proto-table tr:last-child td{border-bottom:none}
+.port-badge{font-family:'Source Code Pro',monospace;font-size:12px;font-weight:600;background:var(--teal-dark);color:#fff;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.port-badge.warn{background:#92400e}
+
+/* FLOW STEPS */
+.flow-steps{display:flex;flex-direction:column;gap:0;margin:16px 0}
+.flow-step{display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px dashed var(--border)}
+.flow-step:last-child{border-bottom:none}
+.step-num{width:32px;height:32px;background:var(--teal-dark);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px}
+.step-body h5{font-size:14px;font-weight:700;color:var(--teal-dark);margin-bottom:3px}
+.step-body p{font-size:13.5px;color:var(--text-sec)}
+
+/* COMPARE TABLE */
+.compare-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.compare-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.compare-head{padding:12px 18px;font-size:13px;font-weight:700;letter-spacing:.05em}
+.compare-head.a{background:var(--teal-dark);color:#fff}
+.compare-head.b{background:#1a3a5c;color:#fff}
+.compare-body{padding:14px 18px}
+.compare-body li{font-size:13.5px;color:var(--text-sec);margin-bottom:6px;list-style:none;padding-left:14px;position:relative}
+.compare-body li::before{content:'·';position:absolute;left:0;color:var(--teal-mid);font-weight:700}
+
+/* CODE BLOCK */
+.code-block{background:#1a2e30;color:#a8dde2;font-family:'Source Code Pro',monospace;font-size:13px;padding:16px 20px;border-radius:8px;margin:12px 0;line-height:1.8;overflow-x:auto}
+.code-block .cmd{color:#fff;font-weight:600}
+.code-block .comment{color:rgba(168,221,226,.5);font-style:italic}
+
+/* SECURITY ALERT */
+.security-alert{background:#fff1f0;border:1px solid #fca5a5;border-left:4px solid #dc2626;border-radius:0 8px 8px 0;padding:12px 16px;font-size:13.5px;color:#7f1d1d;margin:14px 0}
+.security-alert strong{color:#991b1b}
+
+/* QUIZ */
+.quiz-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin-bottom:14px}
+.quiz-num{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-mid);margin-bottom:6px}
+.quiz-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:14px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{padding:10px 16px;border:1.5px solid var(--border);border-radius:7px;font-size:14px;cursor:pointer;transition:all .15s;background:var(--bg);text-align:left;font-family:'Source Sans 3',sans-serif;color:var(--text)}
+.quiz-opt:hover{background:var(--teal-light);border-color:var(--teal-mid)}
+.quiz-opt.correct{background:var(--success-bg);border-color:#16a34a;color:var(--success-tx);font-weight:600}
+.quiz-opt.wrong{background:var(--danger-bg);border-color:#dc2626;color:var(--danger-tx)}
+.quiz-fb{font-size:13px;margin-top:10px;padding:10px 14px;border-radius:7px;display:none;line-height:1.6}
+.quiz-fb.show{display:block}
+.quiz-fb.ok{background:var(--success-bg);color:var(--success-tx)}
+.quiz-fb.fail{background:var(--danger-bg);color:var(--danger-tx)}
+.quiz-score-box{background:var(--teal-dark);color:#fff;border-radius:10px;padding:20px 24px;text-align:center;margin-top:20px;display:none}
+.quiz-score-box h3{font-family:'Merriweather',serif;font-size:20px;margin-bottom:6px}
+.quiz-score-box p{font-size:14px;color:rgba(255,255,255,.75)}
+.quiz-reset{margin-top:14px;background:var(--gold);color:#fff;border:none;padding:10px 24px;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Source Sans 3',sans-serif}
+
+/* TOOLS GRID */
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.tool-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px 20px;border-top:4px solid var(--teal-mid)}
+.tool-card h4{font-size:15px;font-weight:700;color:var(--teal-dark);margin-bottom:4px}
+.tool-card .tool-cmd{font-family:'Source Code Pro',monospace;font-size:12px;color:var(--teal-mid);font-weight:600;margin-bottom:10px}
+.tool-card p{font-size:13px;color:var(--text-sec);line-height:1.6}
+.tool-card .tool-port{font-size:11px;margin-top:8px;color:var(--text-sec)}
+.tool-card .tool-port strong{color:var(--teal-dark)}
+
+/* URI VISUAL */
+.uri-visual{background:#1a2e30;border-radius:10px;padding:24px;margin:16px 0;text-align:center}
+.uri-string{font-family:'Source Code Pro',monospace;font-size:16px;color:#fff;letter-spacing:.02em;margin-bottom:20px;line-height:1.4}
+.uri-string .u-proto{color:#f97316}
+.uri-string .u-host{color:#86efac}
+.uri-string .u-path{color:#93c5fd}
+.uri-string .u-frag{color:#d8b4fe}
+.uri-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
+.uri-leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.75)}
+.uri-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+
+/* PORT QUICK REF */
+.port-ref-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.port-ref-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:14px 16px;text-align:center}
+.port-ref-card .p-num{font-family:'Source Code Pro',monospace;font-size:22px;font-weight:700;color:var(--teal-dark);line-height:1}
+.port-ref-card .p-proto{font-size:13px;font-weight:700;color:var(--text);margin:4px 0 2px}
+.port-ref-card .p-desc{font-size:11px;color:var(--text-sec)}
+.port-ref-card.warn{border-top:3px solid #dc2626}
+.port-ref-card.secure{border-top:3px solid #16a34a}
+.port-ref-card.neutral{border-top:3px solid var(--teal-mid)}
+
+/* FOOTER */
+.footer{background:var(--navy);color:rgba(255,255,255,.4);font-size:12px;text-align:center;padding:20px 24px;margin-top:0}
+.footer strong{color:rgba(255,255,255,.75)}
+
+@media(max-width:720px){
+  .concept-grid,.compare-wrap,.tools-grid{grid-template-columns:1fr}
+  .port-ref-grid{grid-template-columns:repeat(2,1fr)}
+  .stats-bar{grid-template-columns:repeat(3,1fr)}
+  .content{padding:20px 14px 40px}
+  .tabs-wrap{padding:0 10px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-eyebrow">Per Scholas Greater Boston &nbsp;·&nbsp; Cybersecurity Program &nbsp;·&nbsp; Cohort 2026-BOS-02</div>
+  <h1>Modules 16 & 17 — <em>Application Layer Services & Network Testing Utilities</em></h1>
+  <div class="header-meta">
+    <span>Cisco Networking Basics</span>
+    <span>Cheat Sheet & Reference Portal</span>
+    <span>End-of-Module Assessment</span>
+  </div>
+  <div class="instructor-note">
+    <strong>From Dr. Solomon Seifu —</strong> This portal covers every key concept from Modules 16 and 17. Module 16 explains what happens at the Application Layer — the services users actually touch every day. Module 17 gives you the command-line tools to verify and troubleshoot those services. Review each tab carefully, know every port number on the Port Reference tab, and complete the quiz before we move on.
+  </div>
+  <div class="header-authors">Prepared by: <strong>Dr. Solomon Seifu</strong> (Lead Instructor) &nbsp;&amp;&nbsp; <strong>Naly Rosario</strong></div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">2</div><div class="stat-label">Modules</div></div>
+  <div class="stat"><div class="stat-num">7</div><div class="stat-label">App Layer Topics</div></div>
+  <div class="stat"><div class="stat-num">8</div><div class="stat-label">Key Protocols</div></div>
+  <div class="stat"><div class="stat-num">8</div><div class="stat-label">Port Numbers</div></div>
+  <div class="stat"><div class="stat-num">5</div><div class="stat-label">CLI Tools</div></div>
+  <div class="stat"><div class="stat-num">20</div><div class="stat-label">Quiz Questions</div></div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('overview',this)">Overview</button>
+    <button class="tab-btn" onclick="showTab('clientserver',this)">Client-Server & URIs</button>
+    <button class="tab-btn" onclick="showTab('protocols',this)">App Layer Protocols</button>
+    <button class="tab-btn" onclick="showTab('ports',this)">Port Reference</button>
+    <button class="tab-btn" onclick="showTab('tools',this)">Network Tools</button>
+    <button class="tab-btn" onclick="showTab('quiz',this)">Quiz</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ═══════════════════ OVERVIEW ═══════════════════ -->
+<div id="overview" class="panel active">
+  <div class="section-label">Modules 16 & 17 at a Glance</div>
+  <div class="section-title">Application Layer Services & Network Testing</div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="tag">Module 16</div>
+      <h4>Application Layer Services</h4>
+      <p><strong>Objective:</strong> Explain the function of common application layer services.</p>
+      <p>Covers the client-server model, URIs, and seven protocols that power everyday internet activity: DNS, HTTP/HTTPS, FTP, Telnet, SSH, SMTP, POP3, IMAP4, and VoIP.</p>
+    </div>
+    <div class="concept-card">
+      <div class="tag">Module 17</div>
+      <h4>Network Testing Utilities</h4>
+      <p><strong>Objective:</strong> Use various tools to test and troubleshoot network connectivity.</p>
+      <p>Covers five CLI commands built into every operating system: ipconfig, ping, netstat, tracert, and nslookup — and how to interpret their output.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">🔑</div>Why This Matters for Your Career</div>
+    <p>Every protocol in Module 16 is a Security+ exam topic and a real-world attack target. DNS attacks, HTTP exploits, FTP misconfigurations, SSH brute-force, email phishing infrastructure — all connect directly to these protocols. The CLI tools in Module 17 are the first tools a security analyst reaches for when something on the network breaks. You will use both sets of knowledge every day as a cybersecurity professional.</p>
+  </div>
+
+  <div class="section-label" style="margin-top:24px">Application Layer — Where Users Meet the Network</div>
+  <div class="section-title">The Application Layer in Context</div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">📐</div>Where It Sits</div>
+    <p>The Application Layer is <strong>Layer 7</strong> in the OSI model — the top layer. In the TCP/IP model, it combines the OSI Application, Presentation, and Session layers into one. It is the layer where users actually interact with the network — every service a user touches operates here.</p>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="tag">Client Role</div>
+      <h4>The Client Initiates</h4>
+      <p>A client is any device that sends a request to a server. Browsers, mail clients, FTP clients, and SSH terminals are all client software. A single device can run multiple client types simultaneously.</p>
+    </div>
+    <div class="concept-card">
+      <div class="tag">Server Role</div>
+      <h4>The Server Responds</h4>
+      <p>A server is a host running software that provides services to clients. Web servers, email servers, DNS servers, and file servers all listen on defined port numbers and respond only when a client requests something.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ CLIENT-SERVER & URIs ═══════════════════ -->
+<div id="clientserver" class="panel">
+  <div class="section-label">Module 16 — Topic 1</div>
+  <div class="section-title">Client-Server Relationship & URIs</div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">🖥️</div>Three Common Server Types</div>
+    <table class="proto-table">
+      <thead><tr><th>Server Type</th><th>What It Does</th><th>Client Software Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Email Server</strong></td><td>Receives, stores, and manages email for users with mailboxes</td><td>Microsoft Outlook, Gmail</td></tr>
+        <tr><td><strong>Web Server</strong></td><td>Hosts and delivers web pages on request</td><td>Chrome, Firefox, Edge</td></tr>
+        <tr><td><strong>File Server</strong></td><td>Stores corporate and user files in a central location</td><td>Windows File Explorer</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label" style="margin-top:24px">URI, URN & URL</div>
+  <div class="section-title" style="font-size:17px">Breaking Down a Web Address</div>
+
+  <div class="uri-visual">
+    <div class="uri-string">
+      <span class="u-proto">https://</span><span class="u-host">www.example.com</span><span class="u-path">/author/book.html</span><span class="u-frag">#page155</span>
+    </div>
+    <div class="uri-legend">
+      <div class="uri-leg-item"><div class="uri-dot" style="background:#f97316"></div>Protocol/Scheme (URL)</div>
+      <div class="uri-leg-item"><div class="uri-dot" style="background:#86efac"></div>Hostname (URN)</div>
+      <div class="uri-leg-item"><div class="uri-dot" style="background:#93c5fd"></div>Path & File Name (URN)</div>
+      <div class="uri-leg-item"><div class="uri-dot" style="background:#d8b4fe"></div>Fragment</div>
+    </div>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="tag">URI</div>
+      <h4>Uniform Resource Identifier</h4>
+      <p>The broadest term. A URI is any string that identifies a specific network resource. Both URN and URL are types of URI. The entire address is the URI.</p>
+    </div>
+    <div class="concept-card">
+      <div class="tag">URN</div>
+      <h4>Uniform Resource Name</h4>
+      <p>Identifies the <strong>name</strong> of a resource — the hostname and path. Does NOT include the protocol. Example: a book ISBN or DOI for an academic paper.</p>
+    </div>
+    <div class="concept-card">
+      <div class="tag">URL</div>
+      <h4>Uniform Resource Locator</h4>
+      <p>Defines the <strong>network location</strong> of a resource. Includes the protocol (HTTP, HTTPS, FTP, SSH). Used by browsers every time you navigate to a site.</p>
+    </div>
+    <div class="concept-card">
+      <div class="tag">Fragment</div>
+      <h4>Section Pointer</h4>
+      <p>The <strong>#</strong> symbol followed by a label. Points to a specific section within a page. Example: <code>#page155</code> jumps directly to that section without loading a new page.</p>
+    </div>
+  </div>
+
+  <div class="note-box"><strong>Memory tip:</strong> URI is the umbrella. URL adds the protocol (how to get there). URN names what it is without specifying how to get there. Every URL is a URI. Not every URI is a URL.</div>
+</div>
+
+<!-- ═══════════════════ PROTOCOLS ═══════════════════ -->
+<div id="protocols" class="panel">
+  <div class="section-label">Module 16 — Topics 2 through 7</div>
+  <div class="section-title">Application Layer Protocols</div>
+
+  <!-- DNS -->
+  <div class="card">
+    <div class="card-title"><div class="icon">🌐</div>DNS — Domain Name System &nbsp;<span class="port-badge">Port 53</span></div>
+    <p>DNS translates human-readable domain names (like www.cisco.com) into IP addresses that routers can use. Without DNS, users would have to type the IP address of every website they visit.</p>
+    <div class="flow-steps">
+      <div class="flow-step"><div class="step-num">1</div><div class="step-body"><h5>Host Requests</h5><p>A host types a domain name — the DNS client sends a query to the DNS server.</p></div></div>
+      <div class="flow-step"><div class="step-num">2</div><div class="step-body"><h5>DNS Server Checks</h5><p>The DNS server looks up the domain name in its records table.</p></div></div>
+      <div class="flow-step"><div class="step-num">3</div><div class="step-body"><h5>Queries Up the Hierarchy</h5><p>If the local DNS server has no record, it queries another DNS server higher up.</p></div></div>
+      <div class="flow-step"><div class="step-num">4</div><div class="step-body"><h5>IP Address Returned</h5><p>The correct IP address is sent back to the requesting host, which then contacts the server directly.</p></div></div>
+    </div>
+  </div>
+
+  <!-- HTTP/HTTPS -->
+  <div class="card">
+    <div class="card-title"><div class="icon">🌍</div>HTTP & HTTPS — Web Protocols &nbsp;<span class="port-badge warn">Port 80 (HTTP)</span> &nbsp;<span class="port-badge">Port 443 (HTTPS)</span></div>
+    <div class="compare-wrap">
+      <div class="compare-card">
+        <div class="compare-head a">HTTP — Hypertext Transfer Protocol</div>
+        <div class="compare-body">
+          <ul>
+            <li>Used by browsers to request web pages from web servers</li>
+            <li>Server listens on <strong>Port 80</strong></li>
+            <li>Data transmitted in <strong>plain text</strong> — not encrypted</li>
+            <li>Can be intercepted and read by anyone on the network</li>
+            <li>HTML defines how the returned page is displayed</li>
+          </ul>
+        </div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-head b">HTTPS — HTTP Secure</div>
+        <div class="compare-body">
+          <ul>
+            <li>Encrypts all data between browser and server</li>
+            <li>Server listens on <strong>Port 443</strong></li>
+            <li>Browser displays HTTPS and a padlock icon</li>
+            <li>Required for any site handling sensitive user data</li>
+            <li>Interception yields unreadable ciphertext</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="security-alert"><strong>Security Exam Fact:</strong> HTTP (Port 80) = plain text = risk. HTTPS (Port 443) = encrypted = required standard. If you see HTTP traffic carrying credentials in a network capture, that is a finding.</div>
+  </div>
+
+  <!-- FTP -->
+  <div class="card">
+    <div class="card-title"><div class="icon">📁</div>FTP — File Transfer Protocol &nbsp;<span class="port-badge warn">Port 21 (Control)</span> &nbsp;<span class="port-badge warn">Port 20 (Data)</span></div>
+    <p>FTP is used specifically for transferring files between devices across a network. It is unique because it uses <strong>two separate ports</strong> simultaneously — one for commands, one for data.</p>
+    <div class="flow-steps">
+      <div class="flow-step"><div class="step-num">1</div><div class="step-body"><h5>Control Connection — Port 21</h5><p>Client opens a control connection to the server on port 21. Login credentials and file management commands (upload, download, rename, delete) travel through this connection. Stays open for the full session.</p></div></div>
+      <div class="flow-step"><div class="step-num">2</div><div class="step-body"><h5>Data Connection — Port 20</h5><p>A separate data connection is opened on port 20 when a file transfer begins. The actual file content travels here. Closes when the transfer completes.</p></div></div>
+    </div>
+    <div class="security-alert"><strong>Security Note:</strong> FTP sends everything in plain text — including usernames and passwords. The secure replacement is <strong>SFTP (Secure File Transfer Protocol)</strong>, which encrypts the entire session using SSH. Standard FTP is treated as a vulnerability in any modern security policy.</div>
+  </div>
+
+  <!-- Telnet & SSH -->
+  <div class="card">
+    <div class="card-title"><div class="icon">💻</div>Telnet & SSH — Remote Access &nbsp;<span class="port-badge warn">Port 23 (Telnet)</span> &nbsp;<span class="port-badge">Port 22 (SSH)</span></div>
+    <div class="compare-wrap">
+      <div class="compare-card">
+        <div class="compare-head a">Telnet — Virtual Terminal</div>
+        <div class="compare-body">
+          <ul>
+            <li>Introduced in the early 1970s — one of the oldest protocols</li>
+            <li>Creates a <strong>vty (virtual terminal)</strong> session to a remote device</li>
+            <li>Gives access to the remote device's CLI</li>
+            <li>All data — including passwords — sent in <strong>plain text</strong></li>
+            <li>Server listens on <strong>TCP Port 23</strong></li>
+            <li>Still used in lab/learning environments</li>
+          </ul>
+        </div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-head b">SSH — Secure Shell</div>
+        <div class="compare-body">
+          <ul>
+            <li>Direct replacement for Telnet</li>
+            <li>Same CLI access — but <strong>entire session is encrypted</strong></li>
+            <li>Supports stronger authentication including key-based auth</li>
+            <li>Server listens on <strong>TCP Port 22</strong></li>
+            <li>Required standard in all modern network environments</li>
+            <li>Intercepted SSH traffic = unreadable ciphertext</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="security-alert"><strong>Best Practice:</strong> Always use SSH instead of Telnet. Telnet in production is a finding. The only variable that changes is the protocol — the level of access is the same. The difference is whether an interceptor gets valid credentials or meaningless ciphertext.</div>
+  </div>
+
+  <!-- Email Protocols -->
+  <div class="card">
+    <div class="card-title"><div class="icon">✉️</div>Email Protocols — SMTP, POP3, IMAP4</div>
+    <table class="proto-table">
+      <thead><tr><th>Protocol</th><th>Full Name</th><th>Port</th><th>Role</th><th>Key Behavior</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>SMTP</strong></td>
+          <td>Simple Mail Transfer Protocol</td>
+          <td><span class="port-badge warn">25</span></td>
+          <td>Sending email</td>
+          <td>Pushes email from client to server and between servers. Handles all outbound mail movement.</td>
+        </tr>
+        <tr>
+          <td><strong>POP3</strong></td>
+          <td>Post Office Protocol v3</td>
+          <td><span class="port-badge">110</span></td>
+          <td>Retrieving email</td>
+          <td>Downloads email to local device. Typically removes messages from server after download. Single-device access.</td>
+        </tr>
+        <tr>
+          <td><strong>IMAP4</strong></td>
+          <td>Internet Message Access Protocol v4</td>
+          <td><span class="port-badge">143</span></td>
+          <td>Retrieving & managing email</td>
+          <td>Keeps messages on the server. Accessible from multiple devices simultaneously. Changes sync across all devices.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note-box"><strong>Remember:</strong> SMTP sends. POP3 downloads and removes. IMAP4 syncs and retains. IMAP4 is the modern standard for multi-device access.</div>
+  </div>
+
+  <!-- VoIP -->
+  <div class="card">
+    <div class="card-title"><div class="icon">📞</div>VoIP — Voice over IP</div>
+    <p>VoIP converts analog voice signals into digital data and encapsulates them into IP packets for transmission over the network. Uses peer-to-peer technology similar to instant messaging. A <strong>Call Manager server</strong> sits at the center, handling call setup, routing, and teardown between voice clients. To call traditional phone numbers, a <strong>PSTN gateway</strong> (Public Switched Telephone Network) is required. Specific protocols and ports vary by software — common protocols include SIP and RTP.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════ PORT REFERENCE ═══════════════════ -->
+<div id="ports" class="panel">
+  <div class="section-label">Quick Reference</div>
+  <div class="section-title">Port Numbers — Memorize These</div>
+
+  <div class="port-ref-grid">
+    <div class="port-ref-card warn">
+      <div class="p-num">20</div>
+      <div class="p-proto">FTP Data</div>
+      <div class="p-desc">File data transfer between FTP client and server</div>
+    </div>
+    <div class="port-ref-card warn">
+      <div class="p-num">21</div>
+      <div class="p-proto">FTP Control</div>
+      <div class="p-desc">FTP session control and command channel</div>
+    </div>
+    <div class="port-ref-card secure">
+      <div class="p-num">22</div>
+      <div class="p-proto">SSH</div>
+      <div class="p-desc">Secure Shell — encrypted remote access</div>
+    </div>
+    <div class="port-ref-card warn">
+      <div class="p-num">23</div>
+      <div class="p-proto">Telnet</div>
+      <div class="p-desc">Virtual terminal sessions — plain text, insecure</div>
+    </div>
+    <div class="port-ref-card warn">
+      <div class="p-num">25</div>
+      <div class="p-proto">SMTP</div>
+      <div class="p-desc">Sending email between clients and mail servers</div>
+    </div>
+    <div class="port-ref-card neutral">
+      <div class="p-num">53</div>
+      <div class="p-proto">DNS</div>
+      <div class="p-desc">Domain Name System — name to IP resolution</div>
+    </div>
+    <div class="port-ref-card warn">
+      <div class="p-num">80</div>
+      <div class="p-proto">HTTP</div>
+      <div class="p-desc">Web traffic — plain text, unencrypted</div>
+    </div>
+    <div class="port-ref-card neutral">
+      <div class="p-num">110</div>
+      <div class="p-proto">POP3</div>
+      <div class="p-desc">Email retrieval — downloads to local device</div>
+    </div>
+    <div class="port-ref-card neutral">
+      <div class="p-num">143</div>
+      <div class="p-proto">IMAP4</div>
+      <div class="p-desc">Email retrieval — stays on server, multi-device</div>
+    </div>
+    <div class="port-ref-card secure">
+      <div class="p-num">443</div>
+      <div class="p-proto">HTTPS</div>
+      <div class="p-desc">Secure web traffic — encrypted with TLS</div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <strong>Color coding:</strong> &nbsp;
+    <span style="color:#dc2626;font-weight:700">Red border = plain text / insecure protocol</span> &nbsp;·&nbsp;
+    <span style="color:#16a34a;font-weight:700">Green border = encrypted / secure</span> &nbsp;·&nbsp;
+    <span style="color:var(--teal-mid);font-weight:700">Teal border = neutral infrastructure</span>
+  </div>
+
+  <div class="section-label" style="margin-top:28px">All Protocols at a Glance</div>
+  <div class="section-title" style="font-size:17px">Complete Protocol Summary Table</div>
+
+  <table class="proto-table">
+    <thead>
+      <tr><th>Protocol</th><th>Port</th><th>Purpose</th><th>Encrypted?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>DNS</strong></td><td><span class="port-badge">53</span></td><td>Resolves domain names to IP addresses</td><td>No (standard)</td></tr>
+      <tr><td><strong>FTP</strong></td><td><span class="port-badge warn">20 / 21</span></td><td>File transfer between systems</td><td>No</td></tr>
+      <tr><td><strong>SSH</strong></td><td><span class="port-badge">22</span></td><td>Secure remote CLI access to servers and devices</td><td>Yes</td></tr>
+      <tr><td><strong>Telnet</strong></td><td><span class="port-badge warn">23</span></td><td>Remote CLI access — virtual terminal session</td><td>No</td></tr>
+      <tr><td><strong>SMTP</strong></td><td><span class="port-badge warn">25</span></td><td>Sends email from client to server and between servers</td><td>No (standard)</td></tr>
+      <tr><td><strong>HTTP</strong></td><td><span class="port-badge warn">80</span></td><td>Web page requests and delivery</td><td>No</td></tr>
+      <tr><td><strong>POP3</strong></td><td><span class="port-badge">110</span></td><td>Retrieves email and downloads to local device</td><td>No (standard)</td></tr>
+      <tr><td><strong>IMAP4</strong></td><td><span class="port-badge">143</span></td><td>Retrieves and manages email on the server</td><td>No (standard)</td></tr>
+      <tr><td><strong>HTTPS</strong></td><td><span class="port-badge">443</span></td><td>Encrypted web traffic</td><td>Yes</td></tr>
+      <tr><td><strong>DHCP</strong></td><td><span class="port-badge">67 / 68</span></td><td>Automatically assigns IP addresses to devices</td><td>No</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════ NETWORK TOOLS ═══════════════════ -->
+<div id="tools" class="panel">
+  <div class="section-label">Module 17 — Troubleshooting Commands</div>
+  <div class="section-title">Five Essential Network CLI Tools</div>
+
+  <div class="tools-grid">
+    <div class="tool-card">
+      <h4>ipconfig</h4>
+      <div class="tool-cmd">C:\&gt; ipconfig</div>
+      <p>Displays the IP configuration of a Windows device — IP address, subnet mask, and default gateway. The first command in any troubleshooting sequence.</p>
+    </div>
+    <div class="tool-card">
+      <h4>ping</h4>
+      <div class="tool-cmd">C:\&gt; ping 10.10.10.1</div>
+      <p>Tests connectivity by sending ICMP Echo Requests to a target. If a reply is received, connectivity is confirmed. If it times out, the path or host has a problem.</p>
+    </div>
+    <div class="tool-card">
+      <h4>netstat</h4>
+      <div class="tool-cmd">C:\&gt; netstat</div>
+      <p>Displays all active network connections, listening ports, and protocol status. Used to identify established sessions and detect unexpected or unauthorized connections.</p>
+    </div>
+    <div class="tool-card">
+      <h4>tracert</h4>
+      <div class="tool-cmd">C:\&gt; tracert cisco.com</div>
+      <p>Traces the full route that packets take from the local device to a destination, showing every hop and the time taken at each one. Identifies where on the path a failure occurs.</p>
+    </div>
+    <div class="tool-card">
+      <h4>nslookup</h4>
+      <div class="tool-cmd">C:\&gt; nslookup cisco.com</div>
+      <p>Queries a DNS server to resolve a domain name to an IP address. Used to diagnose DNS-related failures — if ping by IP works but by hostname fails, use nslookup.</p>
+    </div>
+  </div>
+
+  <!-- ipconfig detail -->
+  <div class="section-label" style="margin-top:8px">ipconfig Deep Dive</div>
+  <div class="section-title" style="font-size:17px">ipconfig Options & What They Do</div>
+
+  <table class="proto-table">
+    <thead><tr><th>Command</th><th>What It Does</th><th>When to Use It</th></tr></thead>
+    <tbody>
+      <tr><td><span class="port-badge" style="font-size:12px">ipconfig</span></td><td>Shows IP address, subnet mask, default gateway for all adapters</td><td>First step — verify the device has a valid configuration</td></tr>
+      <tr><td><span class="port-badge" style="font-size:12px">ipconfig /all</span></td><td>Adds MAC address, DNS servers, DHCP server, lease dates</td><td>When you need full network details — DHCP or DNS issues</td></tr>
+      <tr><td><span class="port-badge" style="font-size:12px">ipconfig /release</span></td><td>Surrenders the current DHCP-assigned IP address</td><td>Before requesting a fresh address from DHCP</td></tr>
+      <tr><td><span class="port-badge" style="font-size:12px">ipconfig /renew</span></td><td>Requests a new IP address from the DHCP server</td><td>After /release, or when IP is incorrect/expired</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ping detail -->
+  <div class="section-label" style="margin-top:8px">Interpreting Ping Results</div>
+  <div class="section-title" style="font-size:17px">What the Ping Output Tells You</div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="tag">Ping Succeeds</div>
+      <h4>Connectivity Confirmed</h4>
+      <p>Packets Sent = Received, Lost = 0. The path between the two devices is functional. Response time in milliseconds shows network latency.</p>
+    </div>
+    <div class="concept-card">
+      <div class="tag">Request Timed Out</div>
+      <h4>No Reply Received</h4>
+      <p>The echo request was sent but no reply came back. The destination is unreachable, offline, or a firewall is blocking ICMP packets along the path.</p>
+    </div>
+    <div class="concept-card">
+      <div class="tag">IP Works, Hostname Fails</div>
+      <h4>DNS Problem</h4>
+      <p>If ping 10.10.10.1 succeeds but ping cisco.com fails — network connectivity is fine. The issue is specifically DNS resolution. Use nslookup to confirm.</p>
+    </div>
+    <div class="concept-card">
+      <div class="tag">Ping Gateway First</div>
+      <h4>Narrow the Scope</h4>
+      <p>Always ping the default gateway before testing external addresses. If the gateway responds — the problem is beyond the local network. If it fails — the problem is local.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+<span class="comment"># Step 1 — Check local configuration</span>
+<span class="cmd">ipconfig /all</span>
+
+<span class="comment"># Step 2 — Test local connectivity (ping the gateway)</span>
+<span class="cmd">ping 10.10.10.1</span>
+
+<span class="comment"># Step 3 — Test internet connectivity (ping by IP)</span>
+<span class="cmd">ping 8.8.8.8</span>
+
+<span class="comment"># Step 4 — Test DNS resolution (ping by hostname)</span>
+<span class="cmd">ping www.cisco.com</span>
+
+<span class="comment"># Step 5 — If Step 4 fails, query DNS directly</span>
+<span class="cmd">nslookup www.cisco.com</span>
+
+<span class="comment"># Step 6 — Trace the path to identify where traffic is failing</span>
+<span class="cmd">tracert www.cisco.com</span></div>
+
+  <div class="note-box"><strong>Troubleshooting Workflow:</strong> Work from local to remote. Confirm the device has a valid IP address first. Then test the gateway. Then test the internet. Then test DNS. Each step confirms a layer of connectivity and narrows the source of the problem.</div>
+</div>
+
+<!-- ═══════════════════ QUIZ ═══════════════════ -->
+<div id="quiz" class="panel">
+  <div class="section-label">End-of-Module Assessment</div>
+  <div class="section-title">Modules 16 & 17 — Knowledge Check</div>
+
+  <!-- Q1 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 1 of 20</div>
+    <div class="quiz-q">A server is best defined as a host that:</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,1,false)">A. Has a faster processor than a regular computer</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,1,true)">B. Runs software that provides services or information to other connected devices</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,1,false)">C. Is always physically located in a data center</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,1,false)">D. Can only serve one client at a time</button>
+    </div>
+    <div class="quiz-fb" id="fb1"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 2 of 20</div>
+    <div class="quiz-q">Which part of a URI specifies the protocol being used to access the resource?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,2,false)">A. Hostname</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,2,false)">B. Fragment</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,2,true)">C. Protocol/Scheme</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,2,false)">D. Path and file name</button>
+    </div>
+    <div class="quiz-fb" id="fb2"></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 3 of 20</div>
+    <div class="quiz-q">In the URI https://www.example.com/author/book.html#page155, what does #page155 represent?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,3,false)">A. The hostname of the server</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,3,false)">B. The file being requested</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,3,true)">C. A fragment pointing to a specific section within the page</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,3,false)">D. The protocol scheme</button>
+    </div>
+    <div class="quiz-fb" id="fb3"></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 4 of 20</div>
+    <div class="quiz-q">HTTP uses which port number to communicate between a browser and a web server?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,4,false)">A. 443</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,4,true)">B. 80</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,4,false)">C. 21</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,4,false)">D. 23</button>
+    </div>
+    <div class="quiz-fb" id="fb4"></div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 5 of 20</div>
+    <div class="quiz-q">What is the key security difference between HTTP and HTTPS?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,5,false)">A. HTTPS is faster than HTTP</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,5,false)">B. HTTP uses port 443 and HTTPS uses port 80</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,5,true)">C. HTTPS encrypts data in transit — HTTP transmits in plain text</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,5,false)">D. HTTP requires a certificate and HTTPS does not</button>
+    </div>
+    <div class="quiz-fb" id="fb5"></div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 6 of 20</div>
+    <div class="quiz-q">FTP uses two ports. Which port handles the actual file data being transferred?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,6,false)">A. Port 21</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,6,true)">B. Port 20</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,6,false)">C. Port 22</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,6,false)">D. Port 23</button>
+    </div>
+    <div class="quiz-fb" id="fb6"></div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 7 of 20</div>
+    <div class="quiz-q">A Telnet connection is also known as a:</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,7,false)">A. Secure Shell session</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,7,false)">B. Physical terminal connection</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,7,true)">C. vty (virtual terminal) session</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,7,false)">D. Dynamic host session</button>
+    </div>
+    <div class="quiz-fb" id="fb7"></div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 8 of 20</div>
+    <div class="quiz-q">Which protocol is the secure replacement for Telnet and uses TCP port 22?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,8,false)">A. FTP</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,8,false)">B. HTTPS</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,8,true)">C. SSH</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,8,false)">D. SMTP</button>
+    </div>
+    <div class="quiz-fb" id="fb8"></div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 9 of 20</div>
+    <div class="quiz-q">Which email protocol is used to send messages from a client to a mail server?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,9,false)">A. IMAP4</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,9,false)">B. POP3</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,9,true)">C. SMTP</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,9,false)">D. DNS</button>
+    </div>
+    <div class="quiz-fb" id="fb9"></div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 10 of 20</div>
+    <div class="quiz-q">A user needs to access their email from three different devices — phone, laptop, and tablet — and see the same inbox on all three. Which email protocol should they use?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,10,false)">A. POP3 — because it downloads messages faster</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,10,true)">B. IMAP4 — because it keeps messages on the server and syncs across all devices</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,10,false)">C. SMTP — because it handles all email traffic</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,10,false)">D. FTP — because it is designed for file transfer</button>
+    </div>
+    <div class="quiz-fb" id="fb10"></div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 11 of 20</div>
+    <div class="quiz-q">What port does IMAP4 use for email retrieval?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,11,false)">A. 25</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,11,false)">B. 110</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,11,true)">C. 143</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,11,false)">D. 80</button>
+    </div>
+    <div class="quiz-fb" id="fb11"></div>
+  </div>
+
+  <!-- Q12 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 12 of 20</div>
+    <div class="quiz-q">DNS resolves which of the following?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,12,false)">A. MAC addresses to IP addresses</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,12,true)">B. Domain names to IP addresses</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,12,false)">C. IP addresses to port numbers</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,12,false)">D. Hostnames to MAC addresses</button>
+    </div>
+    <div class="quiz-fb" id="fb12"></div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 13 of 20</div>
+    <div class="quiz-q">Which Windows command displays the IP address, subnet mask, and default gateway assigned to a network adapter?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,13,false)">A. ping</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,13,false)">B. netstat</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,13,true)">C. ipconfig</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,13,false)">D. tracert</button>
+    </div>
+    <div class="quiz-fb" id="fb13"></div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 14 of 20</div>
+    <div class="quiz-q">A user runs ipconfig /all. Which additional information does this provide compared to basic ipconfig?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,14,false)">A. The route packets take to reach a destination</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,14,true)">B. The MAC address, DNS servers, DHCP server, and lease information</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,14,false)">C. All active TCP connections on the device</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,14,false)">D. The IP addresses of all devices on the same subnet</button>
+    </div>
+    <div class="quiz-fb" id="fb14"></div>
+  </div>
+
+  <!-- Q15 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 15 of 20</div>
+    <div class="quiz-q">A device has an incorrect IP address assigned by DHCP. Which two commands should be run in sequence to obtain a fresh address?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,15,false)">A. ipconfig /all then ipconfig /renew</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,15,true)">B. ipconfig /release then ipconfig /renew</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,15,false)">C. ipconfig /renew then ipconfig /release</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,15,false)">D. ping then ipconfig /renew</button>
+    </div>
+    <div class="quiz-fb" id="fb15"></div>
+  </div>
+
+  <!-- Q16 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 16 of 20</div>
+    <div class="quiz-q">A technician pings the default gateway successfully but cannot reach any website by name. What is the most likely cause?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,16,false)">A. The device has no IP address</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,16,false)">B. The router is offline</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,16,true)">C. DNS resolution is failing</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,16,false)">D. The device's NIC is faulty</button>
+    </div>
+    <div class="quiz-fb" id="fb16"></div>
+  </div>
+
+  <!-- Q17 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 17 of 20</div>
+    <div class="quiz-q">Which command would a technician use to identify where along the network path a connectivity failure is occurring?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,17,false)">A. ipconfig</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,17,false)">B. nslookup</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,17,false)">C. netstat</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,17,true)">D. tracert</button>
+    </div>
+    <div class="quiz-fb" id="fb17"></div>
+  </div>
+
+  <!-- Q18 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 18 of 20</div>
+    <div class="quiz-q">Ping sends test packets using which protocol?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,18,false)">A. TCP</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,18,false)">B. UDP</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,18,true)">C. ICMP</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,18,false)">D. ARP</button>
+    </div>
+    <div class="quiz-fb" id="fb18"></div>
+  </div>
+
+  <!-- Q19 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 19 of 20</div>
+    <div class="quiz-q">A ping to a web server's IP address succeeds, but the user still cannot load the website. The most likely cause is:</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,19,false)">A. The network cable is unplugged</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,19,false)">B. The device has no default gateway</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,19,true)">C. The web service on the server is not running</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,19,false)">D. DNS is not resolving the hostname</button>
+    </div>
+    <div class="quiz-fb" id="fb19"></div>
+  </div>
+
+  <!-- Q20 -->
+  <div class="quiz-card">
+    <div class="quiz-num">Question 20 of 20</div>
+    <div class="quiz-q">Which command displays all currently active network connections and listening ports on a Windows device?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="checkAnswer(this,20,false)">A. tracert</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,20,false)">B. ping</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,20,false)">C. nslookup</button>
+      <button class="quiz-opt" onclick="checkAnswer(this,20,true)">D. netstat</button>
+    </div>
+    <div class="quiz-fb" id="fb20"></div>
+  </div>
+
+  <div class="quiz-score-box" id="scoreBox">
+    <h3 id="scoreTitle">Quiz Complete</h3>
+    <p id="scoreText"></p>
+    <button class="quiz-reset" onclick="resetQuiz()">Reset Quiz</button>
+  </div>
+</div>
+
+</div><!-- end .content -->
+
+<div class="footer">
+  <strong>Designed by: Dr. Solomon Seifu</strong> &nbsp;·&nbsp; Per Scholas Greater Boston &nbsp;·&nbsp; Cybersecurity Program &nbsp;·&nbsp; Cohort 2026-BOS-02 &nbsp;·&nbsp; &copy; 2026
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+const feedbacks = {
+  1: {ok:'Correct! A server is defined by its function — it runs software that provides services to other devices on the network, not by its hardware.',fail:'Not quite. A server is defined by what it does — it runs software that provides services to other connected devices.'},
+  2: {ok:'Correct! The Protocol/Scheme is the first part of any URI. Examples include HTTPS, FTP, and SSH.',fail:'Not quite. The Protocol/Scheme (e.g., HTTPS, FTP) appears at the beginning of a URI and defines how the resource is accessed.'},
+  3: {ok:'Correct! The fragment (#page155) points to a specific section within the page — it tells the browser where to scroll after the page loads.',fail:'Not quite. The # symbol indicates a fragment — it points the browser to a specific section within the already-loaded page.'},
+  4: {ok:'Correct! HTTP uses port 80. HTTPS uses port 443. These two port numbers are directly tested on the Security+ exam.',fail:'Not quite. HTTP uses port 80. HTTPS uses port 443. Remember: 80 = plain text, 443 = encrypted.'},
+  5: {ok:'Correct! HTTPS encrypts all data in transit using TLS. HTTP sends everything in plain text and can be intercepted and read by anyone on the network.',fail:'Not quite. The critical difference is encryption. HTTPS encrypts the session. HTTP does not — all data including credentials travels in plain text.'},
+  6: {ok:'Correct! Port 20 carries the actual file data. Port 21 handles the control connection — commands and session management.',fail:'Not quite. FTP uses Port 21 for control (commands) and Port 20 for data (the actual file content being transferred).'},
+  7: {ok:'Correct! A Telnet connection is called a vty (virtual terminal) session. It emulates a physical terminal connection over a network.',fail:'Not quite. A Telnet connection is called a vty — virtual terminal — session. It creates a software-based terminal to a remote device over the network.'},
+  8: {ok:'Correct! SSH (Secure Shell) uses TCP port 22. It provides the same CLI access as Telnet but with full encryption.',fail:'Not quite. SSH — Secure Shell — is the secure replacement for Telnet. It uses TCP port 22 and encrypts the entire session.'},
+  9: {ok:'Correct! SMTP — Simple Mail Transfer Protocol — is the protocol for sending email. It pushes messages from client to server and between servers.',fail:'Not quite. SMTP (Simple Mail Transfer Protocol) is for sending email. POP3 and IMAP4 are for retrieving email.'},
+  10: {ok:'Correct! IMAP4 keeps messages on the server and synchronizes across all connected devices — making it the standard for multi-device email access.',fail:'Not quite. IMAP4 is the right choice because it stores messages on the server and syncs across all devices. POP3 downloads and typically removes messages from the server.'},
+  11: {ok:'Correct! IMAP4 uses port 143. POP3 uses port 110. SMTP uses port 25.',fail:'Not quite. IMAP4 uses port 143. Remember: POP3 = 110, IMAP4 = 143, SMTP = 25.'},
+  12: {ok:'Correct! DNS resolves domain names (like www.cisco.com) into IP addresses that routers can use to deliver traffic.',fail:'Not quite. DNS translates domain names into IP addresses. Without DNS, users would need to type the IP address of every website they visit.'},
+  13: {ok:'Correct! ipconfig is the Windows command that displays IP address, subnet mask, and default gateway for each network adapter.',fail:'Not quite. ipconfig displays the IP configuration of a Windows device — IP address, subnet mask, and default gateway.'},
+  14: {ok:'Correct! ipconfig /all adds the MAC address, DNS server addresses, DHCP server address, and lease information to the output.',fail:'Not quite. ipconfig /all adds extended details — including MAC address, DNS servers, DHCP server, and lease dates — to the standard ipconfig output.'},
+  15: {ok:'Correct! The correct sequence is /release first (to surrender the old address) then /renew (to request a new one from DHCP).',fail:'Not quite. The correct order is ipconfig /release first — which surrenders the current address — followed by ipconfig /renew to request a fresh one.'},
+  16: {ok:'Correct! If the gateway responds but websites do not load by name, DNS resolution is failing. The network path works — the name-to-IP translation does not. Use nslookup to confirm.',fail:'Not quite. If the gateway responds, local connectivity is confirmed. The problem is that domain names are not being resolved to IP addresses — that is a DNS issue.'},
+  17: {ok:'Correct! tracert traces the full route from the local device to the destination, showing every hop. It identifies exactly where along the path a failure occurs.',fail:'Not quite. tracert traces the route traffic takes to a destination and shows where the path breaks. nslookup checks DNS. netstat shows active connections. ipconfig shows local config.'},
+  18: {ok:'Correct! ping uses ICMP — Internet Control Message Protocol — to send echo requests and receive echo replies.',fail:'Not quite. ping uses ICMP (Internet Control Message Protocol). It sends Echo Request packets and waits for Echo Reply packets from the destination.'},
+  19: {ok:'Correct! If the IP address responds to ping but the website does not load, the network path is functioning. The problem is at the application level — the web service on the server is not running or is misconfigured.',fail:'Not quite. A successful ping to the IP address confirms network connectivity. The problem lies at the application layer — the web service (like IIS or Apache) is likely not running on the server.'},
+  20: {ok:'Correct! netstat displays all active network connections and listening ports on a device. It is used to identify established sessions and detect unexpected connections.',fail:'Not quite. netstat shows active network connections and listening ports. tracert traces routes. ping tests connectivity. nslookup checks DNS.'}
+};
+
+let answered = {};
+let correct = 0;
+const total = 20;
+
+function checkAnswer(btn, qNum, isCorrect) {
+  if (answered[qNum]) return;
+  answered[qNum] = true;
+
+  const opts = btn.closest('.quiz-opts').querySelectorAll('.quiz-opt');
+  opts.forEach(o => o.disabled = true);
+
+  const fb = document.getElementById('fb' + qNum);
+  if (isCorrect) {
+    btn.classList.add('correct');
+    fb.className = 'quiz-fb show ok';
+    fb.innerHTML = '&#10003; ' + feedbacks[qNum].ok;
+    correct++;
+  } else {
+    btn.classList.add('wrong');
+    fb.className = 'quiz-fb show fail';
+    fb.innerHTML = '&#10007; ' + feedbacks[qNum].fail;
+    // Highlight correct answer
+    opts.forEach(o => {
+      if(o.onclick.toString().includes('true')) o.classList.add('correct');
+    });
+  }
+
+  if (Object.keys(answered).length === total) {
+    const box = document.getElementById('scoreBox');
+    const pct = Math.round((correct/total)*100);
+    box.style.display = 'block';
+    document.getElementById('scoreTitle').textContent = correct + ' / ' + total + ' Correct — ' + pct + '%';
+    let msg = pct >= 90 ? 'Outstanding. You have a strong command of both modules.' :
+              pct >= 75 ? 'Good work. Review any missed questions before moving on.' :
+              pct >= 60 ? 'Passing — but revisit the protocols and port numbers tabs before the next module.' :
+                          'Please review both modules in full before proceeding. Focus on the port reference tab.';
+    document.getElementById('scoreText').textContent = msg;
+    box.scrollIntoView({behavior:'smooth'});
+  }
+}
+
+function resetQuiz() {
+  answered = {};
+  correct = 0;
+  document.querySelectorAll('.quiz-opt').forEach(o => {
+    o.classList.remove('correct','wrong');
+    o.disabled = false;
+  });
+  document.querySelectorAll('.quiz-fb').forEach(f => {
+    f.className = 'quiz-fb';
+    f.innerHTML = '';
+  });
+  document.getElementById('scoreBox').style.display = 'none';
+  window.scrollTo({top: document.getElementById('quiz').offsetTop - 80, behavior:'smooth'});
+}
+</script>
+</body>
+</html>
